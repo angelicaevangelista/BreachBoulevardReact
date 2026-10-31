@@ -1,0 +1,343 @@
+[
+  {
+    "path": "about.html",
+    "title": "About Us | Breach Boulevard",
+    "body": {
+      "class": "bg-[#0d1b2a] text-white font-sans"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "access/access.html",
+    "title": "User Access",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "access/admin.html",
+    "title": "Admin Dashboard",
+    "body": {
+      "class": "bg-gray-100 text-gray-800 flex flex-col min-h-screen"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "access/main.html",
+    "title": "Main Website",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "cards.html",
+    "title": "\n   Vulnerable Website Labs\n  ",
+    "body": {
+      "class": "font-roboto bg-gray-100"
+    },
+    "css": "",
+    "links": [
+      {
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css",
+        "rel": "stylesheet"
+      },
+      {
+        "href": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap",
+        "rel": "stylesheet"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "content/main.html",
+    "title": "Vulnerability-Breach Boulevard",
+    "body": {
+      "class": "bg-[#0d1b2a] text-white font-sans"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "csrf.html",
+    "title": "CSRF Form Example",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "dom.html",
+    "title": "DOM-based XSS Example",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "faq.html",
+    "title": "FAQ Section",
+    "body": {
+      "class": "bg-gray-100 p-6"
+    },
+    "css": "\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n    \n",
+    "links": [
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "file-injection.html",
+    "title": "Profile Management",
+    "body": {
+      "class": "bg-[#0d1b2a] text-white min-h-screen"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "IDOR.html",
+    "title": "",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "index.html",
+    "title": "XSS Vulnerable Page",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "labs.html",
+    "title": "Course Progress Tracker",
+    "body": {
+      "class": "bg-gray-100"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "landingpage.html",
+    "title": "Vulnerable Testing Landing Page",
+    "body": {
+      "class": "bg-gray-100 font-sans"
+    },
+    "css": "\n        .terminal {\n            background: #000;\n            color: #0f0;\n            font-family: 'Courier New', Courier, monospace;\n            padding: 20px;\n            border-radius: 8px;\n            width: 100%;\n            max-width: 600px;\n            height: 300px;\n            overflow-y: auto;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n            position: relative;\n            white-space: pre-wrap;\n        }\n\n        .terminal:focus {\n            outline: none;\n        }\n\n        .blinking-cursor {\n            display: inline;\n            animation: blink 1s steps(2, start) infinite;\n        }\n\n        @keyframes blink {\n            to {\n                visibility: hidden;\n            }\n        }\n    \n",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "landingpagetest.html",
+    "title": "Vulnerable Testing Landing Page",
+    "body": {
+      "class": "bg-gray-100 font-sans"
+    },
+    "css": "\n\n  .terminal {\n\n   background: #000;\n\n   color: #0f0;\n\n   font-family: 'Courier New', Courier, monospace;\n\n   padding: 20px;\n\n   border-radius: 8px;\n\n   width: 100%;\n\n   max-width: 600px;\n\n   height: 300px;\n\n   overflow-y: auto;\n\n   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n\n   position: relative;\n\n   white-space: pre-wrap;\n\n   display: flex;\n\n   flex-direction: column;\n\n  }\n\n\n\n  .prompt-line {\n\n   display: flex;\n\n   align-items: center;\n\n   white-space: nowrap;\n\n  }\n\n\n\n  .prompt {\n\n   color: #0f0;\n\n   margin-right: 5px;\n\n  }\n\n\n\n  .input-area {\n\n   flex: 1;\n\n   color: #0f0;\n\n   outline: none;\n\n   background: transparent;\n\n   border: none;\n\n   font-family: inherit;\n\n   font-size: inherit;\n\n   line-height: inherit;\n\n   white-space: nowrap;\n\n  }\n\n\n\n  .arrow-box {\n\n   position: absolute;\n\n   top: -40px;\n\n   left: 50%;\n\n   transform: translateX(-50%);\n\n   display: flex;\n\n   flex-direction: column;\n\n   align-items: center;\n\n   z-index: 10;\n\n  }\n\n\n\n  .arrow-box span {\n\n   background: #10b981;\n\n   color: white;\n\n   font-weight: bold;\n\n   padding: 5px 10px;\n\n   border-radius: 5px;\n\n   font-size: 14px;\n\n   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n\n  }\n\n\n\n  .arrow-box::after {\n\n   content: '';\n\n   width: 0;\n\n   height: 0;\n\n   border-left: 8px solid transparent;\n\n   border-right: 8px solid transparent;\n\n   border-top: 10px solid #10b981;\n\n   margin-top: 5px;\n\n  }\n\n \n",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "profile.html",
+    "title": "Profile Management",
+    "body": {
+      "class": "bg-[#0d1b2a] text-white min-h-screen"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "profile2.html",
+    "title": "Profile Management",
+    "body": {
+      "class": "bg-[#0d1b2a] text-white min-h-screen"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "terminal/terminal.html",
+    "title": "Linux Terminal",
+    "body": {
+      "class": "bg-black text-white h-screen"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "terminal.html",
+    "title": "Vulnerable Testing Landing Page",
+    "body": {
+      "class": "bg-gray-100 font-sans"
+    },
+    "css": "\n        .terminal {\n            background: #000;\n            color: #0f0;\n            font-family: 'Courier New', Courier, monospace;\n            padding: 20px;\n            border-radius: 8px;\n            width: 100%;\n            max-width: 600px;\n            height: 300px;\n            overflow-y: auto;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n            position: relative;\n            white-space: pre-wrap;\n            display: flex;\n            flex-direction: column;\n        }\n\n        .prompt-line {\n            display: flex;\n            align-items: center;\n            white-space: nowrap;\n        }\n\n        .prompt {\n            color: rgb(5, 61, 216);\n            margin-right: 5px;\n        }\n\n        .input-area {\n            flex: 1;\n            color: #0f0;\n            outline: none;\n            background: transparent;\n            border: none;\n            font-family: inherit;\n            font-size: inherit;\n            line-height: inherit;\n            white-space: nowrap;\n        }\n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n    \n",
+    "links": [
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "terminalfeature.html",
+    "title": "Terminal Emulator",
+    "body": {
+      "class": "bg-black text-green-500 font-mono h-screen"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "test.html",
+    "title": "Vulnerable Testing Landing Page",
+    "body": {
+      "class": "bg-gray-100 font-sans"
+    },
+    "css": "\n\n        .terminal {\n            background: #000;\n            color: #0f0;\n            font-family: 'Courier New', Courier, monospace;\n            padding: 20px;\n            border-radius: 8px;\n            width: 100%;\n            max-width: 600px;\n            height: 300px;\n            overflow-y: auto;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n            position: relative;\n            white-space: pre-wrap;\n            display: flex;\n            flex-direction: column;\n        }\n\n        .prompt-line {\n            display: flex;\n            align-items: center;\n            white-space: nowrap;\n        }\n\n        .prompt {\n            color: rgb(5, 61, 216);\n            margin-right: 5px;\n        }\n\n        .input-area {\n            flex: 1;\n            color: #0f0;\n            outline: none;\n            background: transparent;\n            border: none;\n            font-family: inherit;\n            font-size: inherit;\n            line-height: inherit;\n            white-space: nowrap;\n        }\n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n\n        \n\n    \n",
+    "links": [
+      {
+        "rel": "icon",
+        "type": "image/png",
+        "href": "bblogo.png"
+      },
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "testcopy.html",
+    "title": "Vulnerable Testing Landing Page",
+    "body": {
+      "class": "bg-[#0d1b2a] font-sans"
+    },
+    "css": "\n\n        .terminal {\n            background: #191919;\n            color: #0f0;\n            font-family: 'Courier New', Courier, monospace;\n            padding: 20px;\n            border-radius: 8px;\n            width: 100%;\n            max-width: 600px;\n            height: 300px;\n            overflow-y: auto;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n            position: relative;\n            white-space: pre-wrap;\n            display: flex;\n            flex-direction: column;\n        }\n\n        .prompt-line {\n            display: flex;\n            align-items: center;\n            white-space: nowrap;\n        }\n\n        .prompt {\n            color: rgb(5, 61, 216);\n            margin-right: 5px;\n        }\n\n        .input-area {\n            flex: 1;\n            color: #0f0;\n            outline: none;\n            background: transparent;\n            border: none;\n            font-family: inherit;\n            font-size: inherit;\n            line-height: inherit;\n            white-space: nowrap;\n        }\n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n\n        \n\n    \n",
+    "links": [
+      {
+        "rel": "icon",
+        "type": "image/png",
+        "href": "bblogo.png"
+      },
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "testcopy2.html",
+    "title": "Vulnerable Testing Landing Page",
+    "body": {
+      "class": "bg-gray-100 font-sans"
+    },
+    "css": "\n\n        .terminal {\n            background: #000;\n            color: #0f0;\n            font-family: 'Courier New', Courier, monospace;\n            padding: 20px;\n            border-radius: 8px;\n            width: 100%;\n            max-width: 600px;\n            height: 300px;\n            overflow-y: auto;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n            position: relative;\n            white-space: pre-wrap;\n            display: flex;\n            flex-direction: column;\n        }\n\n        .prompt-line {\n            display: flex;\n            align-items: center;\n            white-space: nowrap;\n        }\n\n        .prompt {\n            color: rgb(5, 61, 216);\n            margin-right: 5px;\n        }\n\n        .input-area {\n            flex: 1;\n            color: #0f0;\n            outline: none;\n            background: transparent;\n            border: none;\n            font-family: inherit;\n            font-size: inherit;\n            line-height: inherit;\n            white-space: nowrap;\n        }\n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n\n        \n\n    \n",
+    "links": [
+      {
+        "rel": "icon",
+        "type": "image/png",
+        "href": "bblogo.png"
+      },
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "tutorial/Union-based-sql-injection.html",
+    "title": "Interactive SQL Injection Tutorial",
+    "body": {
+      "class": "flex justify-center items-center min-h-screen relative"
+    },
+    "css": "\n    body {\n      background-color: #0d1b2a;\n      color: white;\n      font-family: 'Arial', sans-serif;\n      padding: 20px;\n    }\n\n    /* Overlay styles for dramatic focus */\n    .overlay {\n      position: fixed;\n      top: 0;\n      left: 0;\n      width: 100vw;\n      height: 100vh;\n      background: rgba(0, 0, 0, 0.8);\n      z-index: 10;\n    }\n\n    /* Floating square card */\n    .floating-card {\n      position: absolute;\n      z-index: 20;\n      background-color: white;\n      color: #0d1b2a;\n      border-radius: 20px;\n      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);\n      padding: 30px;\n      width: 360px;\n      font-size: 1rem;\n    }\n\n    .floating-card h2 {\n      font-size: 1.4rem;\n      font-weight: bold;\n      color: orange;\n    }\n\n    .floating-card p {\n      margin-top: 10px;\n      font-size: 1rem;\n      line-height: 1.5;\n    }\n\n    /* Arrow pointing to the active input/button */\n    .arrow {\n      position: absolute;\n      width: 30px;\n      height: 30px;\n      background-color: white;\n      z-index: 20;\n      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);\n      transform: rotate(45deg);\n    }\n\n    /* Highlight styles for focused areas */\n    .highlight {\n      position: relative;\n      z-index: 30;\n      border: 3px solid orange;\n      border-radius: 20px;\n      animation: blink 1s infinite;\n    }\n\n    @keyframes blink {\n      50% {\n        opacity: 0.7;\n      }\n    }\n\n    /* Form container */\n    .container {\n      position: relative;\n      background-color: white;\n      color: #0d1b2a;\n      border-radius: 20px;\n      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);\n      padding: 50px;\n      margin-top: 120px;\n      width: 90%;\n      max-width: 450px;\n    }\n\n    .disabled {\n      pointer-events: none;\n      background-color: rgba(13, 27, 42, 0.5);\n      color: rgba(255, 255, 255, 0.5);\n    }\n  \n",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "upload.html",
+    "title": "Profile Picture Upload",
+    "body": {},
+    "css": "\n        body {\n            font-family: Arial, sans-serif;\n            background-color: #f2f2f2;\n            margin: 0;\n            padding: 0;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            height: 100vh;\n        }\n        \n        .container {\n            background-color: #fff;\n            padding: 20px;\n            border-radius: 15px;\n            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);\n            width: 300px;\n        }\n        \n        h1 {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        \n        form {\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n        }\n        \n        label {\n            margin-bottom: 10px;\n        }\n        \n        input[type=\"file\"] {\n            padding: 10px;\n            margin-bottom: 20px;\n            border-radius: 10px;\n            border: 2px solid #ccc;\n            width: 100%;\n            box-sizing: border-box;\n        }\n        \n        input[type=\"submit\"] {\n            background-color: #4CAF50;\n            color: white;\n            padding: 10px 20px;\n            border: none;\n            border-radius: 10px;\n            cursor: pointer;\n        }\n        \n        input[type=\"submit\"]:hover {\n            background-color: #45a049;\n        }\n    \n",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "uploads/index.html",
+    "title": "XSS Vulnerable Page",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  },
+  {
+    "path": "vulnerabilities/error-based-sql-injection.html",
+    "title": "E-Commerce Search Demo",
+    "body": {
+      "class": "bg-gray-100 text-gray-900"
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
+    "path": "vulnerabilities/union-based-sql-injection.html",
+    "title": "Student Portal",
+    "body": {
+      "class": "bg-[#0d1b2a] text-white min-h-screen flex flex-col"
+    },
+    "css": "\n    body::-webkit-scrollbar {\n      width: 8px;\n    }\n    body::-webkit-scrollbar-thumb {\n      background-color: rgba(255, 127, 36, 0.8);\n      border-radius: 8px;\n    }\n  \n",
+    "links": [
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "XSS.html",
+    "title": "ReadIT",
+    "body": {
+      "class": "bg-gray-900 text-gray-200 min-h-screen flex"
+    },
+    "css": "\n    body::-webkit-scrollbar {\n      width: 8px;\n    }\n    body::-webkit-scrollbar-thumb {\n      background-color: rgba(255, 127, 36, 0.8);\n      border-radius: 8px;\n    }\n  \n",
+    "links": [
+      {
+        "rel": "stylesheet",
+        "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      }
+    ],
+    "tailwind": true
+  },
+  {
+    "path": "testupload.html",
+    "title": "File Upload Vulnerability",
+    "body": {},
+    "css": "",
+    "links": [],
+    "tailwind": false
+  }
+]

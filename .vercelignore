@@ -1,0 +1,10 @@
+.env*
+!.env.server.example
+.legacy-php/
+.npm-cache/
+.data/
+node_modules/
+qa/
+release/
+tests/
+*.zip

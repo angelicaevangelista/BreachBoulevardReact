@@ -1,0 +1,42 @@
+# GitHub and Vercel deployment
+
+Repository: https://github.com/angelicaevangelista/BreachBoulevardReact
+
+Production target: https://breach-boulevard.vercel.app
+
+Connect this repository to the existing Vercel project using the repository
+root and production branch `main`. `vercel.json` selects Vite, runs
+`npm run build`, serves `dist/`, and routes API requests to one Node.js Function.
+Use Node.js 22.x.
+
+Configure these server environment variables in Vercel for Production and
+Preview. Their actual values are in the local, ignored `.env.server` file:
+
+| Variable | Value |
+| --- | --- |
+| `SUPABASE_URL` | `https://bbcdeqxdfcqggacmkftj.supabase.co` |
+| `SUPABASE_SECRET_KEY` | Your existing server secret key |
+| `ADMIN_PASSWORD` | The generated admin password saved locally |
+
+Do not commit `.env.server` or use `VITE_` variables for secrets. After changing
+Vercel environment variables, redeploy the latest commit. Only the configuration
+template with example/empty values is included in the repository.
+
+The existing access-code database is reused. Vercel uploads use the private
+Supabase bucket `breach-uploads`, created by the server when needed. They do not
+rely on Vercel's temporary filesystem. Vercel uploads allow 4 MB per file, leaving
+room for multipart overhead. Local Node uploads retain their 10 MB limit and
+filesystem storage.
+
+`/admin` requires the admin password and uses an HttpOnly, SameSite session
+cookie. Listing, generation, and cleanup are protected; public learners can
+still validate an access code. Without an admin password, the production admin
+API remains locked.
+
+Verify `/`, `/about`, `/api/health`, and `/admin` after deployment. An anonymous
+admin API request should return 401. Health should report `runtime: node` and
+`database: supabase` once server variables are configured.
+
+References: [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite),
+[rewrites](https://vercel.com/docs/routing/rewrites),
+[Function file storage](https://vercel.com/kb/guide/how-can-i-use-files-in-serverless-functions).

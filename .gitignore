@@ -1,0 +1,14 @@
+node_modules/
+dist/
+dist-xampp/
+.npm-cache/
+qa/
+qa-test.log
+*.zip
+.env
+.env.*
+!.env.server.example
+.data/
+release/
+.legacy-php/
+.vercel/
