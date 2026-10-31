@@ -98,3 +98,9 @@ routing. They require no PHP installation and do not modify the live database.
 Superseded PHP files and XAMPP build artifacts are preserved in the ignored
 `.legacy-php/` archive. They are outside the active app and are not packaged.
 The original `C:/xampp/htdocs/BreachBoulevardFinal/` folder is untouched.
+
+Practice labs are available at `/practice`: SQL injection, XSS, default-password
+authentication, IDOR, path traversal, and debug-data exposure. Each exercise
+includes hints, a response inspector, completion feedback, and a prevention lesson.
+These exercises simulate vulnerabilities against fictional data. Completion is
+stored in the current browser; the practice API does not require Supabase access.

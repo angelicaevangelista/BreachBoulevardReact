@@ -55,6 +55,7 @@ function styles(value) {
   );
 }
 for (const page of pages) {
+  if (page.path === 'practice.html') continue;
   const original = fs.readFileSync(path.join(source, page.path), 'utf8');
   const doc = parse(original.replace(/^<\?php[\s\S]*?\?>/, ''));
   let body;

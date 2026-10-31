@@ -28,7 +28,9 @@ import Page26 from './pages/vulnerabilities/error-based-sql-injection.jsx';
 import Page27 from './pages/vulnerabilities/union-based-sql-injection.jsx';
 import Page28 from './pages/XSS.jsx';
 import Page29 from './pages/testupload.jsx';
+import Practice from './pages/practice.jsx';
 export default {
+  'practice.html': Practice,
   'about.html': Page0,
   'access/access.html': Page1,
   'access/admin.html': Page2,

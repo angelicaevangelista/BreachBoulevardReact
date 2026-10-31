@@ -1,5 +1,13 @@
 [
   {
+    "path": "practice.html",
+    "title": "Practice Labs | Breach Boulevard",
+    "body": { "class": "bg-[#0d1b2a] text-white font-sans" },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
     "path": "about.html",
     "title": "About Us | Breach Boulevard",
     "body": {

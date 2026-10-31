@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { projectRoot, readServerConfig } from './config.mjs';
 import { AdminAuth } from './admin-auth.mjs';
+import { evaluatePracticeLab } from './practice-labs.mjs';
 import { DatabaseError, SupabaseAccessCodes } from './supabase.mjs';
 import { escapeHtml, simulateFileExecution, UploadStore } from './uploads.mjs';
 
@@ -84,6 +85,14 @@ export function createApiHandler({
     }
     if (!route.startsWith('/api/')) return false;
     try {
+      const practiceRoute = route.match(/^\/api\/practice\/([a-z-]+)$/);
+      if (practiceRoute) {
+        if (!requireMethod(req, res, ['POST'])) return true;
+        const result = evaluatePracticeLab(practiceRoute[1], await readJson(req));
+        if (!result) throw new HttpError(404, 'Practice lab not found.');
+        json(res, 200, result);
+        return true;
+      }
       const auth =
         adminAuth === false
           ? new AdminAuth()

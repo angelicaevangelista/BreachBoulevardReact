@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useSyncExternalStore } from 'react';
 
 export const routePaths = {
+  'practice.html': '/practice',
   'testcopy2.html': '/',
   'about.html': '/about',
   'access/access.html': '/access',
@@ -43,6 +44,7 @@ export function assetUrl(value) {
 export function resolvePage(pathname) {
   const local = decodeURIComponent(pathname).slice(appBase.length) || '/';
   const clean = local.length > 1 ? local.replace(/\/$/, '') : local;
+  if (/^\/practice(?:\/[a-z-]+)?$/.test(clean)) return 'practice.html';
   return (
     Object.keys(routePaths).find((key) => routePaths[key] === clean) ||
     Object.keys(routePaths).find((key) => '/' + key === clean)

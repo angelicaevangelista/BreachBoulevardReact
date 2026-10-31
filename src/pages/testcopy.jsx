@@ -32,9 +32,7 @@ export default function Page() {
             </li>
 
             <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'Services'}
-              </a>
+              <Link to="/practice" className={'hover:underline'}>{'Labs'}</Link>
             </li>
 
             <li>

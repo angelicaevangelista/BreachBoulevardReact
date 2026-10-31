@@ -100,6 +100,38 @@ for (const page of pages) {
     await s.close();
   });
 }
+test('practice catalog, hints, feedback and completion survive navigation', async () => {
+  const s = await open('practice.html', {
+    app: true,
+    url: 'http://localhost/practice',
+    fetch: async () => ({
+      ok: true,
+      json: async () => ({
+        success: true,
+        completed: true,
+        feedback: 'Invoice returned.',
+        output: { id: 102, owner: 'trainer' },
+        flag: 'BB{object_ids_are_not_permissions}',
+      }),
+    }),
+  });
+  assert.equal(s.d.querySelectorAll('article').length, 6);
+  await s.click('a[href="/practice/idor"]');
+  assert.equal(s.w.location.pathname, '/practice/idor');
+  await s.click(
+    [...s.d.querySelectorAll('button')].find((button) => button.textContent === 'Reveal hint 1')
+  );
+  assert.match(s.d.querySelector('ol').textContent, /101/);
+  await s.fill('#invoiceId', '102');
+  await s.submit('form');
+  assert.match(s.d.querySelector('[aria-live="polite"]').textContent, /Challenge completed/);
+  assert.equal(JSON.parse(s.requests[0][1].body).invoiceId, '102');
+  assert.ok(JSON.parse(s.w.localStorage.getItem('breach.practice.progress.v1')).idor);
+  await s.click('a[href="/practice"]');
+  assert.match(s.d.querySelector('[role="status"]').textContent, /1 of 6/);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
 test('terminal help/about/clear and three-question quiz are state-driven', async () => {
   const s = await open('testcopy2.html');
   const command = async (value) => {
