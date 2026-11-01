@@ -33,7 +33,9 @@ export default function Page() {
             </li>
 
             <li>
-              <Link to="/practice" className={'hover:underline'}>{'Labs'}</Link>
+              <Link to="/practice" className={'hover:underline'}>
+                {'Labs'}
+              </Link>
             </li>
 
             <li>
@@ -543,7 +545,9 @@ export default function Page() {
                 className={'px-4 py-2 rounded-md text-black w-80'}
               />
 
-              <button type="button" onClick={() => window.location.assign(assetUrl('access'))}
+              <button
+                type="button"
+                onClick={() => window.location.assign(assetUrl('access'))}
                 className={
                   'ml-4 px-6 py-2 bg-orange-500 text-white font-bold rounded-md hover:bg-orange-600 transition'
                 }
@@ -710,6 +714,11 @@ export default function Page() {
           )}
 
           <footer className={'relative w-full'}>
+            <div className="px-6 py-5 text-center">
+              <Link to="/privacy" className="text-orange-400 hover:underline">
+                Privacy notice
+              </Link>
+            </div>
             <svg
               xmlns={'http://www.w3.org/2000/svg'}
               viewBox={'0 0 1440 320'}

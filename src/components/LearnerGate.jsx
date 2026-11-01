@@ -112,7 +112,11 @@ export function SignIn({ onSignedIn }) {
           </p>
           {mode !== 'reset' && (
             <>
-              <GoogleSignInButton onClick={google} pending={pending} googleEnabled={options?.googleEnabled} />
+              <GoogleSignInButton
+                onClick={google}
+                pending={pending}
+                googleEnabled={options?.googleEnabled}
+              />
               <div className="flex items-center gap-3 text-gray-400 text-xs my-6">
                 <span className="h-px bg-gray-600 flex-1" />
                 or use your email
@@ -210,7 +214,10 @@ export function SignIn({ onSignedIn }) {
           </div>
           <p className="text-xs text-gray-400 border-t border-gray-600 pt-5 mt-6">
             Email accounts must be confirmed before sign-in. Your course access code is entered
-            after signing in.
+            after signing in.{' '}
+            <Link to="/privacy" className="text-orange-400 hover:underline">
+              Privacy notice
+            </Link>
           </p>
         </section>
       </main>

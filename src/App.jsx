@@ -79,6 +79,7 @@ export default function App() {
         </AdminGate>
       ) : ![
           'testcopy2.html',
+          'privacy.html',
           'about.html',
           'faq.html',
           'test.html',
