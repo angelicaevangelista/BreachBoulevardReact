@@ -1,3 +1,4 @@
+import GoogleSignInButton from './GoogleSignInButton';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { assetUrl, Link } from '../routing';
 const LearnerContext = createContext(null);
@@ -111,21 +112,7 @@ export function SignIn({ onSignedIn }) {
           </p>
           {mode !== 'reset' && (
             <>
-              <button
-                type="button"
-                onClick={google}
-                disabled={pending || !options?.googleEnabled}
-                className="w-full border border-gray-500 bg-white text-gray-900 rounded-lg px-4 py-3 font-semibold hover:bg-gray-100 disabled:opacity-50 flex items-center justify-center gap-3"
-              >
-                <span aria-hidden="true" className="font-bold text-blue-600 text-xl">
-                  G
-                </span>
-                Continue with Google
-              </button>
-              <p className="text-orange-400 text-xs text-center mt-2">
-                Recommended
-                {options && !options.googleEnabled ? ' · Currently unavailable' : ''}
-              </p>
+              <GoogleSignInButton onClick={google} pending={pending} googleEnabled={options?.googleEnabled} />
               <div className="flex items-center gap-3 text-gray-400 text-xs my-6">
                 <span className="h-px bg-gray-600 flex-1" />
                 or use your email

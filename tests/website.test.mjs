@@ -39,6 +39,7 @@ async function open(
     base = '',
     user = { id: 'student-1', email: 'student@example.com' },
     progress = [],
+    optionsFailure = false,
   } = {}
 ) {
   const errors = [],
@@ -60,6 +61,7 @@ async function open(
   w.HTMLElement.prototype.scrollIntoView = () => {};
   w.alert = (value) => alerts.push(value);
   w.fetch = async (...args) => {
+    if(app && optionsFailure && args[0] === base+'/api/auth/options') throw new Error('Options temporarily unavailable');
     if (app && args[0] === base + '/api/auth/session')
       return { ok: true, json: async () => ({ success: true, user }) };
     if (app && args[0] === base + '/api/auth/options')
@@ -540,4 +542,15 @@ test('admin route shows a sign-in gate and restores the dashboard after login', 
   assert.ok(s.d.querySelector('#generateForm'));
   assert.equal(s.d.querySelector('#admin-password'), null);
   await s.close();
+});
+
+test('Google sign-in remains available when the options request fails and recovers after a start error', async()=>{
+ const s=await open('access/access.html',{app:true,url:'http://localhost/access',user:null,optionsFailure:true,fetch:async()=>({ok:false,json:async()=>({success:false,message:'Please try Google sign-in again.'})})});
+ const google=[...s.d.querySelectorAll('button')].find(button=>button.textContent.trim()==='Continue with Google');
+ assert.equal(google.disabled,false);
+ await s.click(google);
+ assert.equal(s.requests[0][0],'/api/auth/google');
+ assert.match(s.d.querySelector('[role="status"]').textContent,/try Google sign-in again/);
+ assert.equal(google.disabled,false);
+ assert.deepEqual(s.errors,[]);await s.close();
 });
