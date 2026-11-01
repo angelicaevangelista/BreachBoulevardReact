@@ -388,5 +388,16 @@
     "css": "",
     "links": [],
     "tailwind": true
+  },
+  {
+    "path": "community.html",
+    "title": "Community | Breach Boulevard",
+    "body": {
+      "class": "",
+      "style": ""
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
   }
 ]

@@ -213,6 +213,7 @@ export default function AppShell({
     : [
         ['grid', 'Dashboard', '/dashboard', 'dashboard'],
         ['flask', 'Practice labs', '/practice', 'labs'],
+        ['heart', 'Community', '/community', 'community'],
         ['book', 'Courses', '/courses', 'courses'],
         ['help', 'Help & FAQ', '/faq', 'help'],
       ];

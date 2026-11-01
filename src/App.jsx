@@ -93,6 +93,7 @@ export default function App() {
             'labs.html',
             'content/main.html',
             'dashboard.html',
+            'community.html',
           ].includes(source)}
         >
           <Page />

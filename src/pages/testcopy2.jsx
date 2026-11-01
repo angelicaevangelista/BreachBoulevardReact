@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from '../routing';
 import { Brand, Icon, Mascot } from '../components/Interface';
 import QuizTerminal from '../components/QuizTerminal';
@@ -7,8 +7,34 @@ import LearningJourney from '../components/LearningJourney';
 import SqlPlayground from '../components/SqlPlayground';
 export default function Home() {
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
+  const home = useRef(null);
+  useEffect(() => {
+    if (
+      !window.IntersectionObserver ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    )
+      return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('bb-reveal-wait');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    home.current.querySelectorAll('.bb-reveal').forEach((element) => {
+      if (element.getBoundingClientRect().top >= window.innerHeight) {
+        element.classList.add('bb-reveal-wait');
+        observer.observe(element);
+      }
+    });
+    return () => observer.disconnect();
+  }, []);
   return (
-    <div className="bb-ui bb-home">
+    <div className="bb-ui bb-home" ref={home}>
       <nav className="bb-public-header">
         <Brand />
         <div className="bb-home-links">
@@ -79,7 +105,7 @@ export default function Home() {
           </span>
         </div>
       </header>
-      <section className="bb-home-section">
+      <section className="bb-home-section bb-reveal">
         <span className="bb-eyebrow">SMALL STEPS. REAL SKILLS.</span>
         <h2>Learning feels better here.</h2>
         <p>A little structure, a little play, and plenty of room to figure things out.</p>
@@ -112,7 +138,7 @@ export default function Home() {
         </div>
       </section>
       <LearningJourney />
-      <section className="bb-home-section" id="playground">
+      <section className="bb-home-section bb-reveal" id="playground">
         <span className="bb-eyebrow">
           <Icon name="terminal" size={15} /> A LITTLE TASTE OF THE ADVENTURE
         </span>
@@ -135,7 +161,7 @@ export default function Home() {
           <SqlPlayground />
         </div>
       </section>
-      <section className="bb-home-section">
+      <section className="bb-home-section bb-reveal">
         <span className="bb-eyebrow">A FEW LITTLE ANSWERS</span>
         <h2>Curious about the details?</h2>
         <div className="bb-home-faq">
