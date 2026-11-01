@@ -68,6 +68,7 @@ export function Mascot({ className = '', compact = false, ...props }) {
       <g className={compact ? '' : 'bb-buddy-float'}>
         <g className="bb-bee-wings">
           <ellipse
+            className="bb-bee-wing-left"
             cx="46"
             cy="105"
             rx="25"
@@ -78,6 +79,7 @@ export function Mascot({ className = '', compact = false, ...props }) {
             strokeWidth="2"
           />
           <ellipse
+            className="bb-bee-wing-right"
             cx="174"
             cy="105"
             rx="25"
@@ -175,7 +177,15 @@ export function LoadingScreen({ label = 'Checking your session…', onRetry }) {
           <Icon name="spark" size={14} /> A little moment of magic
         </span>
         <div className="bb-loading-buddy">
-          <Mascot />
+          <svg className="bb-flight-breeze" viewBox="0 0 240 220" aria-hidden="true">
+            <path d="M13 105h27 M6 118h21 M15 131h22 M201 95h21 M212 108h21" />
+            <circle cx="31" cy="73" r="2" />
+            <circle cx="209" cy="145" r="3" />
+          </svg>
+          <span className="bb-flight-shadow" aria-hidden="true" />
+          <div className="bb-honey-flight">
+            <Mascot />
+          </div>
           <span className="bb-orbit-dot" />
         </div>
         <div role="status" aria-live="polite">
