@@ -131,20 +131,17 @@ export function Mascot({ className = '', compact = false, ...props }) {
           fill="none"
         />
         <g className="bb-honey-hand-heart" aria-label="Honey makes a heart with her hands">
-          <path
-            d="M54 137C52 149 72 157 93 153 M166 137c2 12-18 20-39 16"
-            fill="none"
-            stroke="#173346"
-            strokeWidth="9.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M54 137C52 149 72 157 93 153 M166 137c2 12-18 20-39 16"
-            fill="none"
-            stroke="#ffc58c"
-            strokeWidth="6.5"
-            strokeLinecap="round"
-          />
+          {[false, true].map((mirror) => (
+            <path
+              key={String(mirror)}
+              transform={mirror ? 'translate(220 0) scale(-1 1)' : undefined}
+              d="M52 132c-5 0-5 6-3 11 4 11 20 18 42 15l3-1c4-1 4-6 0-8-16 2-29-3-34-11-1-4-3-7-8-6Z"
+              fill="#ffc58c"
+              stroke="#173346"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          ))}
           <g transform="translate(110 153) scale(.8) translate(-110 -153)">
             <path
               d="M110 151c-4-7-12-6-10 1 1 4 6 7 10 11 4-4 9-7 10-11 2-7-6-8-10-1Z"
