@@ -543,7 +543,7 @@ export default function Page() {
                 className={'px-4 py-2 rounded-md text-black w-80'}
               />
 
-              <button
+              <button type="button" onClick={() => window.location.assign(assetUrl('access'))}
                 className={
                   'ml-4 px-6 py-2 bg-orange-500 text-white font-bold rounded-md hover:bg-orange-600 transition'
                 }

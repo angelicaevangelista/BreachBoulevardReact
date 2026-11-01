@@ -32,7 +32,14 @@ window.harness={act,navigate,configureBase,resolvePage,routePaths,
 const bundle = built.outputFiles[0].text;
 async function open(
   source,
-  { fetch, app = false, url = 'http://localhost/' + source, base = '' } = {}
+  {
+    fetch,
+    app = false,
+    url = 'http://localhost/' + source,
+    base = '',
+    user = { id: 'student-1', email: 'student@example.com' },
+    progress = [],
+  } = {}
 ) {
   const errors = [],
     alerts = [],
@@ -53,6 +60,20 @@ async function open(
   w.HTMLElement.prototype.scrollIntoView = () => {};
   w.alert = (value) => alerts.push(value);
   w.fetch = async (...args) => {
+    if (app && args[0] === base + '/api/auth/session')
+      return { ok: true, json: async () => ({ success: true, user }) };
+    if (app && args[0] === base + '/api/auth/options')
+      return {
+        ok: true,
+        json: async () => ({
+          success: true,
+          googleEnabled: true,
+          emailEnabled: true,
+          signupEnabled: true,
+        }),
+      };
+    if (app && args[0] === base + '/api/account/progress')
+      return { ok: true, json: async () => ({ success: true, completed: progress }) };
     requests.push(args);
     if (!fetch) throw new Error('Unexpected network request');
     return fetch(...args);
@@ -101,19 +122,24 @@ for (const page of pages) {
   });
 }
 test('practice catalog, hints, feedback and completion survive navigation', async () => {
+  const saved = [];
   const s = await open('practice.html', {
+    progress: saved,
     app: true,
     url: 'http://localhost/practice',
-    fetch: async () => ({
-      ok: true,
-      json: async () => ({
-        success: true,
-        completed: true,
-        feedback: 'Invoice returned.',
-        output: { id: 102, owner: 'trainer' },
-        flag: 'BB{object_ids_are_not_permissions}',
-      }),
-    }),
+    fetch: async () => {
+      saved.push('idor');
+      return {
+        ok: true,
+        json: async () => ({
+          success: true,
+          completed: true,
+          feedback: 'Invoice returned.',
+          output: { id: 102, owner: 'trainer' },
+          flag: 'BB{object_ids_are_not_permissions}',
+        }),
+      };
+    },
   });
   assert.equal(s.d.querySelectorAll('article').length, 6);
   await s.click('a[href="/practice/idor"]');
@@ -126,11 +152,18 @@ test('practice catalog, hints, feedback and completion survive navigation', asyn
   await s.submit('form');
   assert.match(s.d.querySelector('[aria-live="polite"]').textContent, /Challenge completed/);
   assert.equal(JSON.parse(s.requests[0][1].body).invoiceId, '102');
-  assert.ok(JSON.parse(s.w.localStorage.getItem('breach.practice.progress.v1')).idor);
+  assert.equal(s.w.localStorage.getItem('breach.practice.progress.v1'), null);
   await s.click('a[href="/practice"]');
   assert.match(s.d.querySelector('[role="status"]').textContent, /1 of 6/);
   assert.deepEqual(s.errors, []);
   await s.close();
+  const restored = await open('practice.html', {
+    app: true,
+    url: 'http://localhost/practice',
+    progress: saved,
+  });
+  assert.match(restored.d.querySelector('[role="status"]').textContent, /1 of 6/);
+  await restored.close();
 });
 test('terminal help/about/clear and three-question quiz are state-driven', async () => {
   const s = await open('testcopy2.html');
@@ -211,6 +244,81 @@ test('successful access changes the client route to courses', async () => {
   assert.match(s.d.body.textContent, /Explore, Examine, Exploit/);
   await s.close();
 });
+test('Get Started requires login, shows Google first, then restores the original access-code step', async () => {
+  const s = await open('access/access.html', {
+    app: true,
+    url: 'http://localhost/access',
+    user: null,
+    fetch: async (url, options) => ({
+      ok: JSON.parse(options.body).password === 'a-correct-password',
+      json: async () =>
+        JSON.parse(options.body).password === 'a-correct-password'
+          ? { success: true, user: { id: 'signed-in', email: 'learner@example.com' } }
+          : { success: false, message: 'Unable to sign in. Check your email and password.' },
+    }),
+  });
+  assert.equal(s.d.querySelector('#accessForm'), null);
+  const buttons = [...s.d.querySelectorAll('button')];
+  assert.match(buttons[0].textContent, /Continue with Google/);
+  assert.equal(buttons[0].disabled, false);
+  await s.fill('#accountEmail', 'learner@example.com');
+  await s.fill('#accountPassword', 'wrong');
+  await s.submit('form');
+  assert.match(s.d.querySelector('[role="status"]').textContent, /Unable to sign in/);
+  await s.fill('#accountPassword', 'a-correct-password');
+  await s.submit('form');
+  assert.ok(s.d.querySelector('#accessForm'));
+  assert.match(s.d.querySelector('[aria-label="Your account"]').textContent, /learner@example.com/);
+  assert.equal(s.w.localStorage.length, 0);
+  assert.equal(s.w.sessionStorage.length, 0);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+test('signup and reset forms provide confirmation feedback without granting access', async () => {
+  const s = await open('access/access.html', {
+    app: true,
+    url: 'http://localhost/access',
+    user: null,
+    fetch: async () => ({
+      ok: true,
+      json: async () => ({ success: true, message: 'Check your email for a confirmation link.' }),
+    }),
+  });
+  await s.click(
+    [...s.d.querySelectorAll('button')].find((button) => button.textContent === 'Create an account')
+  );
+  assert.equal(s.d.querySelector('#accountPassword').minLength, 12);
+  await s.fill('#accountEmail', 'learner@example.com');
+  await s.fill('#accountPassword', 'a-new-password-123');
+  await s.submit('form');
+  assert.equal(s.requests[0][0], '/api/auth/signup');
+  assert.equal(s.d.querySelector('#accessForm'), null);
+  assert.match(s.d.querySelector('[role="status"]').textContent, /confirmation/);
+  await s.click(
+    [...s.d.querySelectorAll('button')].find((button) => button.textContent === 'Forgot password?')
+  );
+  assert.equal(s.d.querySelector('#accountPassword'), null);
+  await s.submit('form');
+  assert.equal(s.requests[1][0], '/api/auth/reset-request');
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+test('sign out removes protected page content and returns to login', async () => {
+  const s = await open('access/access.html', {
+    app: true,
+    url: 'http://localhost/access',
+    fetch: async () => ({ ok: true, json: async () => ({ success: true }) }),
+  });
+  assert.ok(s.d.querySelector('#accessForm'));
+  await s.click(
+    [...s.d.querySelectorAll('button')].find((button) => button.textContent === 'Sign out')
+  );
+  assert.equal(s.d.querySelector('#accessForm'), null);
+  assert.ok(s.d.querySelector('#accountEmail'));
+  assert.equal(s.requests[0][0], '/api/auth/logout');
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
 test('admin lists, generates, and cleans up codes through the Node API', async () => {
   const s = await open('access/admin.html', {
     fetch: async (url, options) => ({
@@ -277,7 +385,10 @@ test('XSS lab retains raw teaching content and comments on new and original post
   await s.fill('#postContent', '<b>HTML training content</b>');
   await s.submit('#postForm');
   const posts = s.d.querySelector('#posts');
-  assert.equal(posts.querySelector('p b').textContent, 'HTML training content');
+  const preview = posts.querySelector('iframe[title="Post content preview"]');
+  assert.match(preview.srcdoc, /<b>HTML training content<\/b>/);
+  assert.equal(preview.getAttribute('sandbox'), 'allow-scripts allow-modals');
+  assert.equal(posts.querySelector('b'), null);
   const toggles = [...posts.querySelectorAll('button')].filter((b) =>
     b.textContent.includes('Comments')
   );
@@ -289,7 +400,11 @@ test('XSS lab retains raw teaching content and comments on new and original post
   await s.click(
     [...posts.querySelectorAll('button')].find((b) => b.textContent === 'Post Comment')
   );
-  assert.equal(posts.querySelector('.comments em').textContent, 'Comment example');
+  assert.ok(
+    [...posts.querySelectorAll('.comments iframe')].some((frame) =>
+      frame.srcdoc.includes('<em>Comment example</em>')
+    )
+  );
   await s.fill('#postTitle', 'Second post');
   await s.submit('#postForm');
   assert.equal(toggles[0].getAttribute('aria-expanded'), 'true'); // Stable post keys retain existing state.
@@ -336,7 +451,7 @@ test('clean routes, legacy aliases, client navigation and page lifecycle work to
   assert.equal(s.d.getElementById('root'), root);
   assert.match(s.d.title, /About/);
   await s.act(() => s.w.harness.navigate('/courses'));
-  await s.click('button');
+  await s.click(s.d.querySelector('h2').parentElement.querySelector('button'));
   assert.equal(s.d.querySelectorAll('#vulnerabilityList li').length, 4);
   await s.act(() => s.w.harness.navigate('/'));
   await s.act(() => s.w.harness.navigate('/courses'));

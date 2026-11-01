@@ -29,6 +29,10 @@ export function createAppServer({
   const handleApi = createApiHandler({ ...apiOptions, basePath });
   const staticRoot = path.resolve(staticDirectory);
   return http.createServer(async (req, res) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     try {
       if (await handleApi(req, res)) return;
       if (middleware) {

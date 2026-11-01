@@ -14,6 +14,8 @@ export function readServerConfig({ env = process.env, root = projectRoot } = {})
     }
   }
   return {
+    siteUrl: env.SITE_URL || values.SITE_URL || '',
+    publishableKey: env.SUPABASE_PUBLISHABLE_KEY || values.SUPABASE_PUBLISHABLE_KEY || '',
     adminPassword: env.ADMIN_PASSWORD || values.ADMIN_PASSWORD || '',
     url: (env.SUPABASE_URL || values.SUPABASE_URL || '').trim(),
     key: (

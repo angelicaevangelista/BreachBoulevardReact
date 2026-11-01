@@ -18,6 +18,7 @@ async function fixture(options = {}) {
   await fs.writeFile(path.join(staticDirectory, '.env.server'), 'PRIVATE_TEST_VALUE');
   const server = createAppServer({
     adminAuth: false,
+    userAuth: false,
     staticDirectory,
     uploadDirectory: path.join(directory, 'uploads'),
     database: { async checkConnection() {} },

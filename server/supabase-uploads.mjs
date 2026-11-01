@@ -57,7 +57,7 @@ export class SupabaseUploadStore {
       });
     await this.ready;
   }
-  async save(file, basePath = '') {
+  async save(file, basePath = '', ownerId) {
     await this.ensureBucket();
     const id = randomUUID();
     const filename =
@@ -67,6 +67,7 @@ export class SupabaseUploadStore {
         .slice(0, 200) || 'upload';
     const contents = Buffer.from(await file.arrayBuffer());
     const metadata = {
+      ...(ownerId ? { ownerId } : {}),
       id,
       filename,
       type: file.type || 'application/octet-stream',

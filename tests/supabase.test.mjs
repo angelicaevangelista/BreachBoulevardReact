@@ -101,6 +101,7 @@ test('Supabase Node.js integration preserves access-code workflows without expos
   };
   const server = createAppServer({
     adminAuth: false,
+    userAuth: false,
     database: new SupabaseAccessCodes({ url: env.SUPABASE_URL, key }),
   });
   const apiPort = await listen(server);

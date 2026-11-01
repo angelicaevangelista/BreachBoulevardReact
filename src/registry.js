@@ -29,7 +29,9 @@ import Page27 from './pages/vulnerabilities/union-based-sql-injection.jsx';
 import Page28 from './pages/XSS.jsx';
 import Page29 from './pages/testupload.jsx';
 import Practice from './pages/practice.jsx';
+import ResetPassword from './pages/reset-password.jsx';
 export default {
+  'reset-password.html': ResetPassword,
   'practice.html': Practice,
   'about.html': Page0,
   'access/access.html': Page1,

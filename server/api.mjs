@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { projectRoot, readServerConfig } from './config.mjs';
 import { AdminAuth } from './admin-auth.mjs';
+import { LearnerAuth, AuthError, completedLabs, requireSameOrigin } from './learner-auth.mjs';
 import { evaluatePracticeLab } from './practice-labs.mjs';
 import { DatabaseError, SupabaseAccessCodes } from './supabase.mjs';
 import { escapeHtml, simulateFileExecution, UploadStore } from './uploads.mjs';
@@ -19,6 +20,10 @@ const json = (res, status, data) => {
   res.end(JSON.stringify(data));
 };
 const html = (res, body) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "sandbox allow-scripts allow-modals allow-downloads allow-popups; default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'"
+  );
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
   res.end(body);
 };
@@ -70,6 +75,7 @@ export function createApiHandler({
   database,
   uploadStore,
   adminAuth,
+  userAuth,
   uploadDirectory = path.join(projectRoot, '.data/uploads'),
   maxUploadBytes = 10 * 1024 * 1024,
   basePath = '',
@@ -85,11 +91,36 @@ export function createApiHandler({
     }
     if (!route.startsWith('/api/')) return false;
     try {
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Referrer-Policy', 'no-referrer');
+      const learner =
+        userAuth === false
+          ? null
+          : typeof userAuth === 'function'
+            ? userAuth(req, res)
+            : new LearnerAuth(req, res, { basePath });
+      if (learner && (await learner.handle(route, { readJson, json, requireMethod }))) return true;
+      if (learner && !['GET', 'HEAD', 'OPTIONS'].includes(req.method))
+        requireSameOrigin(req, learner.origin);
+      const learnerRoute =
+        route.startsWith('/api/practice/') ||
+        route.startsWith('/api/uploads') ||
+        route.startsWith('/api/labs/') ||
+        route === '/api/account/progress' ||
+        route === '/api/access-codes/validate';
+      const student = learner && learnerRoute ? await learner.requireUser() : null;
+      if (route === '/api/account/progress') {
+        if (!requireMethod(req, res, ['GET'])) return true;
+        json(res, 200, { success: true, completed: completedLabs(student) });
+        return true;
+      }
       const practiceRoute = route.match(/^\/api\/practice\/([a-z-]+)$/);
       if (practiceRoute) {
         if (!requireMethod(req, res, ['POST'])) return true;
         const result = evaluatePracticeLab(practiceRoute[1], await readJson(req));
         if (!result) throw new HttpError(404, 'Practice lab not found.');
+        if (result.completed && learner)
+          result.completedLabs = await learner.saveCompletion(practiceRoute[1], student);
         json(res, 200, result);
         return true;
       }
@@ -204,7 +235,7 @@ export function createApiHandler({
           json(res, 200, { status: 'error', message: 'Unsupported file type.' });
           return true;
         }
-        const saved = await uploads.save(file, basePath);
+        const saved = await uploads.save(file, basePath, student?.id);
         if (route.endsWith('/avatar') && extension !== '.php') {
           json(res, 200, {
             status: 'success',
@@ -225,7 +256,8 @@ export function createApiHandler({
       if (uploaded) {
         if (!requireMethod(req, res, ['GET', 'HEAD'])) return true;
         const file = await uploads.read(uploaded[1]);
-        if (!file) throw new HttpError(404, 'File not found.');
+        if (!file || (learner && file.ownerId !== student.id))
+          throw new HttpError(404, 'File not found.');
         const imageTypes = {
           '.png': 'image/png',
           '.jpg': 'image/jpeg',
@@ -238,6 +270,8 @@ export function createApiHandler({
           'Content-Type': image || 'application/octet-stream',
           'Content-Length': file.contents.length,
           'X-Content-Type-Options': 'nosniff',
+          'Cache-Control': 'private, no-store',
+          'Content-Security-Policy': "sandbox; default-src 'none'",
           'Content-Disposition': `${image ? 'inline' : 'attachment'}; filename*=UTF-8''${encodeURIComponent(file.filename)}`,
         });
         res.end(req.method === 'HEAD' ? undefined : file.contents);
@@ -284,7 +318,8 @@ export function createApiHandler({
       }
       throw new HttpError(404, 'API route not found.');
     } catch (error) {
-      const known = error instanceof HttpError || error instanceof DatabaseError;
+      const known =
+        error instanceof HttpError || error instanceof DatabaseError || error instanceof AuthError;
       json(res, known ? error.status : 500, {
         success: false,
         message: known ? error.message : 'Server request failed.',

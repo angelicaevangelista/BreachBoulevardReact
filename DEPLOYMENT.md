@@ -2,7 +2,7 @@
 
 Repository: https://github.com/angelicaevangelista/BreachBoulevardReact
 
-Production target: https://breach-boulevard.vercel.app
+Production target: https://breachboulevard.vercel.app
 
 Connect this repository to the existing Vercel project using the repository
 root and production branch `main`. `vercel.json` selects Vite, runs
@@ -29,8 +29,8 @@ room for multipart overhead. Local Node uploads retain their 10 MB limit and
 filesystem storage.
 
 `/admin` requires the admin password and uses an HttpOnly, SameSite session
-cookie. Listing, generation, and cleanup are protected; public learners can
-still validate an access code. Without an admin password, the production admin
+cookie. Listing, generation, and cleanup are protected; signed-in learners can
+validate an access code. Without an admin password, the production admin
 API remains locked.
 
 Verify `/`, `/about`, `/api/health`, and `/admin` after deployment. An anonymous

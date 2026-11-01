@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import LabMarkup from './LabMarkup';
 
 const initialPost = {
   id: 0,
@@ -20,13 +21,10 @@ function Post({ post }) {
   return (
     <div className="bg-gray-800 rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center">
-        <h3
-          className="text-lg font-bold text-orange-500"
-          dangerouslySetInnerHTML={{ __html: post.title }}
-        />
+        <LabMarkup html={post.title} title="Post title preview" />
         <p className="text-sm text-gray-400">{post.timestamp}</p>
       </div>
-      <p className="mt-2" dangerouslySetInnerHTML={{ __html: post.content }} />
+      <LabMarkup html={post.content} title="Post content preview" />
       <div className="mt-4 flex items-center space-x-4">
         <button className="flex items-center text-gray-400 hover:text-orange-500">
           <i className="fas fa-arrow-up mr-1" /> <span>{post.votes}</span>
@@ -61,7 +59,7 @@ function Post({ post }) {
         </button>
         <div className="comments space-y-2">
           {comments.map((comment, index) => (
-            <p key={index} dangerouslySetInnerHTML={{ __html: comment }} />
+            <LabMarkup key={index} html={comment} title="Comment preview" />
           ))}
         </div>
       </div>

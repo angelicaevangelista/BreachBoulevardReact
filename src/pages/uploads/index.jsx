@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import LabMarkup from '../../components/LabMarkup';
 import { Link } from '../../routing';
 import { assetUrl } from '../../routing';
 
@@ -34,7 +35,9 @@ export default function Page() {
 
       <button onClick={() => setGreeting('Hello, ' + name + '!')}>{'Submit'}</button>
 
-      <div id={'greeting'} dangerouslySetInnerHTML={{ __html: greeting }} />
+      <div id="greeting">
+        <LabMarkup html={greeting} title="DOM XSS preview" />
+      </div>
     </>
   );
 }

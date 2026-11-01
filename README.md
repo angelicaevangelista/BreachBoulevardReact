@@ -46,7 +46,7 @@ npm run package
 
 This creates a standalone Node runtime folder in
 `release/BreachBoulevardReact-Node/`. It includes the built frontend, JavaScript
-server, and configuration template, with no runtime npm dependencies. Real
+server, and configuration template, with the official Supabase Auth runtime packages. Real
 credentials, development files, and old PHP sources are excluded.
 
 ## API
@@ -103,4 +103,7 @@ Practice labs are available at `/practice`: SQL injection, XSS, default-password
 authentication, IDOR, path traversal, and debug-data exposure. Each exercise
 includes hints, a response inspector, completion feedback, and a prevention lesson.
 These exercises simulate vulnerabilities against fictional data. Completion is
-stored in the current browser; the practice API does not require Supabase access.
+stored in the signed-in Supabase account. The practice API requires a verified
+learner session. Get Started shows Google (recommended) and email/password sign-in
+before the original access-code step. See [Auth setup](supabase/AUTH_SETUP.md) for
+Google, confirmation email, password reset, and production configuration.

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import pages from './pages.json';
 import registry from './registry';
 import AdminGate from './components/AdminGate';
+import LearnerGate from './components/LearnerGate';
 import { assetUrl, Link, resolvePage, routePaths, useRouter } from './routing';
 
 function DocumentFrame({ page, children }) {
@@ -76,6 +77,18 @@ export default function App() {
         <AdminGate>
           <Page />
         </AdminGate>
+      ) : ![
+          'testcopy2.html',
+          'about.html',
+          'faq.html',
+          'test.html',
+          'testcopy.html',
+          'landingpage.html',
+          'landingpagetest.html',
+        ].includes(source) ? (
+        <LearnerGate>
+          <Page />
+        </LearnerGate>
       ) : (
         <Page />
       )}

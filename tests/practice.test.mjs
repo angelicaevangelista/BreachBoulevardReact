@@ -35,6 +35,7 @@ test('training inputs never resolve real files or external endpoints', () => {
 test('practice API works without database credentials and validates requests', async () => {
   const server = createAppServer({
     adminAuth: false,
+    userAuth: false,
     database: {
       checkConnection() {
         throw new Error('Must not access database');

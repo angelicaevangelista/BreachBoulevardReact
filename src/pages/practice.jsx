@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, assetUrl, useRouter } from '../routing';
 import { practiceLabs, findPracticeLab } from '../data/practice-labs';
+import { useLearner } from '../components/LearnerGate';
 
 const progressKey = 'breach.practice.progress.v1';
 function readProgress() {
@@ -41,7 +42,7 @@ function Challenge({ lab, onComplete, solved }) {
         throw new Error(data.message || 'The attempt could not be checked. Please try again.');
       if (!controller.signal.aborted) {
         setResult(data);
-        if (data.completed) onComplete(lab.id);
+        if (data.completed) onComplete(lab.id, data.completedLabs);
       }
     } catch (error) {
       if (!controller.signal.aborted) setResult({ feedback: error.message });
@@ -156,13 +157,35 @@ export default function Practice() {
   const location = router?.location || window.location.pathname;
   const id = location.split(/[?#]/)[0].match(/\/practice\/([^/]+)\/?$/)?.[1];
   const lab = findPracticeLab(id);
-  const [progress, setProgress] = useState(readProgress);
-  function complete(labId) {
+  const learner = useLearner();
+  const [progress, setProgress] = useState(() => (learner ? {} : readProgress()));
+  const [progressMessage, setProgressMessage] = useState('');
+  useEffect(() => {
+    if (!learner) return;
+    const controller = new AbortController();
+    fetch(assetUrl('api/account/progress'), { signal: controller.signal, cache: 'no-store' })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error();
+        if (!controller.signal.aborted)
+          setProgress((previous) => ({
+            ...previous,
+            ...Object.fromEntries(data.completed.map((id) => [id, true])),
+          }));
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setProgressMessage('Saved progress could not be loaded. Reload to try again.');
+      });
+    return () => controller.abort();
+  }, [learner]);
+  function complete(labId, savedLabs) {
     setProgress((previous) => {
       const next = { ...previous, [labId]: previous[labId] || new Date().toISOString() };
-      try {
-        localStorage.setItem(progressKey, JSON.stringify(next));
-      } catch {}
+      if (!learner)
+        try {
+          localStorage.setItem(progressKey, JSON.stringify(next));
+        } catch {}
       return next;
     });
   }
@@ -211,7 +234,16 @@ export default function Practice() {
               {practiceLabs.filter((item) => progress[item.id]).length} of {practiceLabs.length}{' '}
               completed
             </p>
-            <p className="text-gray-400 text-sm mt-1">Progress is saved in this browser.</p>
+            <p className="text-gray-400 text-sm mt-1">
+              {learner
+                ? 'Progress is saved to your account.'
+                : 'Progress is saved in this browser.'}
+            </p>
+            {progressMessage && (
+              <p role="alert" className="text-orange-300 text-sm mt-2">
+                {progressMessage}
+              </p>
+            )}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-9">
               {practiceLabs.map((item) => (
                 <article

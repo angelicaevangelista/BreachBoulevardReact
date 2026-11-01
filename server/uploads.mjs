@@ -13,7 +13,7 @@ export class UploadStore {
   constructor(directory) {
     this.directory = path.resolve(directory);
   }
-  async save(file, basePath = '') {
+  async save(file, basePath = '', ownerId) {
     const id = randomUUID();
     const filename =
       path
@@ -23,6 +23,7 @@ export class UploadStore {
     const contents = Buffer.from(await file.arrayBuffer());
     await fs.mkdir(this.directory, { recursive: true });
     const metadata = {
+      ...(ownerId ? { ownerId } : {}),
       id,
       filename,
       type: file.type || 'application/octet-stream',
