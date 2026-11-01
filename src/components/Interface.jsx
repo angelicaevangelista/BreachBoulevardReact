@@ -135,14 +135,14 @@ export function Mascot({ className = '', compact = false, ...props }) {
             d="M54 137C52 149 72 157 93 153 M166 137c2 12-18 20-39 16"
             fill="none"
             stroke="#173346"
-            strokeWidth="8"
+            strokeWidth="9.5"
             strokeLinecap="round"
           />
           <path
             d="M54 137C52 149 72 157 93 153 M166 137c2 12-18 20-39 16"
             fill="none"
             stroke="#ffc58c"
-            strokeWidth="5"
+            strokeWidth="6.5"
             strokeLinecap="round"
           />
           <g transform="translate(110 153) scale(.8) translate(-110 -153)">
