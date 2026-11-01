@@ -145,15 +145,53 @@ export function Mascot({ className = '', compact = false, ...props }) {
             strokeWidth="8"
             strokeLinecap="round"
           />
-          <g transform="translate(110 153) scale(.72) translate(-110 -153)">
+          <g transform="translate(110 153) scale(.78) translate(-110 -153)">
             <path
-              d="M110 153C102 142 92 144 95 151q5 7 15 13 10-6 15-13c3-7-7-9-15 2Z"
+              d="M110 151c-5-10-15-11-15-3 0 5 8 11 15 16 7-5 15-11 15-16 0-8-10-7-15 3Z"
               fill="#142a3c"
             />
-            <g fill="#ffd3a4" stroke="#eeaf76" strokeWidth="1" strokeLinejoin="round">
-              <path d="M110 146c-6-8-8-11-13-11-8 0-12 5-12 11 0 8 13 18 25 25v-8c-7-4-12-8-15-13-3-4-2-7 1-7 4 0 6 4 9 7q3 3 5 0Z" />
-              <path d="M110 146c6-8 8-11 13-11 8 0 12 5 12 11 0 8-13 18-25 25v-8c7-4 12-8 15-13 3-4 2-7-1-7-4 0-6 4-9 7q-3 3-5 0Z" />
-            </g>
+            {[false, true].map((mirror) => (
+              <g
+                key={String(mirror)}
+                transform={mirror ? 'translate(220 0) scale(-1 1)' : undefined}
+              >
+                <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path
+                    d="M87 150q-4-4-6-10 M91 148q-3-7-4-13 M95 148q0-8-1-14"
+                    stroke="#a87348"
+                    strokeWidth="6"
+                  />
+                  <path
+                    d="M87 150q-4-4-6-10 M91 148q-3-7-4-13 M95 148q0-8-1-14"
+                    stroke="#ffe2b6"
+                    strokeWidth="3.8"
+                  />
+                </g>
+                <path
+                  d="M85 147q-4 4-2 10 2 6 8 5l6-2q4-4 1-10l-4-5Z"
+                  fill="#ffe2b6"
+                  stroke="#a87348"
+                  strokeWidth="1.1"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M94 148c-3-5-2-12 4-12 4 0 8 4 12 8 2 2 0 6-3 4l-8-6q-3-2-2 3l1 3"
+                  fill="#ffe2b6"
+                  stroke="#a87348"
+                  strokeWidth="1.1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M94 153q6 3 15 10c3 2 2 5-1 5-2-1-11-6-16-9"
+                  fill="#ffe2b6"
+                  stroke="#a87348"
+                  strokeWidth="1.1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+            ))}
           </g>
         </g>
         <rect x="73" y="170" width="23" height="15" rx="7" fill="#ffad67" />
