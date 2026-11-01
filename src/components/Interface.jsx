@@ -132,19 +132,28 @@ export function Mascot({ className = '', compact = false, ...props }) {
         />
         <g className="bb-honey-hand-heart" aria-label="Honey makes a heart with her hands">
           <path
-            d="M53 137Q60 157 87 153 M167 137q-7 20-34 16"
+            d="M54 137C49 145 60 158 93 154 M166 137c5 8-6 21-39 17"
             fill="none"
-            stroke="#ffb876"
-            strokeWidth="11"
+            stroke="#173346"
+            strokeWidth="12"
             strokeLinecap="round"
           />
           <path
-            d="M110 153C102 142 92 144 95 151q5 7 15 13 10-6 15-13c3-7-7-9-15 2Z"
-            fill="#142a3c"
+            d="M54 137C49 145 60 158 93 154 M166 137c5 8-6 21-39 17"
+            fill="none"
+            stroke="#ffcb94"
+            strokeWidth="8"
+            strokeLinecap="round"
           />
-          <g fill="#ffd3a4" stroke="#eeaf76" strokeWidth="1" strokeLinejoin="round">
-            <path d="M110 146c-6-8-8-11-13-11-8 0-12 5-12 11 0 8 13 18 25 25v-8c-7-4-12-8-15-13-3-4-2-7 1-7 4 0 6 4 9 7q3 3 5 0Z" />
-            <path d="M110 146c6-8 8-11 13-11 8 0 12 5 12 11 0 8-13 18-25 25v-8c7-4 12-8 15-13 3-4 2-7-1-7-4 0-6 4-9 7q-3 3-5 0Z" />
+          <g transform="translate(110 153) scale(.72) translate(-110 -153)">
+            <path
+              d="M110 153C102 142 92 144 95 151q5 7 15 13 10-6 15-13c3-7-7-9-15 2Z"
+              fill="#142a3c"
+            />
+            <g fill="#ffd3a4" stroke="#eeaf76" strokeWidth="1" strokeLinejoin="round">
+              <path d="M110 146c-6-8-8-11-13-11-8 0-12 5-12 11 0 8 13 18 25 25v-8c-7-4-12-8-15-13-3-4-2-7 1-7 4 0 6 4 9 7q3 3 5 0Z" />
+              <path d="M110 146c6-8 8-11 13-11 8 0 12 5 12 11 0 8-13 18-25 25v-8c7-4 12-8 15-13 3-4 2-7-1-7-4 0-6 4-9 7q-3 3-5 0Z" />
+            </g>
           </g>
         </g>
         <rect x="73" y="170" width="23" height="15" rx="7" fill="#ffad67" />
