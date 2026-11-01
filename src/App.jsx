@@ -4,6 +4,7 @@ import pages from './pages.json';
 import registry from './registry';
 import AdminGate from './components/AdminGate';
 import LearnerGate from './components/LearnerGate';
+import { PublicHoneyAssistant } from './components/HoneyAssistant';
 import { assetUrl, Link, resolvePage, routePaths, useRouter } from './routing';
 
 function DocumentFrame({ page, children }) {
@@ -99,7 +100,10 @@ export default function App() {
           <Page />
         </LearnerGate>
       ) : (
-        <Page />
+        <>
+          <Page />
+          <PublicHoneyAssistant />
+        </>
       )}
     </DocumentFrame>
   );

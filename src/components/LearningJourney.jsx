@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Icon } from './Interface';
-import HoneyBee3D from './HoneyBee3D';
-import HoneyChat from './HoneyChat';
+import { Icon, Mascot } from './Interface';
 import { Link } from '../routing';
 
 const steps = [
@@ -156,10 +154,7 @@ export default function LearningJourney() {
       </span>
       <h2 id="journey-title">A little journey, a lot to discover.</h2>
       <p>Watch your journey unfold, from your first lab to your next discovery.</p>
-      <div
-        className={`bb-flow${playing && !reducedMotion ? '' : ' is-paused'}`}
-        ref={stageRef}
-      >
+      <div className={`bb-flow${playing && !reducedMotion ? '' : ' is-paused'}`} ref={stageRef}>
         <div className="bb-flow-phone" aria-hidden="true">
           <div className="bb-flow-phone-top">
             <span className="bb-flow-camera" />
@@ -190,11 +185,7 @@ export default function LearningJourney() {
         <svg className="bb-flow-lines" aria-hidden="true">
           {paths.map((d, index) =>
             d ? (
-              <path
-                key={index}
-                d={d}
-                className={step.lit.includes(index) ? 'is-lit' : ''}
-              />
+              <path key={index} d={d} className={step.lit.includes(index) ? 'is-lit' : ''} />
             ) : null
           )}
         </svg>
@@ -294,13 +285,15 @@ export default function LearningJourney() {
         </div>
         <aside className="bb-honey-card">
           <div className="bb-honey-head">
-            <HoneyBee3D size={150} />
+            <Mascot compact />
             <p>
-              <strong>Stuck? Ask Honey.</strong> Your in-platform AI helper, ready when a lab gets
+              <strong>Stuck? Ask Honey.</strong> Your friendly helper bee, ready when a lab gets
               tricky.
             </p>
           </div>
-          <HoneyChat labId="sql-injection" />
+          <p className="bb-honey-invitation">
+            Sign in and find Honey in the bottom-right corner whenever you need a hand.
+          </p>
         </aside>
       </div>
     </section>

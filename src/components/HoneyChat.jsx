@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { assetUrl } from '../routing';
 
 const UNAVAILABLE = 'Honey is unavailable right now. Try again in a moment.';
-const STARTERS = ["I'm stuck. What now?", 'Give me the next hint'];
 
 export default function HoneyChat({ labId }) {
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [hintIndex, setHintIndex] = useState(0);
   const [busy, setBusy] = useState(false);
+  const request = useRef(null),
+    log = useRef(null);
+  useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => {
+    if (log.current) log.current.scrollTop = log.current.scrollHeight;
+  }, [messages, busy]);
 
   const addHoney = (text, error = false) =>
     setMessages((items) => [...items, { role: 'honey', text, error }]);
@@ -19,13 +24,18 @@ export default function HoneyChat({ labId }) {
     setMessages((items) => [...items, { role: 'user', text: message }]);
     setDraft('');
     setBusy(true);
+    const controller = new AbortController();
+    request.current = controller;
     try {
       const response = await fetch(assetUrl('api/honey/chat'), {
         method: 'POST',
+        credentials: 'same-origin',
+        signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, labId, hintIndex }),
       });
       const data = await response.json();
+      if (controller.signal.aborted) return;
       if (!response.ok || !data.success) {
         addHoney(data.message || UNAVAILABLE, true);
         return;
@@ -33,17 +43,21 @@ export default function HoneyChat({ labId }) {
       setHintIndex(data.nextHintIndex);
       addHoney(data.reply);
     } catch {
-      addHoney(UNAVAILABLE, true);
+      if (!controller.signal.aborted) addHoney(UNAVAILABLE, true);
     } finally {
-      setBusy(false);
+      if (!controller.signal.aborted) setBusy(false);
     }
   }
 
   return (
     <div className="bb-honey-chat">
-      <div className="bb-honey-log" role="log" aria-live="polite">
+      <div ref={log} className="bb-honey-log" role="log" aria-live="polite">
         {messages.length === 0 ? (
-          <p className="bb-honey-empty">Stuck on this lab? Ask Honey for one hint at a time.</p>
+          <p className="bb-honey-empty">
+            {labId
+              ? 'Stuck on this lab? Ask me for one hint at a time.'
+              : 'Hi, curious human! Ask me about the labs or how to find your way around.'}
+          </p>
         ) : (
           messages.map((item, index) => (
             <p
@@ -63,7 +77,10 @@ export default function HoneyChat({ labId }) {
         ) : null}
       </div>
       <div className="bb-honey-starters">
-        {STARTERS.map((starter) => (
+        {(labId
+          ? ["I'm stuck. What now?", 'Give me the next hint']
+          : ['What can I practice?', 'How does this site work?']
+        ).map((starter) => (
           <button type="button" key={starter} disabled={busy} onClick={() => send(starter)}>
             {starter}
           </button>
@@ -79,7 +96,7 @@ export default function HoneyChat({ labId }) {
         <input
           type="text"
           aria-label="Message Honey"
-          placeholder="Ask Honey for a hint"
+          placeholder={labId ? 'Ask Honey for a hint' : 'Ask Honey a question…'}
           maxLength={500}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}

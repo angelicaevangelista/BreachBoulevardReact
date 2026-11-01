@@ -56,11 +56,30 @@ test('Supabase Node.js integration preserves access-code workflows without expos
       return;
     }
     if (url.pathname === '/rest/v1/breach_access_codes') {
+      const filter = url.searchParams.get('code');
+      const selected = filter
+        ? rows.filter((row) => row.code === filter.slice(3))
+        : rows;
+      if (req.method === 'PATCH') {
+        const matching = selected.filter(
+          (row) => row.expires_at === url.searchParams.get('expires_at')?.slice(3)
+        );
+        matching.forEach((row) => {
+          row.expires_at = body.expires_at;
+        });
+        res.end(JSON.stringify(matching));
+        return;
+      }
+      if (req.method === 'DELETE') {
+        for (const row of selected) rows.splice(rows.indexOf(row), 1);
+        res.end(JSON.stringify(selected));
+        return;
+      }
       res.end(
         JSON.stringify(
           url.searchParams.get('limit') === '0'
             ? []
-            : rows.map(({ code, expires_at }) => ({ code, expires_at }))
+            : selected.map(({ code, expires_at }) => ({ code, expires_at }))
         )
       );
       return;
@@ -263,6 +282,69 @@ test('Supabase Node.js integration preserves access-code workflows without expos
         result.data.expiresAt
       );
     });
+    await t.test(
+      'extensions preserve remaining time and deletion revokes only the selected code',
+      async () => {
+        const code = 'MANAGE-ME',
+          current = new Date(Date.now() + 2 * 86400000).toISOString();
+        rows.push({ code, expires_at: current });
+        let result = await request('access-codes/extend', {
+          method: 'POST',
+          body: { code, duration: '7-days' },
+        });
+        assert.equal(result.status, 200);
+        assert.equal(
+          Date.parse(result.data.accessCode.expires_at),
+          Date.parse(current) + 7 * 86400000
+        );
+        const same = rows.find((row) => row.code === code).expires_at;
+        result = await request('access-codes/extend', {
+          method: 'POST',
+          body: { code, duration: 'custom', expiresAt: current },
+        });
+        assert.equal(result.status, 400);
+        assert.equal(rows.find((row) => row.code === code).expires_at, same);
+        const custom = new Date(Date.parse(same) + 86400000).toISOString();
+        result = await request('access-codes/extend', {
+          method: 'POST',
+          body: { code, duration: 'custom', expiresAt: custom },
+        });
+        assert.equal(result.data.accessCode.expires_at, custom);
+        const before = rows.length;
+        assert.equal(
+          (await request('access-codes', { method: 'DELETE', body: { code } })).status,
+          200
+        );
+        assert.equal(rows.length, before - 1);
+        assert.ok(!rows.some((row) => row.code === code));
+        assert.equal(
+          (await request('access-codes/validate', { method: 'POST', body: { code } })).data.success,
+          false
+        );
+        assert.equal(
+          (await request('access-codes', { method: 'DELETE', body: { code } })).status,
+          404
+        );
+        assert.equal(
+          (
+            await request('access-codes/extend', {
+              method: 'POST',
+              body: { code, duration: '7-days' },
+            })
+          ).status,
+          404
+        );
+        rows.push({ code, expires_at: '2000-01-01T00:00:00.000Z' });
+        result = await request('access-codes/extend', {
+          method: 'POST',
+          body: { code, duration: '1-day' },
+        });
+        assert.equal(result.status, 200);
+        assert.ok(
+          Math.abs(Date.parse(result.data.accessCode.expires_at) - Date.now() - 86400000) < 5000
+        );
+      }
+    );
     await t.test(
       'connection check performs a read-only check and does not print credentials',
       async () => {

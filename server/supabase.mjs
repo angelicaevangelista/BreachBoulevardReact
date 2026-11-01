@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { readServerConfig } from './config.mjs';
+import { accessCodeOptions } from './access-code-options.mjs';
 
 export class DatabaseError extends Error {
   constructor(message, status = 503, upstreamStatus = 0) {
@@ -126,6 +127,49 @@ export class SupabaseAccessCodes {
     );
     if (!Array.isArray(rows)) throw new DatabaseError('Supabase returned an invalid code list.');
     return rows;
+  }
+
+  codeFilter(code) {
+    return `code=eq.${encodeURIComponent(code)}`;
+  }
+
+  async extend(code, input) {
+    const filter = this.codeFilter(code);
+    const rows = await this.request(
+      'GET',
+      `breach_access_codes?select=code,expires_at&${filter}&limit=1`
+    );
+    const current = rows?.[0];
+    if (!current)
+      throw new DatabaseError('That access code no longer exists. Refresh the list.', 404);
+    const currentTime = Date.parse(current.expires_at);
+    if (!Number.isFinite(currentTime))
+      throw new DatabaseError('The code has an invalid expiration.');
+    const base = new Date(Math.max(Date.now(), currentTime));
+    const { expiresAt } = accessCodeOptions({ ...input, codeMode: 'random' }, base);
+    const updated = await this.request(
+      'PATCH',
+      `breach_access_codes?select=code,expires_at&${filter}&expires_at=eq.${encodeURIComponent(current.expires_at)}`,
+      { expires_at: expiresAt },
+      true
+    );
+    if (!updated?.length)
+      throw new DatabaseError(
+        'This code changed while you were editing. Refresh and try again.',
+        409
+      );
+    return updated[0];
+  }
+
+  async remove(code) {
+    const removed = await this.request(
+      'DELETE',
+      `breach_access_codes?select=code&${this.codeFilter(code)}`,
+      undefined,
+      true
+    );
+    if (!removed?.length)
+      throw new DatabaseError('That access code no longer exists. Refresh the list.', 404);
   }
 
   async validate(code, checkExpiration = true) {

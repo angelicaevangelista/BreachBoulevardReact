@@ -17,9 +17,13 @@ Existing authentication, training simulations, and access-code behavior are reta
 - `/admin`: protected code management with random or custom codes and configurable expiry.
 - `/community`: a 3D Boulevard with six clickable landmarks leading to community streets.
 
-Loading screens show Byte, the security buddy. Motion respects the device's
+Loading screens show Honey, the security buddy. Motion respects the device's
 reduced-motion setting. Course dialogs support keyboard focus, Escape, and Tab.
-Honey uses a shared clay-style 3D bee model, with a matching SVG fallback.
+Honey uses the shared orange mascot with two antennas, wings, and bee stripes.
+Signed-in learners and admins can open Honey from the bottom-right corner.
+The helper uses the current lab for progressive hints and is also available to
+signed-in learners on public pages. The landing page uses the 2D character and
+has no inline chat or 3D Honey model.
 The map supports keyboard-accessible street markers, an illustrated fallback,
 and a pause control; reduced-motion preferences stop its ambient animation.
 
@@ -35,6 +39,13 @@ hyphens, or underscores. The server validates all settings, rejects past expiry
 dates, and returns a conflict for duplicate codes. Expiry is saved in the existing
 `breach_access_codes.expires_at` column and checked against database time; no
 access-code schema migration is needed.
+
+The admin list loads automatically after sign-in and updates immediately when a
+code is generated, extended, deleted, or cleaned up. Each code has Extend and
+Delete controls. Extensions add time to the current expiry of an active code,
+or start from now for an expired code. Custom extensions must be later than the
+current expiry. Updates use an expiry comparison to avoid overwriting a newer
+change from another administrator. Deleted codes fail subsequent validation.
 
 ## Run locally
 

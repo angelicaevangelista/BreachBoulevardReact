@@ -260,7 +260,10 @@ test('Honey answers platform questions and refuses everything else', async () =>
       (await (await honeyRequest(f.origin, { message, labId })).json()).reply;
     assert.match(await reply('hello'), /I'm Honey/);
     assert.match(await reply('who are you?'), /AI helper bee inside Breach Boulevard/);
-    assert.match(await reply('which labs are there'), /Breach Boulevard has 6 labs: Break the login query/);
+    assert.match(
+      await reply('which labs are there'),
+      /Breach Boulevard has 6 labs: Break the login query/
+    );
     assert.equal(
       await reply('what is my objective', 'sql-injection'),
       'Objective: Make the login condition true without knowing the password.'
@@ -307,6 +310,17 @@ test('admin code management requires an authenticated session when enabled', asy
     },
   });
   try {
+    for (const [route, method] of [
+      ['/api/access-codes/extend', 'POST'],
+      ['/api/access-codes', 'DELETE'],
+    ]) {
+      const response = await fetch(f.origin + route, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: 'example', duration: '7-days' }),
+      });
+      assert.equal(response.status, 401);
+    }
     assert.equal((await fetch(f.origin + '/api/access-codes')).status, 401);
     const bad = await fetch(f.origin + '/api/admin/login', {
       method: 'POST',
@@ -381,7 +395,10 @@ async function communityFixture() {
     ]),
     ben: communityLearner('22222222-2222-4222-8222-222222222222', 'Ben'),
   };
-  const communityDirectory = path.join(os.tmpdir(), 'breach-community-' + globalThis.crypto.randomUUID());
+  const communityDirectory = path.join(
+    os.tmpdir(),
+    'breach-community-' + globalThis.crypto.randomUUID()
+  );
   const f = await fixture({
     userAuth: (req) => learners[req.headers['x-test-learner']] || null,
     communityDirectory,
@@ -516,20 +533,25 @@ test('community votes toggle per learner and top sorting favours loved posts', a
     ).json();
     assert.deepEqual([voteOnce.votes, voteOnce.voted], [1, true]);
 
-    const seenByAna = (await (await communityCall(f, 'ana', 'GET', '/posts?street=recon-row')).json())
-      .posts;
+    const seenByAna = (
+      await (await communityCall(f, 'ana', 'GET', '/posts?street=recon-row')).json()
+    ).posts;
     assert.equal(seenByAna.find((post) => post.id === first.id).voted, false);
 
-    const unvote = await (await communityCall(f, 'ben', 'POST', `/posts/${first.id}/vote`, {})).json();
+    const unvote = await (
+      await communityCall(f, 'ben', 'POST', `/posts/${first.id}/vote`, {})
+    ).json();
     assert.deepEqual([unvote.votes, unvote.voted], [0, false]);
 
     await communityCall(f, 'ana', 'POST', `/posts/${second.id}/vote`, {});
     await communityCall(f, 'ben', 'POST', `/posts/${second.id}/vote`, {});
-    const newest = (await (await communityCall(f, 'ana', 'GET', '/posts?street=recon-row&sort=new')).json())
-      .posts;
+    const newest = (
+      await (await communityCall(f, 'ana', 'GET', '/posts?street=recon-row&sort=new')).json()
+    ).posts;
     assert.equal(newest[0].id, second.id);
-    const top = (await (await communityCall(f, 'ana', 'GET', '/posts?street=recon-row&sort=top')).json())
-      .posts;
+    const top = (
+      await (await communityCall(f, 'ana', 'GET', '/posts?street=recon-row&sort=top')).json()
+    ).posts;
     assert.equal(top[0].id, second.id);
     assert.equal(top[0].votes, 2);
 
@@ -560,8 +582,9 @@ test('community replies are stored as plain text and counted on the post', async
     assert.equal(comment.body, '<b>Check the cookies</b>');
     assert.equal(comment.author.name, 'Ben');
 
-    const listed = (await (await communityCall(f, 'ana', 'GET', `/posts/${post.id}/comments`)).json())
-      .comments;
+    const listed = (
+      await (await communityCall(f, 'ana', 'GET', `/posts/${post.id}/comments`)).json()
+    ).comments;
     assert.equal(listed.length, 1);
     assert.equal(listed[0].body, '<b>Check the cookies</b>');
 
@@ -570,13 +593,23 @@ test('community replies are stored as plain text and counted on the post', async
     ).posts[0];
     assert.equal(counted.comments, 1);
 
-    assert.equal((await communityCall(f, 'ben', 'POST', `/posts/${post.id}/comments`, { body: '  ' })).status, 400);
     assert.equal(
-      (await communityCall(f, 'ben', 'POST', `/posts/${post.id}/comments`, { body: 'x'.repeat(601) })).status,
+      (await communityCall(f, 'ben', 'POST', `/posts/${post.id}/comments`, { body: '  ' })).status,
+      400
+    );
+    assert.equal(
+      (
+        await communityCall(f, 'ben', 'POST', `/posts/${post.id}/comments`, {
+          body: 'x'.repeat(601),
+        })
+      ).status,
       400
     );
     const missing = '00000000-0000-4000-8000-000000000000';
-    assert.equal((await communityCall(f, 'ben', 'POST', `/posts/${missing}/comments`, { body: 'hi' })).status, 404);
+    assert.equal(
+      (await communityCall(f, 'ben', 'POST', `/posts/${missing}/comments`, { body: 'hi' })).status,
+      404
+    );
     assert.equal((await communityCall(f, 'ben', 'GET', `/posts/${missing}/comments`)).status, 404);
   } finally {
     await f.close();

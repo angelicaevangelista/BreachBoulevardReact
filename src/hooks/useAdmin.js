@@ -1,32 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { assetUrl } from '../routing';
 export default function useAdmin() {
-  const [codes, setCodes] = useState(null);
-  const [duration, setDuration] = useState('1-day');
-  const [codeMode, setCodeMode] = useState('random');
-  const [customCode, setCustomCode] = useState('');
-  const [customExpiry, setCustomExpiry] = useState('');
-  const [pending, setPending] = useState(false);
-  const [generated, setGenerated] = useState(null);
-  const [message, setMessage] = useState('');
+  const [codes, setCodes] = useState(null),
+    [loading, setLoading] = useState(true),
+    [listError, setListError] = useState('');
+  const [duration, setDuration] = useState('1-day'),
+    [codeMode, setCodeMode] = useState('random'),
+    [customCode, setCustomCode] = useState(''),
+    [customExpiry, setCustomExpiry] = useState('');
+  const [pending, setPending] = useState(false),
+    [generated, setGenerated] = useState(null),
+    [message, setMessage] = useState('');
+  const [editor, setEditor] = useState(null),
+    [actionPending, setActionPending] = useState(false),
+    [actionError, setActionError] = useState(''),
+    [notice, setNotice] = useState('');
+  const loadRequest = useRef(null);
   async function request(endpoint, options) {
-    const response = await fetch(assetUrl(`api/access-codes${endpoint}`), options);
+    const response = await fetch(assetUrl(`api/access-codes${endpoint}`), {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      ...options,
+    });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'The request could not be completed.');
+    if (!response.ok || !data.success)
+      throw new Error(data.message || 'The request could not be completed.');
     return data;
   }
-  async function viewCodes() {
+  const viewCodes = useCallback(async () => {
+    loadRequest.current?.abort();
+    const controller = new AbortController();
+    loadRequest.current = controller;
+    setLoading(true);
+    setListError('');
     try {
-      const data = await request('', { method: 'GET' });
-      if (data.success) setCodes(data.codes);
-      else window.alert(data.message || 'Failed to fetch codes.');
-    } catch {
-      window.alert('An error occurred while fetching the codes.');
+      const data = await request('', { method: 'GET', signal: controller.signal });
+      if (!Array.isArray(data.codes))
+        throw new Error('Your codes could not be loaded. Try refreshing.');
+      if (!controller.signal.aborted) setCodes(data.codes);
+    } catch (error) {
+      if (!controller.signal.aborted) setListError(error.message);
+    } finally {
+      if (!controller.signal.aborted) setLoading(false);
     }
-  }
+  }, []);
+  useEffect(() => {
+    viewCodes();
+    return () => loadRequest.current?.abort();
+  }, [viewCodes]);
   async function generate(event) {
     event.preventDefault();
-    if (pending) return;
+    if (pending || loading || actionPending) return;
     setPending(true);
     setMessage('');
     setGenerated(null);
@@ -44,11 +68,11 @@ export default function useAdmin() {
           ...(expiry ? { expiresAt: expiry.toISOString() } : {}),
         }),
       });
-      if (!data.success) throw new Error(data.message || 'Failed to generate code.');
       setGenerated({ code: data.code, expiresAt: data.expiresAt });
-      setCodes((previous) =>
-        previous === null ? null : [{ code: data.code, expires_at: data.expiresAt }, ...previous]
-      );
+      setCodes((previous) => [
+        { code: data.code, expires_at: data.expiresAt },
+        ...(previous || []),
+      ]);
     } catch (error) {
       setMessage(error.message || 'An error occurred while generating the code.');
     } finally {
@@ -56,19 +80,74 @@ export default function useAdmin() {
     }
   }
   async function cleanup() {
+    if (pending || loading || actionPending) return;
+    setActionPending(true);
+    setNotice('');
+    setActionError('');
     try {
       const data = await request('/cleanup', { method: 'POST' });
-      window.alert(
-        data.success
-          ? 'Expired codes cleaned up successfully.'
-          : data.message || 'Failed to cleanup codes.'
+      setNotice(data.message || 'Expired codes cleaned up successfully.');
+      await viewCodes();
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setActionPending(false);
+    }
+  }
+  function edit(code, type) {
+    setEditor({ code, type, duration: '7-days', date: '' });
+    setActionError('');
+    setNotice('');
+  }
+  async function saveAction(event) {
+    event?.preventDefault();
+    if (!editor || actionPending || pending || loading) return;
+    setActionPending(true);
+    setActionError('');
+    try {
+      let payload = { code: editor.code };
+      if (editor.type === 'extend') {
+        payload.duration = editor.duration;
+        if (editor.duration === 'custom') {
+          const date = new Date(editor.date);
+          if (!Number.isFinite(date.getTime()) || date.getTime() <= Date.now())
+            throw new Error('Choose a valid future date and time.');
+          payload.expiresAt = date.toISOString();
+        }
+      }
+      const data = await request(editor.type === 'extend' ? '/extend' : '', {
+        method: editor.type === 'extend' ? 'POST' : 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (editor.type === 'delete') {
+        setCodes((previous) => previous.filter((item) => item.code !== editor.code));
+        setGenerated((previous) => (previous?.code === editor.code ? null : previous));
+      } else {
+        setCodes((previous) =>
+          previous.map((item) => (item.code === editor.code ? data.accessCode : item))
+        );
+        setGenerated((previous) =>
+          previous?.code === editor.code
+            ? { code: editor.code, expiresAt: data.accessCode.expires_at }
+            : previous
+        );
+      }
+      setNotice(
+        data.message ||
+          (editor.type === 'delete' ? 'Access code deleted.' : 'Access code extended.')
       );
-    } catch {
-      window.alert('An error occurred while cleaning up codes.');
+      setEditor(null);
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setActionPending(false);
     }
   }
   return {
     codes,
+    loading,
+    listError,
     viewCodes,
     generate,
     cleanup,
@@ -83,5 +162,12 @@ export default function useAdmin() {
     pending,
     generated,
     message,
+    editor,
+    setEditor,
+    edit,
+    saveAction,
+    actionPending,
+    actionError,
+    notice,
   };
 }

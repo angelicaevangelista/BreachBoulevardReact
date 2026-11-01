@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { assetUrl } from '../routing';
 import { Brand, Mascot, LoadingScreen } from './Interface';
+import HoneyAssistant from './HoneyAssistant';
 
 export default function AdminGate({ children }) {
   const [session, setSession] = useState(null),
@@ -43,6 +44,7 @@ export default function AdminGate({ children }) {
     return (
       <>
         {children}
+        <HoneyAssistant />
         <button
           className="bb-admin-account"
           onClick={async () => {

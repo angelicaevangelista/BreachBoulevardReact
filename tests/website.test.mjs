@@ -245,20 +245,24 @@ test('learning journey selects each step and links to the relevant experience', 
   assert.match(journey.textContent, /Honey is your AI helper inside the platform/);
   assert.equal(journey.querySelectorAll('.bb-flow-row.is-lit').length, 2);
   assert.equal(journey.querySelectorAll('.bb-flow-lines path').length, 4);
-  assert.ok(journey.querySelector('.bb-honey'));
+  assert.ok(journey.querySelector('[data-honey-antennas="two"]'));
+  assert.equal(journey.querySelector('canvas'), null);
+  assert.equal(journey.querySelector('.bb-honey-chat'), null);
   await s.click(buttons[2]);
   assert.match(journey.textContent, /Completed labs are saved to your account/);
   assert.equal(journey.querySelector('.bb-journey-link').getAttribute('href'), '/access');
   assert.deepEqual(s.errors, []);
   await s.close();
 });
-test('Honey chat answers one hint at a time from the journey card', async () => {
+test('Floating Honey answers hints for the current signed-in lab', async () => {
   const calls = [];
   const hints = [
     'Look at how your input appears inside the query.',
     'A single quote can end a quoted SQL value.',
   ];
-  const s = await open('testcopy2.html', {
+  const s = await open('practice.html', {
+    app: true,
+    url: 'http://localhost/practice/sql-injection',
     fetch: async (url, options) => {
       if (!String(url).endsWith('/api/honey/chat')) throw new Error('Unexpected request');
       const body = JSON.parse(options.body);
@@ -276,7 +280,8 @@ test('Honey chat answers one hint at a time from the journey card', async () => 
       };
     },
   });
-  const journey = s.d.querySelector('.bb-journey');
+  await s.click('[aria-label="Ask Honey"]');
+  const journey = s.d.querySelector('.bb-assistant-panel');
   const flush = () => s.act(() => new Promise((resolve) => setTimeout(resolve, 20)));
   await s.click(journey.querySelector('.bb-honey-starters button'));
   await flush();
@@ -294,6 +299,11 @@ test('Honey chat answers one hint at a time from the journey card', async () => 
   await flush();
   assert.equal(calls[1].hintIndex, 1);
   assert.match(journey.querySelector('.bb-honey-log').textContent, /A single quote can end/);
+  await s.act(() =>
+    journey.dispatchEvent(new s.w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+  );
+  assert.equal(s.d.querySelector('.bb-assistant-panel'), null);
+  assert.equal(s.d.activeElement.getAttribute('aria-label'), 'Ask Honey');
   assert.deepEqual(s.errors, []);
   await s.close();
 });
@@ -475,17 +485,16 @@ test('admin lists, generates, and cleans up codes through the Node API', async (
           : { success: true, code: 'generated' },
     }),
   });
-  await s.click('#viewCodesBtn');
   assert.match(s.d.querySelector('#codesList').textContent, /example.*tomorrow/);
   await s.submit('#generateForm');
   assert.match(s.d.querySelector('.bb-code-result').textContent, /generated/);
-  assert.deepEqual(JSON.parse(s.requests[1][1].body), { duration: '1-day', codeMode: 'random' });
-  await s.click('#cleanupBtn');
-  assert.match(s.alerts[0], /cleaned up/);
   assert.deepEqual(
-    s.requests.map((r) => r[0]),
-    ['/api/access-codes', '/api/access-codes', '/api/access-codes/cleanup']
+    JSON.parse(s.requests.find(([, options]) => options.method === 'POST')[1].body),
+    { duration: '1-day', codeMode: 'random' }
   );
+  await s.click('#cleanupBtn');
+  assert.match(s.d.body.textContent, /cleaned up/);
+  assert.ok(s.requests.some(([url]) => url === '/api/access-codes/cleanup'));
   await s.close();
 });
 test('profile edits save controlled values and return to display mode', async () => {
@@ -859,13 +868,19 @@ test('community page renders rank, streets and posts as plain text', async () =>
 test('admin sends custom expiration and code settings and displays duplicate-code errors', async () => {
   let duplicate = false;
   const s = await open('access/admin.html', {
-    fetch: async () => ({
-      ok: !duplicate,
-      json: async () =>
-        duplicate
-          ? { success: false, message: 'That access code already exists. Choose a different code.' }
-          : { success: true, code: 'CLASS-2028', expiresAt: '2028-05-01T09:00:00.000Z' },
-    }),
+    fetch: async (url, options) =>
+      options.method === 'GET'
+        ? { ok: true, json: async () => ({ success: true, codes: [] }) }
+        : {
+            ok: !duplicate,
+            json: async () =>
+              duplicate
+                ? {
+                    success: false,
+                    message: 'That access code already exists. Choose a different code.',
+                  }
+                : { success: true, code: 'CLASS-2028', expiresAt: '2028-05-01T09:00:00.000Z' },
+          },
   });
   await s.act(() => {
     const select = s.d.querySelector('#codeDuration');
@@ -876,7 +891,7 @@ test('admin sends custom expiration and code settings and displays duplicate-cod
   await s.click('input[name="codeMode"][value="custom"]');
   await s.fill('#customAccessCode', 'CLASS-2028');
   await s.submit('#generateForm');
-  const payload = JSON.parse(s.requests[0][1].body);
+  const payload = JSON.parse(s.requests.find(([, options]) => options.method === 'POST')[1].body);
   assert.equal(payload.duration, 'custom');
   assert.equal(payload.code, 'CLASS-2028');
   assert.equal(payload.codeMode, 'custom');
@@ -888,4 +903,60 @@ test('admin sends custom expiration and code settings and displays duplicate-cod
   assert.equal(s.d.querySelector('#generateForm button').disabled, false);
   assert.deepEqual(s.errors, []);
   await s.close();
+});
+
+test('admin automatically loads codes and updates the list after extension and deletion', async () => {
+  let expiry = '2030-01-01T00:00:00.000Z';
+  let deleted = false;
+  const s = await open('access/admin.html', {
+    fetch: async (url, options) => ({
+      ok: true,
+      json: async () => {
+        if (options.method === 'GET')
+          return { success: true, codes: deleted ? [] : [{ code: 'MANAGE', expires_at: expiry }] };
+        if (url.endsWith('/extend')) {
+          expiry = '2030-01-08T00:00:00.000Z';
+          return {
+            success: true,
+            accessCode: { code: 'MANAGE', expires_at: expiry },
+            message: 'Access code extended.',
+          };
+        }
+        deleted = true;
+        return { success: true, message: 'Access code deleted.' };
+      },
+    }),
+  });
+  assert.match(s.d.querySelector('#codesList').textContent, /MANAGE/);
+  await s.click('[aria-label="Extend MANAGE"]');
+  await s.submit('[aria-label="Extend access code"]');
+  assert.deepEqual(JSON.parse(s.requests.find(([url]) => url.endsWith('/extend'))[1].body), {
+    code: 'MANAGE',
+    duration: '7-days',
+  });
+  assert.equal(s.d.querySelector('#codesList time').dateTime, expiry);
+  await s.click('[aria-label="Delete MANAGE"]');
+  await s.click([...s.d.querySelectorAll('button')].find((b) => b.textContent === 'Cancel'));
+  assert.match(s.d.querySelector('#codesList').textContent, /MANAGE/);
+  await s.click('[aria-label="Delete MANAGE"]');
+  await s.submit('[aria-label="Delete access code"]');
+  assert.match(s.d.querySelector('#codesList').textContent, /No codes found/);
+  assert.ok(s.requests.some(([, options]) => options.method === 'DELETE'));
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+
+test('Honey is available on signed-in public pages and hidden from logged-out visitors', async () => {
+  const visitor = await open('testcopy2.html', { app: true, url: 'http://localhost/', user: null });
+  assert.equal(visitor.d.querySelector('.bb-assistant'), null);
+  assert.equal(visitor.d.querySelector('canvas'), null);
+  await visitor.close();
+  const member = await open('testcopy2.html', { app: true, url: 'http://localhost/' });
+  assert.ok(member.d.querySelector('[aria-label="Ask Honey"]'));
+  await member.click('[aria-label="Ask Honey"]');
+  assert.equal(member.d.querySelectorAll('.bb-assistant-panel').length, 1);
+  assert.match(member.d.querySelector('.bb-honey-empty').textContent, /find your way/);
+  assert.ok(member.d.querySelector('[data-honey-antennas="two"]'));
+  assert.deepEqual(member.errors, []);
+  await member.close();
 });

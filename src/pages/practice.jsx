@@ -99,7 +99,7 @@ function Challenge({ lab, onComplete, solved }) {
               <Mascot compact />
               <div>
                 <h3>A little nudge?</h3>
-                <p>Byte has a hint when you need one.</p>
+                <p>Honey has a hint when you need one.</p>
               </div>
             </div>
             <ol>
@@ -219,7 +219,7 @@ export default function Practice() {
                 Small labs. Big discoveries<span className="bb-orange">.</span>
               </h1>
               <p>
-                Pick something that sparks your curiosity. Try, explore, and ask Byte for a hint
+                Pick something that sparks your curiosity. Try, explore, and ask Honey for a hint
                 along the way.
               </p>
             </div>

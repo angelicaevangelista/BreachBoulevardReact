@@ -204,9 +204,12 @@ export function createApiHandler({
         return true;
       }
       if (
-        ['/api/access-codes', '/api/access-codes/cleanup', '/api/access-codes/check'].includes(
-          route
-        ) &&
+        [
+          '/api/access-codes',
+          '/api/access-codes/cleanup',
+          '/api/access-codes/check',
+          '/api/access-codes/extend',
+        ].includes(route) &&
         !auth.authenticated(req)
       ) {
         json(res, 401, { success: false, message: 'Admin sign-in required.' });
@@ -219,7 +222,20 @@ export function createApiHandler({
         return true;
       }
       if (route === '/api/access-codes') {
-        if (!requireMethod(req, res, ['GET', 'POST'])) return true;
+        if (!requireMethod(req, res, ['GET', 'POST', 'DELETE'])) return true;
+        if (req.method === 'DELETE') {
+          const { code } = await readJson(req);
+          if (
+            typeof code !== 'string' ||
+            !code ||
+            code.length > 128 ||
+            /[\u0000-\u001f]/.test(code)
+          )
+            throw new HttpError(400, 'Choose a valid access code.');
+          await getDatabase().remove(code);
+          json(res, 200, { success: true, message: 'Access code deleted.' });
+          return true;
+        }
         if (req.method === 'POST') {
           const options = accessCodeOptions(await readJson(req));
           const code = await getDatabase().generate(options);
@@ -239,6 +255,20 @@ export function createApiHandler({
           success: valid,
           message: valid ? 'Access granted.' : 'Invalid or expired access code.',
         });
+        return true;
+      }
+      if (route === '/api/access-codes/extend') {
+        if (!requireMethod(req, res, ['POST'])) return true;
+        const input = await readJson(req);
+        if (
+          typeof input.code !== 'string' ||
+          !input.code ||
+          input.code.length > 128 ||
+          /[\u0000-\u001f]/.test(input.code)
+        )
+          throw new HttpError(400, 'Choose a valid access code.');
+        const accessCode = await getDatabase().extend(input.code, input);
+        json(res, 200, { success: true, accessCode, message: 'Access code extended.' });
         return true;
       }
       if (route === '/api/access-codes/cleanup') {

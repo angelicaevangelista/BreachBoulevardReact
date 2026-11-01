@@ -1,4 +1,5 @@
 import GoogleSignInButton from './GoogleSignInButton';
+import HoneyAssistant from './HoneyAssistant';
 import { Brand, Icon, Mascot, LoadingScreen } from './Interface';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { assetUrl, Link } from '../routing';
@@ -328,6 +329,7 @@ export default function LearnerGate({ children, integrated = false }) {
         </aside>
       )}
       {children}
+      <HoneyAssistant />
     </LearnerContext.Provider>
   );
 }

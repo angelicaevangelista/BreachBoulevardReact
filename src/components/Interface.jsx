@@ -48,14 +48,15 @@ export function Icon({ name = 'spark', size = 20, ...props }) {
     </svg>
   );
 }
-export function Mascot({ className = '', compact = false }) {
+export function Mascot({ className = '', compact = false, ...props }) {
   const gradient = useId();
   return (
     <svg
       viewBox="0 0 220 220"
       className={`bb-mascot ${className}`}
       role="img"
-      aria-label="Byte, your friendly security buddy"
+      aria-label="Honey, your friendly security bee"
+      {...props}
     >
       <defs>
         <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="1">
@@ -65,15 +66,38 @@ export function Mascot({ className = '', compact = false }) {
       </defs>
       <ellipse cx="110" cy="193" rx="52" ry="10" fill="#07111e" opacity=".3" />
       <g className={compact ? '' : 'bb-buddy-float'}>
+        <g className="bb-bee-wings">
+          <ellipse
+            cx="46"
+            cy="105"
+            rx="25"
+            ry="36"
+            transform="rotate(-28 46 105)"
+            fill="#d9f0f4"
+            stroke="#f0fcff"
+            strokeWidth="2"
+          />
+          <ellipse
+            cx="174"
+            cy="105"
+            rx="25"
+            ry="36"
+            transform="rotate(28 174 105)"
+            fill="#d9f0f4"
+            stroke="#f0fcff"
+            strokeWidth="2"
+          />
+        </g>
         <path
-          d="M63 87 49 55Q45 42 58 48l34 19 M157 87l14-32q4-13-9-7l-34 19"
-          fill="#ffad67"
-          stroke="#0d1b2a"
-          strokeWidth="5"
-          strokeLinejoin="round"
+          d="M86 66Q80 43 68 35 M134 66q6-23 18-31"
+          stroke="#ffb26d"
+          strokeWidth="6"
+          strokeLinecap="round"
+          fill="none"
+          data-honey-antennas="two"
         />
-        <path d="M109 58V38" stroke="#ffa95e" strokeWidth="6" strokeLinecap="round" />
-        <circle cx="109" cy="31" r="9" fill="#ffe0a9" />
+        <circle cx="67" cy="31" r="8" fill="#ffe0a9" />
+        <circle cx="153" cy="31" r="8" fill="#ffe0a9" />
         <rect
           x="49"
           y="64"
@@ -98,6 +122,12 @@ export function Mascot({ className = '', compact = false }) {
         />
         <ellipse cx="76" cy="124" rx="7" ry="4" fill="#ff997c" opacity=".7" />
         <ellipse cx="144" cy="124" rx="7" ry="4" fill="#ff997c" opacity=".7" />
+        <path
+          d="M54 150q56 20 112 0 M65 166q45 13 90 0"
+          stroke="#21394b"
+          strokeWidth="8"
+          fill="none"
+        />
         <path d="m103 153 7-3 7 3v7q-2 5-7 7-5-2-7-7z" fill="#fff1d8" />
         <path d="m107 158 2 2 4-4" stroke="#f97316" strokeWidth="2" fill="none" />
         <path

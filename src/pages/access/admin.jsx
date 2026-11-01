@@ -46,7 +46,7 @@ export default function Admin() {
           <div>
             <small>Codes in this view</small>
             <strong>{admin.codes === null ? '—' : admin.codes.length}</strong>
-            <p>{admin.codes === null ? 'Load your codes below' : 'From your latest refresh'}</p>
+            <p>{admin.loading ? 'Loading your codes…' : 'Updated as you manage codes'}</p>
           </div>
         </section>
         <section className="bb-stat">
@@ -158,7 +158,10 @@ export default function Admin() {
                 </p>
               </div>
             )}
-            <button className="bb-button bb-button-primary" disabled={admin.pending}>
+            <button
+              className="bb-button bb-button-primary"
+              disabled={admin.pending || admin.loading || admin.actionPending}
+            >
               {admin.pending ? 'Creating…' : 'Generate Code'}
               <Icon name="arrow" size={16} />
             </button>
@@ -189,6 +192,7 @@ export default function Admin() {
             className="bb-button bb-button-secondary"
             style={{ marginTop: 20 }}
             onClick={admin.cleanup}
+            disabled={admin.pending || admin.loading || admin.actionPending}
           >
             Cleanup Codes
             <Icon name="trash" size={16} />
@@ -198,14 +202,123 @@ export default function Admin() {
       <section className="bb-panel" style={{ marginTop: 22 }}>
         <div className="bb-panel-heading">
           <h2>Generated Access Codes</h2>
-          <button id="viewCodesBtn" className="bb-button bb-button-soft" onClick={admin.viewCodes}>
-            <Icon name="refresh" size={16} /> View Codes
+          <button
+            id="viewCodesBtn"
+            className="bb-button bb-button-soft"
+            onClick={admin.viewCodes}
+            disabled={admin.loading || admin.pending || admin.actionPending}
+          >
+            <Icon name="refresh" size={16} /> {admin.loading ? 'Loading…' : 'Refresh'}
           </button>
         </div>
+        {admin.listError && (
+          <p className="bb-notice" role="alert">
+            {admin.listError}
+          </p>
+        )}
+        {admin.notice && (
+          <p className="bb-notice" role="status">
+            {admin.notice}
+          </p>
+        )}
+        {admin.actionError && (
+          <p className="bb-notice" role="alert">
+            {admin.actionError}
+          </p>
+        )}
+        {admin.editor && (
+          <form
+            className="bb-code-editor bb-form"
+            onSubmit={admin.saveAction}
+            aria-label={`${admin.editor.type === 'extend' ? 'Extend' : 'Delete'} access code`}
+          >
+            <div>
+              <h3>
+                {admin.editor.type === 'extend' ? 'Extend' : 'Delete'}{' '}
+                <code>{admin.editor.code}</code>
+              </h3>
+              <p>
+                {admin.editor.type === 'extend'
+                  ? 'Extra time starts from the current expiry, or from now if the code has expired. A custom date must be later than the current expiry.'
+                  : 'Deleting this code stops anyone from using it again.'}
+              </p>
+            </div>
+            {admin.editor.type === 'extend' && (
+              <>
+                <div className="bb-field">
+                  <label htmlFor="extendDuration">Add more time</label>
+                  <select
+                    id="extendDuration"
+                    disabled={admin.actionPending}
+                    value={admin.editor.duration}
+                    onChange={(event) =>
+                      admin.setEditor((previous) => ({ ...previous, duration: event.target.value }))
+                    }
+                  >
+                    {[
+                      ['1-day', '1 day'],
+                      ['7-days', '7 days'],
+                      ['1-month', '1 month'],
+                      ['6-months', '6 months'],
+                      ['1-year', '1 year'],
+                      ['custom', 'Custom date & time'],
+                    ].map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {admin.editor.duration === 'custom' && (
+                  <div className="bb-field">
+                    <label htmlFor="extendExpiry">New expiration date & time</label>
+                    <input
+                      id="extendExpiry"
+                      type="datetime-local"
+                      required
+                      min={localNow}
+                      disabled={admin.actionPending}
+                      value={admin.editor.date}
+                      onChange={(event) =>
+                        admin.setEditor((previous) => ({ ...previous, date: event.target.value }))
+                      }
+                    />
+                    <p className="bb-field-help">Shown in your local time.</p>
+                  </div>
+                )}
+              </>
+            )}
+            <div className="bb-code-row-actions">
+              <button
+                className={`bb-button ${admin.editor.type === 'delete' ? 'bb-button-danger' : 'bb-button-primary'}`}
+                type="submit"
+                disabled={admin.actionPending}
+              >
+                {admin.actionPending
+                  ? 'Saving…'
+                  : admin.editor.type === 'delete'
+                    ? 'Delete code'
+                    : 'Save extension'}
+              </button>
+              <button
+                className="bb-button bb-button-secondary"
+                type="button"
+                disabled={admin.actionPending}
+                onClick={() => admin.setEditor(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
         {admin.codes === null ? (
           <div className="bb-empty">
             <Icon name="key" size={30} />
-            <p style={{ marginTop: 12 }}>Load your codes to see their expiration times.</p>
+            <p style={{ marginTop: 12 }} role="status">
+              {admin.loading
+                ? 'Loading your access codes…'
+                : 'Your codes will appear here when loaded.'}
+            </p>
           </div>
         ) : (
           <div id="codesListContainer" className="bb-table-wrap">
@@ -214,6 +327,8 @@ export default function Admin() {
                 <tr>
                   <th>Access code</th>
                   <th>Expires at</th>
+                  <th>Status</th>
+                  <th>Manage</th>
                 </tr>
               </thead>
               <tbody>
@@ -226,11 +341,42 @@ export default function Admin() {
                       <td>
                         <time dateTime={item.expires_at}>{formatExpiry(item.expires_at)}</time>
                       </td>
+                      <td>
+                        <span
+                          className={`bb-tag ${Date.parse(item.expires_at) > Date.now() ? 'bb-tag-green' : ''}`}
+                        >
+                          {Date.parse(item.expires_at) > Date.now() ? 'Active' : 'Expired'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="bb-code-row-actions">
+                          <button
+                            type="button"
+                            className="bb-button bb-button-soft"
+                            aria-label={`Extend ${item.code}`}
+                            disabled={admin.pending || admin.loading || admin.actionPending}
+                            onClick={() => admin.edit(item.code, 'extend')}
+                          >
+                            <Icon name="clock" size={14} />
+                            Extend
+                          </button>
+                          <button
+                            type="button"
+                            className="bb-button bb-button-danger"
+                            aria-label={`Delete ${item.code}`}
+                            disabled={admin.pending || admin.loading || admin.actionPending}
+                            onClick={() => admin.edit(item.code, 'delete')}
+                          >
+                            <Icon name="trash" size={14} />
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={2}>No codes found.</td>
+                    <td colSpan={4}>No codes found. Generate a code above to get started.</td>
                   </tr>
                 )}
               </tbody>
