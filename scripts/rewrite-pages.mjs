@@ -55,7 +55,20 @@ function styles(value) {
   );
 }
 for (const page of pages) {
-  if (['practice.html','reset-password.html','privacy.html'].includes(page.path)) continue;
+  if (
+    [
+      'practice.html',
+      'reset-password.html',
+      'privacy.html',
+      'dashboard.html',
+      'labs.html',
+      'content/main.html',
+      'access/admin.html',
+      'access/access.html',
+      'testcopy2.html',
+    ].includes(page.path)
+  )
+    continue;
   const original = fs.readFileSync(path.join(source, page.path), 'utf8');
   const doc = parse(original.replace(/^<\?php[\s\S]*?\?>/, ''));
   let body;

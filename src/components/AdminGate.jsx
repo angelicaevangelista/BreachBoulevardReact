@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { assetUrl } from '../routing';
+import { Brand, Mascot, LoadingScreen } from './Interface';
 
 export default function AdminGate({ children }) {
   const [session, setSession] = useState(null),
@@ -9,7 +10,9 @@ export default function AdminGate({ children }) {
     const controller = new AbortController();
     fetch(assetUrl('api/admin/session'), { signal: controller.signal })
       .then((response) => response.json())
-      .then(setSession)
+      .then((data) => {
+        if (!controller.signal.aborted) setSession(data);
+      })
       .catch((error) => {
         if (error.name !== 'AbortError') {
           setSession({ authenticated: false });
@@ -41,7 +44,7 @@ export default function AdminGate({ children }) {
       <>
         {children}
         <button
-          className="fixed top-6 right-6 text-white hover:underline"
+          className="bb-admin-account"
           onClick={async () => {
             await fetch(assetUrl('api/admin/logout'), { method: 'POST' });
             setSession({ authenticated: false });
@@ -51,19 +54,22 @@ export default function AdminGate({ children }) {
         </button>
       </>
     );
+  if (session === null) return <LoadingScreen label="Checking admin access…" />;
   return (
-    <>
-      <header className="bg-orange-500 text-white p-6 text-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+    <div className="bb-ui bb-auth" style={{ minHeight: '100vh' }}>
+      <header className="bb-public-header">
+        <Brand />
       </header>
-      <main className="flex-grow flex items-center justify-center p-6">
-        <form className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md" onSubmit={login}>
+      <main className="bb-admin-auth">
+        <form className="bb-auth-card bb-form" onSubmit={login}>
+          <Mascot />
+          <span className="bb-eyebrow">YOUR TEACHING TOOLKIT</span>
           <h2 className="text-2xl font-semibold text-orange-500 mb-6">Admin sign-in</h2>
           {session === null ? (
             <p>Checking admin access…</p>
           ) : (
             <>
-              <label htmlFor="admin-password" className="block mb-2 text-gray-700">
+              <label htmlFor="admin-password" className="block mb-2 bb-muted">
                 Password
               </label>
               <input
@@ -83,11 +89,11 @@ export default function AdminGate({ children }) {
               </button>
             </>
           )}
-          <p role="status" className="mt-4 text-gray-700">
+          <p role="status" className="mt-4 bb-muted">
             {message}
           </p>
         </form>
       </main>
-    </>
+    </div>
   );
 }

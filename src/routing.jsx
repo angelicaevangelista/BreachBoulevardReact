@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useSyncExternalStore } from 'react';
 
 export const routePaths = {
+  'dashboard.html': '/dashboard',
   'privacy.html': '/privacy',
   'reset-password.html': '/reset-password',
   'practice.html': '/practice',

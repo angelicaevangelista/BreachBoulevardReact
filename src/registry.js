@@ -1,5 +1,6 @@
 import Page0 from './pages/about.jsx';
 import Privacy from './pages/privacy.jsx';
+import Dashboard from './pages/dashboard.jsx';
 import Page1 from './pages/access/access.jsx';
 import Page2 from './pages/access/admin.jsx';
 import Page3 from './pages/access/main.jsx';
@@ -32,6 +33,7 @@ import Page29 from './pages/testupload.jsx';
 import Practice from './pages/practice.jsx';
 import ResetPassword from './pages/reset-password.jsx';
 export default {
+  'dashboard.html': Dashboard,
   'privacy.html': Privacy,
   'reset-password.html': ResetPassword,
   'practice.html': Practice,

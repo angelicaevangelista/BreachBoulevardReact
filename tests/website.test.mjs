@@ -253,7 +253,7 @@ test('successful access changes the client route to courses', async () => {
   await s.fill('#accessCode', 'example');
   await s.submit('#accessForm');
   assert.equal(s.w.location.pathname, '/courses');
-  assert.match(s.d.body.textContent, /Explore, Examine, Exploit/);
+  assert.match(s.d.body.textContent, /A world of little discoveries/);
   await s.close();
 });
 test('Get Started requires login, shows Google first, then restores the original access-code step', async () => {
@@ -365,20 +365,16 @@ test('profile edits save controlled values and return to display mode', async ()
   assert.equal(s.d.querySelector('#profileForm').classList.contains('hidden'), true);
   await s.close();
 });
-test('lab progress increments in state and stops at 100 percent', async () => {
-  const s = await open('labs.html');
-  const buttons = [...s.d.querySelectorAll('button')].filter(
-    (b) => b.textContent === 'Complete Lab'
-  );
-  await s.click(buttons[1]);
-  assert.equal(s.d.querySelector('#module2-progress').style.width, '75%');
-  await s.click(buttons[1]);
-  await s.click(buttons[1]);
-  assert.equal(s.d.querySelector('#module2-progress').style.width, '100%');
-  assert.match(
-    s.d.querySelector('#module2-progress').parentElement.nextElementSibling.textContent,
-    /100% completed/
-  );
+test('the legacy labs route offers six working selectable lab cards', async () => {
+  const s = await open('labs.html', { app: true, url: 'http://localhost/labs' });
+  assert.equal(s.d.querySelectorAll('article').length, 6);
+  const links = [...s.d.querySelectorAll('article>a')];
+  assert.equal(new Set(links.map((a) => a.getAttribute('href'))).size, 6);
+  await s.click(links[2]);
+  assert.match(s.w.location.pathname, /^\/practice\//);
+  assert.ok(s.d.querySelector('form'));
+  assert.ok(s.d.querySelector('button[type="submit"],form button'));
+  assert.deepEqual(s.errors, []);
   await s.close();
 });
 test('SQL lab preserves search and union-based training result', async () => {
@@ -573,6 +569,69 @@ test('Google sign-in remains available when the options request fails and recove
   assert.equal(s.requests[0][0], '/api/auth/google');
   assert.match(s.d.querySelector('[role="status"]').textContent, /try Google sign-in again/);
   assert.equal(google.disabled, false);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+
+test('lab search, difficulty and completion filters compose and can be cleared', async () => {
+  const s = await open('practice.html', {
+    app: true,
+    url: 'http://localhost/practice',
+    progress: ['idor'],
+  });
+  await s.fill('[aria-label="Search labs"]', 'invoice');
+  assert.equal(s.d.querySelectorAll('article').length, 1);
+  assert.match(s.d.querySelector('article').textContent, /Read the other invoice/);
+  await s.click(
+    [...s.d.querySelectorAll('.bb-tabs button')].find((button) =>
+      button.textContent.startsWith('Not started')
+    )
+  );
+  assert.equal(s.d.querySelectorAll('article').length, 0);
+  await s.click(
+    [...s.d.querySelectorAll('button')].find((button) => button.textContent === 'Clear filters')
+  );
+  assert.equal(s.d.querySelectorAll('article').length, 6);
+  await s.act(() => {
+    const select = s.d.querySelector('[aria-label="Lab difficulty"]');
+    select.value = 'Intermediate';
+    select.dispatchEvent(new s.w.Event('change', { bubbles: true }));
+  });
+  assert.equal(s.d.querySelectorAll('article').length, 1);
+  assert.match(s.d.querySelector('article').textContent, /Escape the public folder/);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+test('dashboard uses account progress and continues to the next incomplete lab', async () => {
+  const s = await open('dashboard.html', {
+    app: true,
+    url: 'http://localhost/dashboard',
+    progress: ['sql-injection', 'xss'],
+  });
+  assert.match(s.d.querySelector('[aria-label="33% completed"]').textContent, /33/);
+  const next = [...s.d.querySelectorAll('a')].find((a) => a.textContent === 'Continue learning');
+  assert.equal(next.getAttribute('href'), '/practice/authentication');
+  await s.click(next);
+  assert.equal(s.w.location.pathname, '/practice/authentication');
+  assert.ok(s.d.querySelector('form'));
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+test('every course popup entry opens a supported lab or tutorial route', async () => {
+  const s = await open('content/main.html', { app: true, url: 'http://localhost/courses' });
+  for (const button of [...s.d.querySelectorAll('.bb-course-card button')]) {
+    await s.act(() => button.focus());
+    await s.click(button);
+    for (const link of s.d.querySelectorAll('#vulnerabilityList a'))
+      assert.ok(s.w.harness.resolvePage(link.pathname), link.pathname);
+    await s.act(() =>
+      s.d
+        .querySelector('[role="dialog"]')
+        .dispatchEvent(new s.w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    );
+    assert.equal(s.d.querySelector('[role="dialog"]'), null);
+    assert.equal(s.d.activeElement, button);
+  }
   assert.deepEqual(s.errors, []);
   await s.close();
 });

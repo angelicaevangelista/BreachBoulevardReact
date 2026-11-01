@@ -1,30 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, assetUrl, useRouter } from '../routing';
 import { practiceLabs, findPracticeLab } from '../data/practice-labs';
-import { useLearner } from '../components/LearnerGate';
-
-const progressKey = 'breach.practice.progress.v1';
-function readProgress() {
-  try {
-    const value = JSON.parse(localStorage.getItem(progressKey) || '{}');
-    return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
-  } catch {
-    return {};
-  }
-}
-const button =
-  'bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-3 rounded-lg disabled:opacity-50';
+import AppShell, { Icon, Mascot } from '../components/Interface';
+import useLabProgress from '../hooks/useLabProgress';
+export const labIcons = ['terminal', 'code', 'key', 'eye', 'shield', 'book'];
 function Challenge({ lab, onComplete, solved }) {
   const [values, setValues] = useState(() =>
     Object.fromEntries(lab.fields.map((field) => [field.key, field.initial]))
   );
-  const [hints, setHints] = useState(0);
-  const [result, setResult] = useState(null);
-  const [busy, setBusy] = useState(false);
+  const [hints, setHints] = useState(0),
+    [result, setResult] = useState(null),
+    [busy, setBusy] = useState(false);
   const request = useRef(null);
   useEffect(() => () => request.current?.abort(), []);
   async function submit(event) {
     event.preventDefault();
+    if (busy) return;
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
@@ -50,64 +41,73 @@ function Challenge({ lab, onComplete, solved }) {
       if (!controller.signal.aborted) setBusy(false);
     }
   }
+  const next =
+    practiceLabs[(practiceLabs.findIndex((item) => item.id === lab.id) + 1) % practiceLabs.length];
   return (
     <>
-      <Link to="/practice" className="text-orange-400 hover:underline">
-        ← All practice labs
+      <Link to="/practice" className="bb-breadcrumb">
+        <Icon name="back" size={16} /> All practice labs
       </Link>
-      <div className="mt-6 mb-8">
-        <p className="text-orange-400 text-sm font-semibold">
-          {lab.category} · {lab.difficulty} · {lab.minutes} min {solved && '· Completed'}
-        </p>
-        <h1 className="text-3xl md:text-4xl font-bold mt-3">{lab.title}</h1>
-        <p className="text-gray-300 mt-4 max-w-3xl">{lab.summary}</p>
+      <div className="bb-page-heading">
+        <div>
+          <span className="bb-eyebrow">{lab.category}</span>
+          <h1>{lab.title}</h1>
+          <p>{lab.summary}</p>
+        </div>
+        <span className={`bb-tag ${solved ? 'bb-tag-green' : 'bb-tag-orange'}`}>
+          {solved ? '✓ Completed' : `${lab.difficulty} · ${lab.minutes} min`}
+        </span>
       </div>
-      <div className="grid lg:grid-cols-2 gap-6 items-start">
-        <section className="bg-[#1b2b3c] border border-gray-700 rounded-xl p-6">
-          <h2 className="text-xl font-bold text-orange-400">Your mission</h2>
-          <p className="mt-3 text-gray-300">{lab.objective}</p>
-          <form onSubmit={submit} className="mt-6 space-y-5">
+      <div className="bb-challenge-grid">
+        <section className="bb-panel">
+          <span className="bb-challenge-label">
+            <Icon name="flag" size={15} /> YOUR MISSION
+          </span>
+          <h2 className="bb-challenge-title">Let’s investigate.</h2>
+          <p className="bb-challenge-description">{lab.objective}</p>
+          <form className="bb-form" onSubmit={submit}>
             {lab.fields.map((field) => (
-              <div key={field.key}>
-                <label htmlFor={field.key} className="block mb-2 font-medium">
-                  {field.label}
-                </label>
+              <div className="bb-field" key={field.key}>
+                <label htmlFor={field.key}>{field.label}</label>
                 {field.type === 'textarea' ? (
                   <textarea
                     id={field.key}
                     rows={5}
                     maxLength={4096}
                     value={values[field.key]}
-                    onChange={(event) => setValues({ ...values, [field.key]: event.target.value })}
-                    className="w-full bg-[#0d1b2a] border border-gray-600 rounded-lg p-3 text-white font-mono focus:outline-orange-500"
+                    onChange={(e) => setValues({ ...values, [field.key]: e.target.value })}
                   />
                 ) : (
                   <input
                     id={field.key}
                     type={field.type || 'text'}
-                    maxLength={4096}
                     autoComplete="off"
+                    maxLength={4096}
                     value={values[field.key]}
-                    onChange={(event) => setValues({ ...values, [field.key]: event.target.value })}
-                    className="w-full bg-[#0d1b2a] border border-gray-600 rounded-lg p-3 text-white focus:outline-orange-500"
+                    onChange={(e) => setValues({ ...values, [field.key]: e.target.value })}
                   />
                 )}
               </div>
             ))}
-            <button className={button} disabled={busy}>
+            <button disabled={busy} className="bb-button bb-button-primary bb-button-wide">
+              <Icon name={busy ? 'refresh' : 'terminal'} size={17} />
               {busy ? 'Checking…' : 'Run attempt'}
             </button>
           </form>
-          <div className="border-t border-gray-600 mt-7 pt-5">
-            <h2 className="font-bold">Need a hint?</h2>
-            <ol className="list-decimal pl-5 text-gray-300 space-y-3 mt-3">
+          <div className="bb-hints">
+            <div className="bb-hints-heading">
+              <Mascot compact />
+              <div>
+                <h3>A little nudge?</h3>
+                <p>Byte has a hint when you need one.</p>
+              </div>
+            </div>
+            <ol>
               {lab.hints.slice(0, hints).map((hint) => (
                 <li key={hint}>{hint}</li>
               ))}
             </ol>
             <button
-              type="button"
-              className="text-orange-400 hover:underline mt-4 disabled:text-gray-500"
               disabled={hints === lab.hints.length}
               onClick={() => setHints((count) => count + 1)}
             >
@@ -115,37 +115,51 @@ function Challenge({ lab, onComplete, solved }) {
             </button>
           </div>
         </section>
-        <section
-          className="bg-[#1b2b3c] border border-gray-700 rounded-xl p-6"
-          aria-live="polite"
-          aria-busy={busy}
-        >
-          <h2 className="text-xl font-bold text-orange-400">Lab response</h2>
+        <section className="bb-panel bb-response" aria-live="polite" aria-busy={busy}>
+          <div className="bb-response-header">
+            <div className="bb-code-dots">
+              <i />
+              <i />
+              <i />
+            </div>
+            <span>lab-response.console</span>
+            <Icon name="terminal" size={16} />
+          </div>
           {result ? (
-            <>
-              <p className="mt-4 font-medium">
+            <div className="bb-response-content">
+              <h2 className="bb-challenge-title">Lab response</h2>
+              <p>
                 {result.completed ? 'Challenge completed! ' : ''}
                 {result.feedback}
               </p>
-              {result.output && (
-                <pre className="mt-4 rounded-lg bg-[#0d1b2a] p-4 text-sm whitespace-pre-wrap break-words overflow-auto">
-                  {JSON.stringify(result.output, null, 2)}
-                </pre>
-              )}
+              {result.output && <pre>{JSON.stringify(result.output, null, 2)}</pre>}
               {result.completed && (
-                <div className="mt-5 border-t border-gray-600 pt-5">
-                  <p className="text-orange-400 font-mono break-all">{result.flag}</p>
-                  <h3 className="font-bold mt-5">How to prevent it</h3>
-                  <p className="text-gray-300 mt-2">{lab.lesson}</p>
+                <div className="bb-completion">
+                  <strong>
+                    <Icon name="check" size={17} /> Nicely done. Flag captured!
+                  </strong>
+                  <code>{result.flag}</code>
+                  <h3>How to prevent it</h3>
+                  <p>{lab.lesson}</p>
+                  <Link className="bb-button bb-button-soft" to={`/practice/${next.id}`}>
+                    Try the next lab <Icon name="arrow" size={15} />
+                  </Link>
                 </div>
               )}
-            </>
+            </div>
           ) : (
-            <p className="text-gray-400 mt-4">Run an attempt to inspect the simulated response.</p>
+            <div className="bb-response-empty">
+              <Mascot />
+              <h3>{busy ? 'Following the clues…' : 'Your discovery goes here.'}</h3>
+              <p>
+                {busy
+                  ? 'Checking your attempt. Hang tight!'
+                  : 'Run an attempt to inspect the simulated response.'}
+              </p>
+            </div>
           )}
-          <p className="text-gray-400 text-xs mt-6">
-            This exercise uses fictional data and simulated behavior. Your input stays within this
-            training exercise.
+          <p className="bb-response-footnote">
+            <Icon name="shield" size={15} /> Fictional data. A safe space to experiment.
           </p>
         </section>
       </div>
@@ -153,124 +167,185 @@ function Challenge({ lab, onComplete, solved }) {
   );
 }
 export default function Practice() {
-  const router = useRouter();
-  const location = router?.location || window.location.pathname;
-  const id = location.split(/[?#]/)[0].match(/\/practice\/([^/]+)\/?$/)?.[1];
-  const lab = findPracticeLab(id);
-  const learner = useLearner();
-  const [progress, setProgress] = useState(() => (learner ? {} : readProgress()));
-  const [progressMessage, setProgressMessage] = useState('');
-  useEffect(() => {
-    if (!learner) return;
-    const controller = new AbortController();
-    fetch(assetUrl('api/account/progress'), { signal: controller.signal, cache: 'no-store' })
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok || !data.success) throw new Error();
-        if (!controller.signal.aborted)
-          setProgress((previous) => ({
-            ...previous,
-            ...Object.fromEntries(data.completed.map((id) => [id, true])),
-          }));
-      })
-      .catch(() => {
-        if (!controller.signal.aborted)
-          setProgressMessage('Saved progress could not be loaded. Reload to try again.');
-      });
-    return () => controller.abort();
-  }, [learner]);
-  function complete(labId, savedLabs) {
-    setProgress((previous) => {
-      const next = { ...previous, [labId]: previous[labId] || new Date().toISOString() };
-      if (!learner)
-        try {
-          localStorage.setItem(progressKey, JSON.stringify(next));
-        } catch {}
-      return next;
-    });
-  }
+  const router = useRouter(),
+    location = router?.location || window.location.pathname;
+  const id = location.split(/[?#]/)[0].match(/\/practice\/([^/]+)\/?$/)?.[1],
+    lab = findPracticeLab(id);
+  const { progress, loading, error, completed, recordCompletion, reload } = useLabProgress();
+  const [query, setQuery] = useState(''),
+    [difficulty, setDifficulty] = useState('all'),
+    [status, setStatus] = useState('all');
+  const filtered = practiceLabs.filter(
+    (item) =>
+      `${item.title} ${item.category} ${item.summary}`
+        .toLowerCase()
+        .includes(query.toLowerCase()) &&
+      (difficulty === 'all' || item.difficulty === difficulty) &&
+      (status === 'all' || (status === 'completed' ? progress[item.id] : !progress[item.id]))
+  );
   return (
-    <div className="min-h-screen bg-[#0d1b2a] text-white">
-      <header className="border-b border-gray-700 bg-[#1b2b3c]">
-        <nav
-          className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-5"
-          aria-label="Main navigation"
-        >
-          <Link to="/" className="text-orange-500 text-xl font-bold">
-            Breach Boulevard
-          </Link>
-          <div className="flex gap-6 text-sm">
-            <Link to="/">Home</Link>
-            <Link to="/courses">Courses</Link>
-            <Link to="/practice" className="text-orange-400">
-              Labs
+    <AppShell active="labs" title="Practice labs" eyebrow="A little curiosity goes a long way">
+      {error && (
+        <p className="bb-notice" role="alert">
+          {error}
+          <button onClick={reload}>Try again</button>
+        </p>
+      )}
+      {id ? (
+        lab ? (
+          <Challenge
+            key={id}
+            lab={lab}
+            solved={Boolean(progress[id])}
+            onComplete={recordCompletion}
+          />
+        ) : (
+          <div className="bb-empty">
+            <Mascot />
+            <h1>Lab not found</h1>
+            <Link className="bb-button bb-button-primary" to="/practice">
+              Browse practice labs
             </Link>
           </div>
-        </nav>
-      </header>
-      <main className="max-w-6xl mx-auto px-6 py-10 md:py-14">
-        {id ? (
-          lab ? (
-            <Challenge key={id} lab={lab} solved={Boolean(progress[id])} onComplete={complete} />
-          ) : (
-            <>
-              <h1 className="text-3xl font-bold">Lab not found</h1>
-              <Link to="/practice" className="text-orange-400">
-                Browse practice labs
-              </Link>
-            </>
-          )
-        ) : (
-          <>
-            <p className="uppercase tracking-widest text-sm text-orange-400 font-semibold">
-              Learn by doing
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold mt-3">Practice labs</h1>
-            <p className="text-gray-300 max-w-2xl mt-4">
-              Explore six security challenges, inspect the responses, and learn how to fix each
-              weakness. Reveal hints whenever you need them.
-            </p>
-            <p className="mt-6 text-orange-400" role="status">
-              {practiceLabs.filter((item) => progress[item.id]).length} of {practiceLabs.length}{' '}
-              completed
-            </p>
-            <p className="text-gray-400 text-sm mt-1">
-              {learner
-                ? 'Progress is saved to your account.'
-                : 'Progress is saved in this browser.'}
-            </p>
-            {progressMessage && (
-              <p role="alert" className="text-orange-300 text-sm mt-2">
-                {progressMessage}
+        )
+      ) : (
+        <>
+          <div className="bb-page-heading">
+            <div>
+              <span className="bb-eyebrow">
+                <Icon name="flask" size={14} /> LEARN BY DOING
+              </span>
+              <h1>
+                Small labs. Big discoveries<span className="bb-orange">.</span>
+              </h1>
+              <p>
+                Pick something that sparks your curiosity. Try, explore, and ask Byte for a hint
+                along the way.
               </p>
-            )}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-9">
-              {practiceLabs.map((item) => (
-                <article
-                  key={item.id}
-                  className="bg-[#1b2b3c] border border-gray-700 hover:border-orange-500 rounded-xl p-6 flex flex-col"
-                >
-                  <p className="text-orange-400 text-sm font-semibold">{item.category}</p>
-                  <h2 className="text-xl font-bold mt-3">{item.title}</h2>
-                  <p className="text-gray-300 mt-3 flex-1">{item.summary}</p>
-                  <p className="text-gray-400 text-sm mt-5">
-                    {item.difficulty} · {item.minutes} min
-                  </p>
-                  <Link to={`/practice/${item.id}`} className={`${button} mt-5 text-center`}>
-                    {progress[item.id] ? 'Practice again' : 'Start lab'}
-                  </Link>
-                  {progress[item.id] && (
-                    <span className="text-orange-400 text-sm mt-3">Completed ✓</span>
-                  )}
-                </article>
-              ))}
             </div>
-          </>
-        )}
-      </main>
-      <footer className="text-center text-gray-400 text-sm px-6 py-8 border-t border-gray-700">
-        Breach Boulevard · Build your security skills
-      </footer>
-    </div>
+            <span className="bb-tag bb-tag-orange" role="status">
+              {loading
+                ? 'Loading progress…'
+                : `${completed.length} of ${practiceLabs.length} completed`}
+            </span>
+          </div>
+          <div className="bb-lab-toolbar">
+            <label className="bb-search">
+              <Icon name="search" size={18} />
+              <input
+                aria-label="Search labs"
+                type="search"
+                placeholder="Find your next challenge…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </label>
+            <select
+              className="bb-filter-select"
+              aria-label="Lab difficulty"
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
+            >
+              <option value="all">All difficulties</option>
+              {[...new Set(practiceLabs.map((item) => item.difficulty))].map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+            <Link className="bb-button bb-button-quiet" to="/dashboard">
+              <Icon name="grid" size={16} /> My progress
+            </Link>
+          </div>
+          <div className="bb-tabs" aria-label="Filter labs by completion">
+            {[
+              ['all', 'All labs', practiceLabs.length],
+              ['new', 'Not started', practiceLabs.length - completed.length],
+              ['completed', 'Completed', completed.length],
+            ].map(([value, label, count]) => (
+              <button
+                key={value}
+                aria-pressed={status === value}
+                className={status === value ? 'is-active' : ''}
+                onClick={() => setStatus(value)}
+              >
+                {label}
+                <span>{count}</span>
+              </button>
+            ))}
+          </div>
+          <p className="bb-lab-count" aria-live="polite">
+            {filtered.length} {filtered.length === 1 ? 'lab' : 'labs'} to explore · Progress is
+            saved to your account.
+          </p>
+          <div className="bb-lab-grid">
+            {filtered.map((item) => {
+              const index = practiceLabs.indexOf(item);
+              return (
+                <article className="bb-lab-card" key={item.id}>
+                  <Link
+                    to={`/practice/${item.id}`}
+                    aria-label={`${progress[item.id] ? 'Practice again' : 'Start lab'}: ${item.title}`}
+                  >
+                    <div className="bb-lab-card-top">
+                      <span
+                        className={`bb-lab-icon ${index % 3 === 1 ? 'is-purple' : index % 3 === 2 ? 'is-mint' : ''}`}
+                      >
+                        <Icon name={labIcons[index]} size={23} />
+                      </span>
+                      <span className={`bb-tag ${progress[item.id] ? 'bb-tag-green' : ''}`}>
+                        {progress[item.id] ? '✓ Completed' : item.difficulty}
+                      </span>
+                    </div>
+                    <p className="bb-lab-category">{item.category}</p>
+                    <h2>{item.title}</h2>
+                    <p className="bb-lab-summary">{item.summary}</p>
+                    <div className="bb-lab-meta">
+                      <span>
+                        <Icon name="clock" size={13} />
+                        {item.minutes} min
+                      </span>
+                      <span>
+                        <Icon name="help" size={13} />
+                        Hints included
+                      </span>
+                    </div>
+                    <span className="bb-card-action">
+                      {progress[item.id] ? 'Practice again' : 'Start lab'}
+                      <Icon name="arrow" size={17} />
+                    </span>
+                  </Link>
+                </article>
+              );
+            })}
+          </div>
+          {!filtered.length && (
+            <div className="bb-panel bb-empty">
+              <Mascot />
+              <h3>No labs in this little corner yet.</h3>
+              <p>Try another search or clear your filters to explore all six challenges.</p>
+              <button
+                className="bb-button bb-button-secondary"
+                onClick={() => {
+                  setQuery('');
+                  setStatus('all');
+                  setDifficulty('all');
+                }}
+              >
+                Clear filters
+              </button>
+            </div>
+          )}
+          <div className="bb-catalog-banner">
+            <div>
+              <h3>New to this? You’re in the right place.</h3>
+              <p>Start with a beginner lab. Every challenge comes with hints and a lesson.</p>
+            </div>
+            <Mascot compact />
+            <Link className="bb-button bb-button-soft" to="/practice/sql-injection">
+              Try your first lab <Icon name="arrow" size={16} />
+            </Link>
+          </div>
+        </>
+      )}
+    </AppShell>
   );
 }

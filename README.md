@@ -3,8 +3,21 @@
 For the GitHub/Vercel deployment, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 The frontend and backend are JavaScript. The app runs on Node.js 22 or newer;
-PHP, XAMPP, and MySQL are not required. The original colors, page layouts,
-images, text, React interactions, and access-code behavior are retained.
+PHP, XAMPP, and MySQL are not required. The interface uses the original orange
+and navy palette with a friendly mascot, responsive cards, and shared navigation.
+Existing authentication, training simulations, and access-code behavior are retained.
+
+## Learning workspace
+
+- `/access`: Google or email sign-in, followed by the existing course access-code step.
+- `/dashboard`: account-backed lab completions and the next incomplete challenge.
+- `/practice` and `/labs`: six selectable lab cards, search, difficulty, and completion filters.
+- `/practice/:id`: interactive challenges, progressive hints, feedback, and saved completions.
+- `/courses`: topic cards with clickable links to working labs and tutorials.
+- `/admin`: the existing protected code-management tools in the shared visual design.
+
+Loading screens show Byte, the security buddy. Motion respects the device's
+reduced-motion setting. Course dialogs support keyboard focus, Escape, and Tab.
 
 ## Run locally
 

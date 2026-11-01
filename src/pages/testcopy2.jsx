@@ -1,739 +1,239 @@
 import React, { useState } from 'react';
 import { Link } from '../routing';
-import { assetUrl } from '../routing';
+import { Brand, Icon, Mascot } from '../components/Interface';
 import useSqlDemo from '../hooks/useSqlDemo';
-import { routePaths } from '../routing';
 import QuizTerminal from '../components/QuizTerminal';
 import FaqItem from '../components/FaqItem';
-
-export default function Page() {
+export default function Home() {
   const sql = useSqlDemo();
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
   return (
-    <>
-      <nav className={'bg-orange-500 p-4 shadow-md rounded-lg mb-6'}>
-        <div className={'container mx-auto flex items-center justify-between'}>
-          <a href={'#'} className={'flex items-center space-x-2'}>
-            <img src={assetUrl('BBLOGO.png')} alt={'Breach Boulevard Logo'} className={'h-8 w-8'} />
-
-            <span className={'text-white text-2xl font-semibold'}>{'Breach Boulevard'}</span>
-          </a>
-
-          <ul className={'flex space-x-6 text-white'}>
-            <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'Home'}
-              </a>
-            </li>
-
-            <li>
-              <Link className={'hover:underline'} to={routePaths['about.html']}>
-                {'About'}
-              </Link>
-            </li>
-
-            <li>
-              <Link to="/practice" className={'hover:underline'}>
-                {'Labs'}
-              </Link>
-            </li>
-
-            <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'Contact'}
-              </a>
-            </li>
-
-            <li>
-              <Link className={'hover:underline'} to={routePaths['access/access.html']}>
-                {'Get Started'}
-              </Link>
-            </li>
-          </ul>
+    <div className="bb-ui bb-home">
+      <nav className="bb-public-header">
+        <Brand />
+        <div className="bb-home-links">
+          <Link to="/about">About</Link>
+          <Link to="/practice">Labs</Link>
+          <Link to="/access" className="bb-button bb-button-primary">
+            Get Started
+            <Icon name="arrow" size={16} />
+          </Link>
         </div>
       </nav>
-
-      <div className={'flex flex-col items-center justify-center min-h-screen px-4'}>
-        <header className={'w-full max-w-4xl text-center'}>
-          <h1 className={'text-4xl font-bold text-gray-800'}>
-            {'\n                Secure Tomorrow by  '}
-            <span className={'text-orange-500'}>{'Hacking Today.'}</span>
+      <header className="bb-home-hero">
+        <div>
+          <span className="bb-eyebrow">
+            <Icon name="spark" size={15} /> FOR THE CURIOUS MINDS
+          </span>
+          <h1>
+            A little curious.
+            <br />A lot more
+            <br />
+            <span className="bb-orange">cyber smart.</span>
           </h1>
-
-          <p className={'mt-4 text-lg text-gray-600'}>
-            {'\n                Defend by Understanding the Hacker’s Mindset.\n            '}
+          <p>
+            Meet your friendly corner of cybersecurity. Explore hands-on labs, follow the clues, and
+            turn “what if?” into “I get it.”
           </p>
-        </header>
-
-        <main className={'mt-8 w-full max-w-4xl'}>
-          <section className={'mt-12 flex flex-col lg:flex-row items-center lg:items-start'}>
-            <div className={'lg:w-1/2 lg:pr-6'}>
-              <h2 className={'text-2xl font-bold text-gray-800'}>{'Interactive Terminal'}</h2>
-
-              <p className={'mt-4 text-gray-600'}>
-                {
-                  'Use the terminal to practice your skills in a safe environment. Type "help" to get started.'
-                }
-              </p>
+          <div className="bb-hero-actions">
+            <Link to="/access" className="bb-button bb-button-primary">
+              Let’s get started
+              <Icon name="arrow" size={17} />
+            </Link>
+            <Link to="/practice" className="bb-button bb-button-secondary">
+              Explore the labs
+            </Link>
+          </div>
+          <div className="bb-home-bits">
+            <span>
+              <Icon name="flask" size={15} />6 guided labs
+            </span>
+            <span>
+              <Icon name="heart" size={15} />
+              Beginner friendly
+            </span>
+            <span>
+              <Icon name="shield" size={15} />
+              Safe to explore
+            </span>
+          </div>
+        </div>
+        <div className="bb-auth-art">
+          <Mascot />
+          <div className="bb-art-terminal">
+            <div className="bb-code-dots">
+              <i />
+              <i />
+              <i />
             </div>
-
-            <div className={'lg:w-1/2 lg:pl-6 mt-6 lg:mt-0'}>
-              <div className={'relative'}>
-                <div className={'arrow-box'}>
-                  <span>{'Try Me!'}</span>
-                </div>
-
-                <QuizTerminal
-                  id="terminal"
-                  className={'terminal mt-4'}
-                  tabIndex={0}
-                  autoFocus={true}
-                  welcome={
-                    <>
-                      <div>{'Welcome to Breach Boulevard. Type "help" to get started.'}</div>
-                    </>
-                  }
-                />
-              </div>
+            <code>
+              <span>$ hello, curious human</span>
+              <br />
+              Initializing your next discovery…
+              <br />
+              <span className="bb-mint">✓ You’ve got this.</span>
+            </code>
+          </div>
+          <span className="bb-art-sticker">
+            <Icon name="flag" size={18} /> First flag? Coming right up.
+          </span>
+        </div>
+      </header>
+      <section className="bb-home-section">
+        <span className="bb-eyebrow">SMALL STEPS. REAL SKILLS.</span>
+        <h2>Learning feels better here.</h2>
+        <p>A little structure, a little play, and plenty of room to figure things out.</p>
+        <div className="bb-home-features">
+          {[
+            [
+              'flask',
+              'Try it. Break it. Get it.',
+              'Explore six guided security challenges with fictional data and real lessons.',
+            ],
+            [
+              'help',
+              'A nudge when you need it.',
+              'Reveal hints at your own pace. Every attempt is another clue.',
+            ],
+            [
+              'flag',
+              'See how far you’ve come.',
+              'Keep your completed labs in your account and pick up your next challenge.',
+            ],
+          ].map(([icon, title, copy]) => (
+            <article className="bb-home-feature" key={title}>
+              <span className="bb-stat-icon">
+                <Icon name={icon} />
+              </span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="bb-home-section" id="playground">
+        <span className="bb-eyebrow">
+          <Icon name="terminal" size={15} /> A LITTLE TASTE OF THE ADVENTURE
+        </span>
+        <h2>Go on. Poke around.</h2>
+        <p>Try the terminal quiz or a tiny SQL demonstration before starting the full labs.</p>
+        <div className="bb-playground-grid">
+          <section className="bb-panel">
+            <div className="bb-panel-heading">
+              <h3>Curiosity console</h3>
+              <span className="bb-tag">Try “help”</span>
             </div>
+            <QuizTerminal
+              id="terminal"
+              welcome={<p>Welcome, curious human. Type help to get started.</p>}
+            />
+            <p className="bb-admin-note">Type help, about, clear, or quiz. No experience needed.</p>
           </section>
-
-          <br />
-
-          <br />
-
-          <br />
-
-          <br />
-
-          <section className={'mt-12 flex flex-col lg:flex-row items-center lg:items-start'}>
-            <div className={'lg:w-1/2 lg:pr-6 order-2 lg:order-1 mt-6 lg:mt-0'}>
-              <div className={'relative'}>
-                <button
-                  className={
-                    'px-4 py-2 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none'
-                  }
-                  onClick={sql.scrollToInput}
-                >
-                  {'\n                            Try Me\n                        '}
-                </button>
-
-                <div
-                  className={
-                    'absolute top-0 left-0 right-0 flex justify-center mt-10 animate-bounce'
-                  }
-                >
-                  <svg
-                    xmlns={'http://www.w3.org/2000/svg'}
-                    className={'h-6 w-6 text-orange-500'}
-                    fill={'none'}
-                    viewBox={'0 0 24 24'}
-                    stroke={'currentColor'}
-                  >
-                    <path
-                      strokeLinecap={'round'}
-                      strokeLinejoin={'round'}
-                      strokeWidth={'2'}
-                      d={'M19 9l-7 7-7-7'}
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-
-              <form
-                id={'sql-demo'}
-                className={'flex flex-col items-center mt-6'}
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  sql.checkLogin();
-                }}
-              >
+          <section className="bb-panel">
+            <div className="bb-panel-heading">
+              <h3>A sneaky little login</h3>
+              <span className="bb-tag bb-tag-orange">SQL demo</span>
+            </div>
+            <p className="bb-muted">What happens when an input becomes part of a query?</p>
+            <form
+              className="bb-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                sql.checkLogin();
+              }}
+            >
+              <div className="bb-field">
+                <label htmlFor="username">Username</label>
                 <input
-                  id={'username'}
-                  type={'text'}
-                  placeholder={'Username'}
-                  className={
-                    'w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-orange-400'
-                  }
-                  value={sql.username}
+                  id="username"
                   ref={sql.usernameRef}
-                  onChange={(event) => sql.setUsername(event.target.value)}
+                  value={sql.username}
+                  onChange={(e) => sql.setUsername(e.target.value)}
+                  autoComplete="off"
+                  placeholder="Try a username…"
                 />
-
+              </div>
+              <div className="bb-field">
+                <label htmlFor="password">Password</label>
                 <input
-                  id={'password'}
-                  type={'password'}
-                  placeholder={'Password'}
-                  className={
-                    'w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-orange-400'
-                  }
+                  id="password"
+                  type="password"
                   value={sql.password}
-                  onChange={(event) => sql.setPassword(event.target.value)}
+                  onChange={(e) => sql.setPassword(e.target.value)}
+                  autoComplete="off"
+                  placeholder="And a password"
                 />
-
-                <button
-                  type={'button'}
-                  className={
-                    'px-4 py-2 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none'
-                  }
-                  onClick={sql.checkLogin}
-                >
-                  {'\n                            Login\n                        '}
-                </button>
-              </form>
-
-              <div id={'output'} className={'mt-4 text-orange-600 font-semibold'}>
-                {sql.output}
               </div>
-
-              <div id={'info'} className={'mt-2 text-gray-600 text-sm'}>
-                {sql.info}
-              </div>
-            </div>
-
-            <div className={'lg:w-1/2 lg:pl-6 order-1 lg:order-2'}>
-              <h2 className={'text-2xl font-bold text-gray-800'}>{'SQL Injection Demo'}</h2>
-
-              <p className={'mt-4 text-gray-600'}>
-                {'Try entering '}
-                <code className={'bg-gray-100 text-orange-600 px-1 rounded'}>{"' OR '1'='1"}</code>
-                {' to see how SQL Injection works.'}
-              </p>
-            </div>
-          </section>
-        </main>
-
-        <svg
-          xmlns={'http://www.w3.org/2000/svg'}
-          viewBox={'0 0 1440 320'}
-          style={{ width: '100%', display: 'block' }}
-        >
-          <path
-            fill={'#0d1b2a'}
-            d={
-              'M0,192L60,208C120,224,240,256,360,245.3C480,235,600,181,720,165.3C840,149,960,171,1080,186.7C1200,203,1320,213,1380,218.7L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'
-            }
-          ></path>
-        </svg>
-
-        <section className={'bg-[#0d1b2a]'}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              backgroundColor: '#0d1b2a',
-              padding: '50px',
-              borderRadius: '15px',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-              fontFamily: 'Arial, sans-serif',
-              color: '#ffffff',
-              margin: '0 20px',
-            }}
-          >
-            <div
-              style={{
-                flex: '1',
-                background:
-                  'linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-                padding: '20px',
-                borderRadius: '20px',
-                marginRight: '15px',
-                textAlign: 'center',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '88px',
-                  fontWeight: 'bold',
-                  color: 'rgb(249, 115, 22)',
-                  margin: '0',
-                }}
-              >
-                {'75%'}
-              </p>
-
-              <p
-                style={{
-                  fontSize: '18px',
-                  lineHeight: '1.5',
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  margin: '10px 0 0',
-                }}
-              >
-                {
-                  '\n                        Cybersecurity professionals achieve better outcomes when trained using real-world vulnerabilities rather than theoretical models.\n                    '
-                }
-              </p>
-            </div>
-
-            <div
-              style={{
-                flex: '1',
-                background:
-                  'linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-                padding: '20px',
-                borderRadius: '20px',
-                marginLeft: '15px',
-                textAlign: 'center',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <p
-                className={
-                  'text-3xl font-bold font-size: 24px; font-weight: bold; color: rgb(228, 228, 228); margin: 0;'
-                }
-              >
-                {
-                  '\n                        Bridge the gap between theory and practice. Use real-world vulnerabilities for hands-on learning.\n                    '
-                }
-              </p>
-
-              <svg
-                width={'100%'}
-                height={'80'}
-                viewBox={'0 0 300 80'}
-                xmlns={'http://www.w3.org/2000/svg'}
-                style={{ marginTop: '20px' }}
-              >
-                <path
-                  d={'M0,40 Q50,10 100,40 T200,40 Q250,70 300,40'}
-                  fill={'none'}
-                  stroke={'rgb(249, 115, 22)'}
-                  strokeWidth={'4'}
-                ></path>
-              </svg>
-            </div>
-          </div>
-
-          <br />
-
-          <br />
-
-          <div
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              padding: '40px',
-              borderRadius: '15px',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
-              fontFamily: 'Arial, sans-serif',
-              maxWidth: '900px',
-              margin: 'auto',
-              color: 'rgba(255, 255, 255, 0.9)',
-            }}
-          >
-            <p
-              style={{
-                fontSize: '14px',
-                color: 'rgba(255, 255, 255, 0.7)',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-              }}
-            >
-              {'What is Your Website?'}
-            </p>
-
-            <h1 style={{ fontSize: '32px', color: '#ffffff', lineHeight: '1.4' }}>
-              {'\n                    An '}
-              <span style={{ color: 'rgb(249, 115, 22)', fontWeight: 'bold' }}>
-                {'innovative learning platform'}
-              </span>
-              {' \n                    for '}
-              <span style={{ color: 'rgb(249, 115, 22)', fontWeight: 'bold' }}>
-                {'real-world cybersecurity education.'}
-              </span>
-            </h1>
-
-            <ul style={{ listStyle: 'none', padding: '0', marginTop: '20px' }}>
-              <li style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <svg
-                    width={'16'}
-                    height={'16'}
-                    fill={'rgb(249, 115, 22)'}
-                    xmlns={'http://www.w3.org/2000/svg'}
-                  >
-                    <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                  </svg>
-                </div>
-
-                <p
-                  style={{
-                    marginLeft: '10px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '18px',
-                  }}
-                >
-                  {
-                    '\n                            Built-in vulnerability assessment tools for real-world practice.\n                        '
-                  }
-                </p>
-              </li>
-
-              <li style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <svg
-                    width={'16'}
-                    height={'16'}
-                    fill={'rgb(249, 115, 22)'}
-                    xmlns={'http://www.w3.org/2000/svg'}
-                  >
-                    <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                  </svg>
-                </div>
-
-                <p
-                  style={{
-                    marginLeft: '10px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '18px',
-                  }}
-                >
-                  {
-                    '\n                            Hands-on learning with real-world cybersecurity scenarios.\n                        '
-                  }
-                </p>
-              </li>
-
-              <li style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <svg
-                    width={'16'}
-                    height={'16'}
-                    fill={'rgb(249, 115, 22)'}
-                    xmlns={'http://www.w3.org/2000/svg'}
-                  >
-                    <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                  </svg>
-                </div>
-
-                <p
-                  style={{
-                    marginLeft: '10px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '18px',
-                  }}
-                >
-                  {
-                    '\n                            Automated feedback and performance tracking.\n                        '
-                  }
-                </p>
-              </li>
-
-              <li style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <svg
-                    width={'16'}
-                    height={'16'}
-                    fill={'rgb(249, 115, 22)'}
-                    xmlns={'http://www.w3.org/2000/svg'}
-                  >
-                    <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                  </svg>
-                </div>
-
-                <p
-                  style={{
-                    marginLeft: '10px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '18px',
-                  }}
-                >
-                  {
-                    '\n                            Accessible via web and mobile devices for flexible learning.\n                        '
-                  }
-                </p>
-              </li>
-
-              <li style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                <div
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(249, 115, 22, 0.2)',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <svg
-                    width={'16'}
-                    height={'16'}
-                    fill={'rgb(249, 115, 22)'}
-                    xmlns={'http://www.w3.org/2000/svg'}
-                  >
-                    <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                  </svg>
-                </div>
-
-                <p
-                  style={{
-                    marginLeft: '10px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontSize: '18px',
-                  }}
-                >
-                  {
-                    '\n                            Cheating prevention measures to ensure integrity.\n                        '
-                  }
-                </p>
-              </li>
-            </ul>
-          </div>
-
-          <div
-            className={
-              ' bg-[#0d1b2a] text-white text-center py-16 px-6 relative overflow-hidden font-sans'
-            }
-          >
-            <h1 className={'text-4xl font-bold'}>
-              {'\n                  Anyone can learn cybersecurity with \n                  '}
-              <span className={'text-orange-500'}>{'Breach Boulevard'}</span>
-            </h1>
-
-            <p className={'text-lg mt-4'}>
-              {
-                '\n                  Hands-on cybersecurity training through real-world scenarios\n                '
-              }
-            </p>
-
-            <div className={'mt-8 flex justify-center items-center'}>
-              <input
-                type={'email'}
-                placeholder={'Email'}
-                className={'px-4 py-2 rounded-md text-black w-80'}
-              />
-
-              <button
-                type="button"
-                onClick={() => window.location.assign(assetUrl('access'))}
-                className={
-                  'ml-4 px-6 py-2 bg-orange-500 text-white font-bold rounded-md hover:bg-orange-600 transition'
-                }
-              >
-                {'\n                    Get Started\n                  '}
+              <button className="bb-button bb-button-primary" type="submit">
+                Login
               </button>
+            </form>
+            <div id="output" role="status">
+              {sql.output}
             </div>
-
-            <div className={'mt-8 flex justify-center space-x-8 text-gray-400'}>
-              <div className={'flex items-center'}>
-                <svg
-                  className={'w-5 h-5 text-green-500 mr-2'}
-                  fill={'currentColor'}
-                  xmlns={'http://www.w3.org/2000/svg'}
-                  viewBox={'0 0 16 16'}
-                >
-                  <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                </svg>
-
-                <span>{'Beginner Friendly'}</span>
-              </div>
-
-              <div className={'flex items-center'}>
-                <svg
-                  className={'w-5 h-5 text-green-500 mr-2'}
-                  fill={'currentColor'}
-                  xmlns={'http://www.w3.org/2000/svg'}
-                  viewBox={'0 0 16 16'}
-                >
-                  <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                </svg>
-
-                <span>{'Real-World Scenarios'}</span>
-              </div>
-
-              <div className={'flex items-center'}>
-                <svg
-                  className={'w-5 h-5 text-green-500 mr-2'}
-                  fill={'currentColor'}
-                  xmlns={'http://www.w3.org/2000/svg'}
-                  viewBox={'0 0 16 16'}
-                >
-                  <path d={'M6 10.293L3.707 8 3 8.707l3 3 7-7L12.293 4 6 10.293z'}></path>
-                </svg>
-
-                <span>{'Interactive Challenges'}</span>
-              </div>
-            </div>
-
-            <div className={'flex justify-center mt-4'}>
-              <img src={assetUrl('bee.png')} width={'150px'} height={'175px'} />
-            </div>
-          </div>
-
-          <section className={'mt-12'}>
-            <div className={'max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg'}>
-              <h2 className={'text-2xl font-bold mb-4'}>{'Frequently Asked Questions'}</h2>
-
-              <div className={'space-y-4'}>
-                <FaqItem
-                  className={'border-b border-gray-200 pb-4'}
-                  buttonClass={
-                    'w-full flex justify-between items-center text-left text-lg font-medium text-gray-700 focus:outline-none'
-                  }
-                  iconClass={'transition-transform transform rotate-0 fas fa-plus'}
-                  answerClass={'hidden mt-2 text-gray-600'}
-                  question={
-                    <>
-                      <span className={'ml-4'}>{'What is your return policy?'}</span>
-                    </>
-                  }
-                >
-                  {
-                    '\n                                Our return policy lasts 30 days. If 30 days have gone by since your purchase, unfortunately, we can’t offer you a refund or exchange.\n                            '
-                  }
-                </FaqItem>
-
-                <FaqItem
-                  className={'border-b border-gray-200 pb-4'}
-                  buttonClass={
-                    'w-full flex justify-between items-center text-left text-lg font-medium text-gray-700 focus:outline-none'
-                  }
-                  iconClass={'transition-transform transform rotate-0 fas fa-plus'}
-                  answerClass={'hidden mt-2 text-gray-600'}
-                  question={
-                    <>
-                      <span className={'ml-4'}>{'How do I track my order?'}</span>
-                    </>
-                  }
-                >
-                  {
-                    '\n                                You can track your order using the tracking number provided in your order confirmation email.\n                            '
-                  }
-                </FaqItem>
-
-                <FaqItem
-                  className={'border-b border-gray-200 pb-4'}
-                  buttonClass={
-                    'w-full flex justify-between items-center text-left text-lg font-medium text-gray-700 focus:outline-none'
-                  }
-                  iconClass={'transition-transform transform rotate-0 fas fa-plus'}
-                  answerClass={'hidden mt-2 text-gray-600'}
-                  question={
-                    <>
-                      <span className={'ml-4'}>{'Do you ship internationally?'}</span>
-                    </>
-                  }
-                >
-                  {
-                    '\n                                Yes, we ship internationally. Shipping costs will apply, and will be added at checkout.\n                            '
-                  }
-                </FaqItem>
-
-                <FaqItem
-                  className={'border-b border-gray-200 pb-4'}
-                  buttonClass={
-                    'w-full flex justify-between items-center text-left text-lg font-medium text-gray-700 focus:outline-none'
-                  }
-                  iconClass={'transition-transform transform rotate-0 fas fa-plus'}
-                  answerClass={'hidden mt-2 text-gray-600'}
-                  question={
-                    <>
-                      <span className={'ml-4'}>{'Can I change my order?'}</span>
-                    </>
-                  }
-                >
-                  {
-                    '\n                                If you need to change your order, please contact us immediately. We process orders quickly, but we will do our best to accommodate your request.\n                            '
-                  }
-                </FaqItem>
-              </div>
-            </div>
+            <div id="info">{sql.info}</div>
           </section>
-
-          {disclaimerVisible && (
-            <div
-              id={'disclaimer'}
-              className={
-                'fixed bottom-0 left-0 right-0 bg-[#0d1b2a] text-white p-4 shadow-lg z-50 flex justify-between items-center'
-              }
+        </div>
+      </section>
+      <section className="bb-home-section">
+        <span className="bb-eyebrow">A FEW LITTLE ANSWERS</span>
+        <h2>Curious about the details?</h2>
+        <div className="bb-home-faq">
+          {[
+            [
+              'Do I need experience?',
+              'No. Start with a beginner lab and use the hints whenever you need them. Curiosity is a great first step.',
+            ],
+            [
+              'Are these real attacks?',
+              'The guided practice labs simulate vulnerable behavior using fictional data. They’re a controlled place to learn how weaknesses work and how to fix them.',
+            ],
+            [
+              'Will my progress be saved?',
+              'Yes. When you sign in, completed guided labs are saved to your account so you can return to your learning path.',
+            ],
+            [
+              'How do I get access?',
+              'Choose Get Started and sign in with Google or a confirmed email account. Then enter the course access code shared by your administrator.',
+            ],
+          ].map(([question, answer]) => (
+            <FaqItem
+              key={question}
+              question={question}
+              buttonClass="bb-faq-button"
+              iconClass="fa-plus"
+              answerClass="bb-faq-answer"
             >
-              <div className={'text-sm'}>
-                <p>
-                  <strong>{'Disclaimer:'}</strong>
-                  {
-                    ' The content on this website is for educational purposes only. By using this site, you acknowledge that the website may simulate vulnerabilities for cybersecurity learning. \n            '
-                  }
-                  <span className={'font-bold text-orange-500'}>
-                    {'Do not attempt to misuse the information for malicious purposes.'}
-                  </span>
-                </p>
-              </div>
-
-              <button
-                id={'acceptDisclaimer'}
-                className={
-                  'ml-4 bg-orange-500 hover:bg-orange-600 text-white px-7 py-1 rounded font-semibold'
-                }
-                onClick={() => setDisclaimerVisible(false)}
-              >
-                {'\n        I Understand\n    '}
-              </button>
-            </div>
-          )}
-
-          <footer className={'relative w-full'}>
-            <div className="px-6 py-5 text-center">
-              <Link to="/privacy" className="text-orange-400 hover:underline">
-                Privacy notice
-              </Link>
-            </div>
-            <svg
-              xmlns={'http://www.w3.org/2000/svg'}
-              viewBox={'0 0 1440 320'}
-              className={'w-full h-auto'}
-            >
-              <path
-                fill={'#f97316'}
-                d={
-                  'M0,160C30,200,60,240,120,245C180,250,240,210,300,185C360,160,420,150,480,160C540,170,600,200,660,213C720,227,780,213,840,197C900,181,960,165,1020,180C1080,195,1140,240,1200,245C1260,250,1320,210,1380,190C1410,180,1440,160,1440,160L1440,320L1380,320C1320,320,1260,320,1200,320C1140,320,1080,320,1020,320C960,320,900,320,840,320C780,320,720,320,660,320C600,320,540,320,480,320C420,320,360,320,300,320C240,320,180,320,120,320C60,320,30,320,0,320Z'
-                }
-              ></path>
-            </svg>
-          </footer>
-        </section>
-      </div>
-    </>
+              {answer}
+            </FaqItem>
+          ))}
+        </div>
+      </section>
+      <footer className="bb-home-bottom">
+        <Brand />
+        <span>A little practice. A safer tomorrow.</span>
+        <div>
+          <Link to="/privacy">Privacy notice</Link>
+          <Link to="/about">About</Link>
+          <Link to="/access">Get Started</Link>
+        </div>
+      </footer>
+      {disclaimerVisible && (
+        <aside id="disclaimer" className="bb-disclaimer">
+          <Icon name="shield" size={24} />
+          <p>
+            <strong>A safe place to learn.</strong> These simulations are for education. Practice
+            only on systems where you have permission.
+          </p>
+          <button
+            id="acceptDisclaimer"
+            className="bb-button bb-button-soft"
+            onClick={() => setDisclaimerVisible(false)}
+          >
+            I Understand
+          </button>
+        </aside>
+      )}
+    </div>
   );
 }

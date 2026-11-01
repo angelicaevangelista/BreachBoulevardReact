@@ -1,181 +1,65 @@
-import React, { useState } from 'react';
-import { Link } from '../../routing';
-import { assetUrl } from '../../routing';
-import VulnerabilityModal from '../../components/VulnerabilityModal';
-import { routePaths } from '../../routing';
-
-export default function Page() {
-  const [disclaimerVisible, setDisclaimerVisible] = useState(true);
+import React, { useState, useCallback } from 'react';
+import AppShell, { Icon, Mascot } from '../../components/Interface';
+import VulnerabilityModal, { courseExercises } from '../../components/VulnerabilityModal';
+const descriptions = {
+  'SQL Injection': 'Follow untrusted input into a query and discover why parameters matter.',
+  'Cross-Site Scripting': 'Explore unsafe rendering and learn how to keep data from becoming code.',
+  'Broken Authentication': 'Investigate weak credentials and build better sign-in habits.',
+  'Insecure Direct Object References':
+    'Discover why knowing an ID should never grant access to a record.',
+  'Sensitive Data Exposure':
+    'Spot the secrets hiding in plain sight and learn to keep them private.',
+  'Path Traversal': 'See how an innocent-looking file path can cross an important boundary.',
+};
+export default function Courses() {
   const [course, setCourse] = useState(null);
+  const close = useCallback(() => setCourse(null), []);
   return (
-    <>
-      <nav className={'bg-orange-500 p-4 shadow-md rounded-lg mb-6'}>
-        <div className={'container mx-auto flex items-center justify-between'}>
-          <a href={'#'} className={'flex items-center space-x-2'}>
-            <img
-              src={assetUrl('images/BBLOGO.png')}
-              alt={'Breach Boulevard Logo'}
-              className={'h-8 w-8'}
-            />
-
-            <span className={'text-white text-2xl font-semibold'}>{'Breach Boulevard'}</span>
-          </a>
-
-          <ul className={'flex space-x-6 text-white'}>
-            <li>
-              <Link className={'hover:underline'} to={routePaths['testcopy2.html']}>
-                {'Home'}
-              </Link>
-            </li>
-
-            <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'About'}
-              </a>
-            </li>
-
-            <li>
-              <Link to="/practice" className={'hover:underline'}>{'Labs'}</Link>
-            </li>
-
-            <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'Contact'}
-              </a>
-            </li>
-
-            <li>
-              <Link className={'hover:underline'} to={routePaths['access/access.html']}>
-                {'Get Started'}
-              </Link>
-            </li>
-          </ul>
+    <AppShell active="courses" title="Courses" eyebrow="Make sense of the how and why">
+      <div className="bb-page-heading">
+        <div>
+          <span className="bb-eyebrow">
+            <Icon name="book" size={15} /> FOLLOW YOUR CURIOSITY
+          </span>
+          <h1>
+            A world of little discoveries<span className="bb-orange">.</span>
+          </h1>
+          <p>Explore a topic, choose an exercise, and turn a new idea into a skill you can use.</p>
         </div>
-      </nav>
-
-      <header className={'text-center py-12'}>
-        <h1 className={'text-4xl font-bold'}>
-          {'Explore, Examine, Exploit, just like the real thing 🤫'}
-        </h1>
-
-        <p className={'mt-4 text-gray-400'}>
-          {'Learn and practice cybersecurity by exploiting real-world vulnerabilities.'}
-        </p>
-      </header>
-
-      <main className={'container mx-auto px-20 py-8'}>
-        <div className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'}>
-          <div className={'bg-[#1b2b3c] p-6 rounded-lg shadow-md'}>
-            <h2 className={'text-2xl font-bold text-orange-500'}>{'SQL Injection'}</h2>
-
-            <p className={'mt-2 text-gray-300'}>
-              {'Understand how attackers exploit improperly secured SQL queries.'}
-            </p>
-
-            <button
-              className={'mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded'}
-              onClick={() => setCourse('SQL Injection')}
+        <span className="bb-tag bb-tag-orange">6 security topics</span>
+      </div>
+      <section className="bb-lab-grid" aria-label="Security courses">
+        {Object.keys(courseExercises).map((name, index) => (
+          <article className="bb-course-card" key={name}>
+            <span
+              className={`bb-lab-icon ${index % 3 === 1 ? 'is-purple' : index % 3 === 2 ? 'is-mint' : ''}`}
             >
-              {'\n                    View Vulnerabilities\n                '}
+              <Icon name={['terminal', 'code', 'key', 'eye', 'shield', 'book'][index]} size={24} />
+            </span>
+            <h2>{name}</h2>
+            <p>{descriptions[name]}</p>
+            <span className="bb-course-count">
+              {courseExercises[name].length}{' '}
+              {courseExercises[name].length === 1 ? 'exercise' : 'exercises'} to explore
+            </span>
+            <button className="bb-button bb-button-secondary" onClick={() => setCourse(name)}>
+              View Vulnerabilities
+              <Icon name="arrow" size={16} />
             </button>
-          </div>
-
-          <div className={'bg-[#1b2b3c] p-6 rounded-lg shadow-md'}>
-            <h2 className={'text-2xl font-bold text-orange-500'}>{'Cross-Site Scripting (XSS)'}</h2>
-
-            <p className={'mt-2 text-gray-300'}>
-              {'Learn how malicious scripts can be injected into web applications.'}
-            </p>
-
-            <button
-              className={'mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded'}
-              onClick={() => setCourse('Cross-Site Scripting')}
-            >
-              {'\n                    View Vulnerabilities\n                '}
-            </button>
-          </div>
-
-          <div className={'bg-[#1b2b3c] p-6 rounded-lg shadow-md'}>
-            <h2 className={'text-2xl font-bold text-orange-500'}>{'Broken Authentication'}</h2>
-
-            <p className={'mt-2 text-gray-300'}>
-              {'Explore vulnerabilities in authentication mechanisms.'}
-            </p>
-
-            <button
-              className={'mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded'}
-              onClick={() => setCourse('Broken Authentication')}
-            >
-              {'\n                    View Vulnerabilities\n                '}
-            </button>
-          </div>
-
-          <div className={'bg-[#1b2b3c] p-6 rounded-lg shadow-md'}>
-            <h2 className={'text-2xl font-bold text-orange-500'}>
-              {'Insecure Direct Object References'}
-            </h2>
-
-            <p className={'mt-2 text-gray-300'}>
-              {'Understand how unauthorized access to objects can occur.'}
-            </p>
-
-            <button
-              className={'mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded'}
-              onClick={() => setCourse('Insecure Direct Object References')}
-            >
-              {'\n                    View Vulnerabilities\n                '}
-            </button>
-          </div>
-
-          <div className={'bg-[#1b2b3c] p-6 rounded-lg shadow-md'}>
-            <h2 className={'text-2xl font-bold text-orange-500'}>{'Sensitive Data Exposure'}</h2>
-
-            <p className={'mt-2 text-gray-300'}>
-              {'Learn how sensitive data can be exposed during transit.'}
-            </p>
-
-            <button
-              className={'mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded'}
-              onClick={() => setCourse('Sensitive Data Exposure')}
-            >
-              {'\n                    View Vulnerabilities\n                '}
-            </button>
-          </div>
+          </article>
+        ))}
+      </section>
+      <div className="bb-catalog-banner">
+        <div>
+          <h3>A safe place to be curious.</h3>
+          <p>
+            These exercises simulate vulnerabilities for learning. Practice only in environments
+            where you have permission.
+          </p>
         </div>
-      </main>
-
-      {disclaimerVisible && (
-        <div
-          id={'disclaimer'}
-          className={
-            'fixed bottom-0 left-0 right-0 bg-[#0d1b2a] text-white p-4 shadow-lg z-50 flex justify-between items-center'
-          }
-        >
-          <div className={'text-sm'}>
-            <p>
-              <strong>{'Disclaimer:'}</strong>
-              {
-                ' The content on this website is for educational purposes only. By using this site, you acknowledge that the website may simulate vulnerabilities for cybersecurity learning. \n                '
-              }
-              <span className={'font-bold text-orange-500'}>
-                {'Do not attempt to misuse the information for malicious purposes.'}
-              </span>
-            </p>
-          </div>
-
-          <button
-            id={'acceptDisclaimer'}
-            className={
-              'ml-4 bg-orange-500 hover:bg-orange-600 text-white px-7 py-1 rounded font-semibold'
-            }
-            onClick={() => setDisclaimerVisible(false)}
-          >
-            {'\n            I Understand\n        '}
-          </button>
-        </div>
-      )}
-
-      <VulnerabilityModal course={course} onClose={() => setCourse(null)} />
-    </>
+        <Mascot compact />
+      </div>
+      <VulnerabilityModal course={course} onClose={close} />
+    </AppShell>
   );
 }

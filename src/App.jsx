@@ -56,13 +56,13 @@ export default function App() {
   const Page = registry[source];
   useLayoutEffect(() => {
     if (!source) return;
+    window.scrollTo?.(0, 0);
     if (source === 'practice.html' && pathname.startsWith(assetUrl('practice/'))) return;
     const canonical = assetUrl(routePaths[source]);
     if (pathname !== canonical)
       navigate(routePaths[source] + window.location.search + window.location.hash, {
         replace: true,
       });
-    window.scrollTo?.(0, 0);
   }, [pathname, source, navigate]);
   if (!Page)
     return (
@@ -87,7 +87,14 @@ export default function App() {
           'landingpage.html',
           'landingpagetest.html',
         ].includes(source) ? (
-        <LearnerGate>
+        <LearnerGate
+          integrated={[
+            'practice.html',
+            'labs.html',
+            'content/main.html',
+            'dashboard.html',
+          ].includes(source)}
+        >
           <Page />
         </LearnerGate>
       ) : (

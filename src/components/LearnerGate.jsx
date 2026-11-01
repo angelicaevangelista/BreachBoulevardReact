@@ -1,4 +1,5 @@
 import GoogleSignInButton from './GoogleSignInButton';
+import { Brand, Icon, Mascot, LoadingScreen } from './Interface';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { assetUrl, Link } from '../routing';
 const LearnerContext = createContext(null);
@@ -79,30 +80,67 @@ export function SignIn({ onSignedIn }) {
     }
   }
   return (
-    <div className="min-h-screen bg-[#0d1b2a] text-white">
-      <nav className="bg-orange-500 px-6 py-4 flex items-center justify-between gap-4">
-        <Link to="/" className="font-bold text-xl">
-          Breach Boulevard
-        </Link>
+    <div className="bb-ui bb-auth">
+      <nav className="bb-public-header">
+        <Brand />
         <Link to="/" className="hover:underline">
           Back to home
         </Link>
       </nav>
-      <main className="px-5 py-12 flex justify-center">
-        <section
-          className="bg-[#1b2b3c] rounded-xl shadow-xl border border-gray-700 p-6 md:p-9 w-full max-w-md"
-          aria-labelledby="signInTitle"
-        >
+      <main className="bb-auth-layout">
+        <section className="bb-auth-story">
+          <span className="bb-eyebrow">
+            <Icon name="spark" size={14} /> YOUR NEXT CHAPTER STARTS HERE
+          </span>
+          <h1>
+            Stay curious.
+            <br />
+            Get a little <span className="bb-orange">fearless.</span>
+          </h1>
+          <p>A friendly place to explore cybersecurity, make discoveries, and learn by doing.</p>
+          <div className="bb-auth-art">
+            <Mascot />
+            <div className="bb-art-terminal">
+              <div className="bb-code-dots">
+                <i />
+                <i />
+                <i />
+              </div>
+              <code>
+                $ hello, curious human
+                <br />
+                Ready to find your first flag?
+                <br />
+                <span className="bb-mint">✓ Your adventure awaits_</span>
+              </code>
+            </div>
+            <span className="bb-art-sticker">
+              <Icon name="shield" size={18} /> Tiny steps. Real skills.
+            </span>
+          </div>
+          <div className="bb-auth-benefits">
+            <span>
+              <Icon name="flask" size={16} /> Guided practice labs
+            </span>
+            <span>
+              <Icon name="flag" size={16} /> Saved progress
+            </span>
+            <span>
+              <Icon name="heart" size={16} /> Learn at your pace
+            </span>
+          </div>
+        </section>
+        <section className="bb-auth-card" aria-labelledby="signInTitle">
           <p className="text-orange-400 uppercase tracking-widest text-xs font-semibold">
             Your security journey
           </p>
-          <h1 id="signInTitle" className="text-3xl font-bold mt-3">
+          <h2 id="signInTitle" className="text-3xl font-bold mt-3">
             {mode === 'signup'
               ? 'Create your account'
               : mode === 'reset'
                 ? 'Reset your password'
                 : 'Welcome back'}
-          </h1>
+          </h2>
           <p className="text-gray-300 text-sm mt-3 mb-7">
             {mode === 'signup'
               ? 'Save your lab progress and start learning.'
@@ -133,6 +171,7 @@ export function SignIn({ onSignedIn }) {
                 id="accountEmail"
                 type="email"
                 autoComplete="email"
+                placeholder="you@example.com"
                 maxLength={254}
                 required
                 value={email}
@@ -148,6 +187,7 @@ export function SignIn({ onSignedIn }) {
                 <input
                   id="accountPassword"
                   type="password"
+                  placeholder={mode === 'signup' ? 'At least 12 characters' : 'Enter your password'}
                   autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                   minLength={mode === 'signup' ? 12 : undefined}
                   maxLength={128}
@@ -224,14 +264,16 @@ export function SignIn({ onSignedIn }) {
     </div>
   );
 }
-export default function LearnerGate({ children }) {
+export default function LearnerGate({ children, integrated = false }) {
   const [state, setState] = useState({ loading: true, user: null, error: '' });
   const [signingOut, setSigningOut] = useState(false);
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
     accountRequest('session', undefined, controller.signal)
-      .then((data) => setState({ loading: false, user: data.user, error: '' }))
+      .then((data) => {
+        if (!controller.signal.aborted) setState({ loading: false, user: data.user, error: '' });
+      })
       .catch((error) => {
         if (!controller.signal.aborted)
           setState({ loading: false, user: null, error: error.message });
@@ -249,12 +291,7 @@ export default function LearnerGate({ children }) {
       setSigningOut(false);
     }
   }
-  if (state.loading)
-    return (
-      <main className="min-h-screen bg-[#0d1b2a] text-white p-10" role="status">
-        Checking your session…
-      </main>
-    );
+  if (state.loading) return <LoadingScreen onRetry={() => setRetry((value) => value + 1)} />;
   if (!state.user && state.error)
     return (
       <main className="min-h-screen bg-[#0d1b2a] text-white p-10">
@@ -273,17 +310,23 @@ export default function LearnerGate({ children }) {
   if (!state.user)
     return <SignIn onSignedIn={(user) => setState({ loading: false, user, error: '' })} />;
   return (
-    <LearnerContext.Provider value={{ user: state.user }}>
-      <aside
-        className="bg-[#0d1b2a] text-gray-300 px-5 py-3 border-b border-gray-700 flex flex-wrap items-center justify-between gap-3 text-sm"
-        aria-label="Your account"
-      >
-        <span>Signed in as {state.user.email}</span>
-        <button disabled={signingOut} onClick={signOut} className="text-orange-400 hover:underline">
-          {signingOut ? 'Signing out…' : 'Sign out'}
-        </button>
-        {state.error && <p role="alert">{state.error}</p>}
-      </aside>
+    <LearnerContext.Provider value={{ user: state.user, signOut, signingOut, error: state.error }}>
+      {!integrated && (
+        <aside
+          className="bg-[#0d1b2a] text-gray-300 px-5 py-3 border-b border-gray-700 flex flex-wrap items-center justify-between gap-3 text-sm"
+          aria-label="Your account"
+        >
+          <span>Signed in as {state.user.email}</span>
+          <button
+            disabled={signingOut}
+            onClick={signOut}
+            className="text-orange-400 hover:underline"
+          >
+            {signingOut ? 'Signing out…' : 'Sign out'}
+          </button>
+          {state.error && <p role="alert">{state.error}</p>}
+        </aside>
+      )}
       {children}
     </LearnerContext.Provider>
   );

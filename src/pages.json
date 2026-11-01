@@ -2,7 +2,9 @@
   {
     "path": "privacy.html",
     "title": "Privacy | Breach Boulevard",
-    "body": { "class": "bg-[#0d1b2a] text-white font-sans" },
+    "body": {
+      "class": "bg-[#0d1b2a] text-white font-sans"
+    },
     "css": "",
     "links": [],
     "tailwind": true
@@ -10,7 +12,9 @@
   {
     "path": "reset-password.html",
     "title": "Reset Password | Breach Boulevard",
-    "body": { "class": "bg-[#0d1b2a] text-white font-sans" },
+    "body": {
+      "class": "bg-[#0d1b2a] text-white font-sans"
+    },
     "css": "",
     "links": [],
     "tailwind": true
@@ -18,7 +22,10 @@
   {
     "path": "practice.html",
     "title": "Practice Labs | Breach Boulevard",
-    "body": { "class": "bg-[#0d1b2a] text-white font-sans" },
+    "body": {
+      "class": "",
+      "style": ""
+    },
     "css": "",
     "links": [],
     "tailwind": true
@@ -36,7 +43,10 @@
   {
     "path": "access/access.html",
     "title": "User Access",
-    "body": {},
+    "body": {
+      "class": "",
+      "style": ""
+    },
     "css": "",
     "links": [],
     "tailwind": true
@@ -45,7 +55,8 @@
     "path": "access/admin.html",
     "title": "Admin Dashboard",
     "body": {
-      "class": "bg-gray-100 text-gray-800 flex flex-col min-h-screen"
+      "class": "",
+      "style": ""
     },
     "css": "",
     "links": [],
@@ -82,7 +93,8 @@
     "path": "content/main.html",
     "title": "Vulnerability-Breach Boulevard",
     "body": {
-      "class": "bg-[#0d1b2a] text-white font-sans"
+      "class": "",
+      "style": ""
     },
     "css": "",
     "links": [],
@@ -149,7 +161,8 @@
     "path": "labs.html",
     "title": "Course Progress Tracker",
     "body": {
-      "class": "bg-gray-100"
+      "class": "",
+      "style": ""
     },
     "css": "",
     "links": [],
@@ -274,9 +287,10 @@
     "path": "testcopy2.html",
     "title": "Vulnerable Testing Landing Page",
     "body": {
-      "class": "bg-gray-100 font-sans"
+      "class": "",
+      "style": ""
     },
-    "css": "\n\n        .terminal {\n            background: #000;\n            color: #0f0;\n            font-family: 'Courier New', Courier, monospace;\n            padding: 20px;\n            border-radius: 8px;\n            width: 100%;\n            max-width: 600px;\n            height: 300px;\n            overflow-y: auto;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n            position: relative;\n            white-space: pre-wrap;\n            display: flex;\n            flex-direction: column;\n        }\n\n        .prompt-line {\n            display: flex;\n            align-items: center;\n            white-space: nowrap;\n        }\n\n        .prompt {\n            color: rgb(5, 61, 216);\n            margin-right: 5px;\n        }\n\n        .input-area {\n            flex: 1;\n            color: #0f0;\n            outline: none;\n            background: transparent;\n            border: none;\n            font-family: inherit;\n            font-size: inherit;\n            line-height: inherit;\n            white-space: nowrap;\n        }\n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n\n        \n\n    \n",
+    "css": "",
     "links": [
       {
         "rel": "icon",
@@ -363,5 +377,16 @@
     "css": "",
     "links": [],
     "tailwind": false
+  },
+  {
+    "path": "dashboard.html",
+    "title": "Your Dashboard | Breach Boulevard",
+    "body": {
+      "class": "",
+      "style": ""
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
   }
 ]

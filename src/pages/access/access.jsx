@@ -1,96 +1,81 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from '../../routing';
-import { assetUrl } from '../../routing';
+import { Brand, Icon, Mascot } from '../../components/Interface';
 import useAccess from '../../hooks/useAccess';
-import { routePaths } from '../../routing';
-
-export default function Page() {
+export default function Access() {
   const access = useAccess();
   return (
-    <>
-      <nav className={'bg-orange-500 p-4 shadow-md rounded-lg mb-6'}>
-        <div className={'container mx-auto flex items-center justify-between'}>
-          <a href={'#'} className={'flex items-center space-x-2'}>
-            <img
-              src={assetUrl('access/BBLOGO.png')}
-              alt={'Breach Boulevard Logo'}
-              className={'h-8 w-8'}
-            />
-
-            <span className={'text-white text-2xl font-semibold'}>{'Breach Boulevard'}</span>
-          </a>
-
-          <ul className={'flex space-x-6 text-white'}>
-            <li>
-              <Link className={'hover:underline'} to={routePaths['testcopy2.html']}>
-                {'Home'}
-              </Link>
-            </li>
-
-            <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'About'}
-              </a>
-            </li>
-
-            <li>
-              <Link to="/practice" className={'hover:underline'}>{'Labs'}</Link>
-            </li>
-
-            <li>
-              <a href={'#'} className={'hover:underline'}>
-                {'Contact'}
-              </a>
-            </li>
-
-            <li>
-              <Link className={'hover:underline'} to={routePaths['access/access.html']}>
-                {'Get Started'}
-              </Link>
-            </li>
-          </ul>
-        </div>
+    <div className="bb-ui bb-auth">
+      <nav className="bb-public-header">
+        <Brand logo="access/BBLOGO.png" />
+        <Link to="/" className="bb-text-link">
+          <Icon name="back" size={16} /> Back to home
+        </Link>
       </nav>
-
-      <div className={'bg-gray-100 flex items-center justify-center min-h-screen'}>
-        <div className={'bg-white shadow-lg rounded-lg p-8 w-full max-w-md'}>
-          <h1 className={'text-2xl font-bold text-center text-gray-800'}>{'Enter Access Code'}</h1>
-
-          <form id={'accessForm'} className={'mt-6'} onSubmit={access.submit}>
-            <div className={'mb-4'}>
+      <main className="bb-auth-layout bb-access-layout">
+        <section className="bb-auth-story">
+          <span className="bb-eyebrow">
+            <Icon name="key" size={15} /> ONE LITTLE KEY. A WORLD TO EXPLORE.
+          </span>
+          <h1>
+            You’re almost
+            <br />
+            <span className="bb-orange">in.</span>
+          </h1>
+          <p>
+            Your account is ready. Enter your course access code and let’s find your first
+            discovery.
+          </p>
+          <div className="bb-auth-art">
+            <Mascot />
+            <span className="bb-art-sticker">
+              <Icon name="shield" size={18} /> Curiosity looks good on you.
+            </span>
+          </div>
+        </section>
+        <section className="bb-auth-card">
+          <span className="bb-stat-icon">
+            <Icon name="key" />
+          </span>
+          <h1>Enter Access Code</h1>
+          <p className="bb-auth-intro">
+            A little key to your learning adventure. Use the code shared by your course
+            administrator.
+          </p>
+          <form id="accessForm" className="bb-form" onSubmit={access.submit}>
+            <div className="bb-field">
+              <label htmlFor="accessCode">Course access code</label>
               <input
-                type={'text'}
-                id={'accessCode'}
-                className={
-                  'w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500'
-                }
-                placeholder={'Enter your access code'}
+                id="accessCode"
+                placeholder="Enter your access code"
                 required
                 value={access.code}
-                onChange={(event) => access.setCode(event.target.value)}
+                onChange={(e) => access.setCode(e.target.value)}
+                autoComplete="off"
               />
             </div>
-
             <button
-              type={'submit'}
-              className={
-                'w-full bg-orange-500 text-white py-3 rounded hover:bg-orange-600 transition duration-300'
-              }
+              type="submit"
+              className="bb-button bb-button-primary bb-button-wide"
               disabled={access.pending}
             >
-              {'\n                Submit\n            '}
+              {access.pending ? 'Checking…' : 'Submit'}
+              <Icon name="arrow" size={17} />
             </button>
           </form>
-
-          <div
-            id={'message'}
-            className={'mt-4 text-center text-lg'}
-            style={{ color: access.message ? 'red' : undefined }}
-          >
-            {access.message}
-          </div>
-        </div>
-      </div>
-    </>
+          {access.message && (
+            <div id="message" role="alert" className="bb-notice">
+              {access.message}
+            </div>
+          )}
+          <p className="bb-auth-footnote">
+            <Icon name="help" size={16} /> Don’t have a code? Ask your course administrator.
+          </p>
+          <Link className="bb-text-link" to="/privacy">
+            Privacy notice
+          </Link>
+        </section>
+      </main>
+    </div>
   );
 }
