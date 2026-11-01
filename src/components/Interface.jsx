@@ -145,8 +145,8 @@ export function Mascot({ className = '', compact = false, ...props }) {
           <g transform="translate(110 153) scale(.8) translate(-110 -153)">
             <path
               d="M110 151c-4-7-12-6-10 1 1 4 6 7 10 11 4-4 9-7 10-11 2-7-6-8-10-1Z"
-              fill="#ff9da6"
-              stroke="#bb7778"
+              fill="#ef3e4a"
+              stroke="#b92535"
               strokeWidth="1"
             />
             <path
