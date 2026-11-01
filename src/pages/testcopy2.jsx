@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from '../routing';
 import { Brand, Icon, Mascot } from '../components/Interface';
-import useSqlDemo from '../hooks/useSqlDemo';
 import QuizTerminal from '../components/QuizTerminal';
 import FaqItem from '../components/FaqItem';
+import LearningJourney from '../components/LearningJourney';
+import SqlPlayground from '../components/SqlPlayground';
 export default function Home() {
-  const sql = useSqlDemo();
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
   return (
     <div className="bb-ui bb-home">
@@ -111,6 +111,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+      <LearningJourney />
       <section className="bb-home-section" id="playground">
         <span className="bb-eyebrow">
           <Icon name="terminal" size={15} /> A LITTLE TASTE OF THE ADVENTURE
@@ -127,52 +128,11 @@ export default function Home() {
               id="terminal"
               welcome={<p>Welcome, curious human. Type help to get started.</p>}
             />
-            <p className="bb-admin-note">Type help, about, clear, or quiz. No experience needed.</p>
+            <p className="bb-admin-note">
+              Type help to see every command — try ls, cat, whoami, or quiz. No experience needed.
+            </p>
           </section>
-          <section className="bb-panel">
-            <div className="bb-panel-heading">
-              <h3>A sneaky little login</h3>
-              <span className="bb-tag bb-tag-orange">SQL demo</span>
-            </div>
-            <p className="bb-muted">What happens when an input becomes part of a query?</p>
-            <form
-              className="bb-form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                sql.checkLogin();
-              }}
-            >
-              <div className="bb-field">
-                <label htmlFor="username">Username</label>
-                <input
-                  id="username"
-                  ref={sql.usernameRef}
-                  value={sql.username}
-                  onChange={(e) => sql.setUsername(e.target.value)}
-                  autoComplete="off"
-                  placeholder="Try a username…"
-                />
-              </div>
-              <div className="bb-field">
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  type="password"
-                  value={sql.password}
-                  onChange={(e) => sql.setPassword(e.target.value)}
-                  autoComplete="off"
-                  placeholder="And a password"
-                />
-              </div>
-              <button className="bb-button bb-button-primary" type="submit">
-                Login
-              </button>
-            </form>
-            <div id="output" role="status">
-              {sql.output}
-            </div>
-            <div id="info">{sql.info}</div>
-          </section>
+          <SqlPlayground />
         </div>
       </section>
       <section className="bb-home-section">

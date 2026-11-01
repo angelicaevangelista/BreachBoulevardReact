@@ -12,6 +12,7 @@ export default function useSqlDemo() {
   return {
     username,
     password,
+    result,
     setUsername,
     setPassword,
     usernameRef,

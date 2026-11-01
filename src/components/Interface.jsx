@@ -27,6 +27,8 @@ const paths = {
   help: 'M9 8a3 3 0 1 1 5 2c-2 1-2 2-2 3 M12 17h.01 M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
   flag: 'M5 21V3 M5 4c5-4 9 4 15 0v10c-6 4-10-4-15 0',
   heart: 'M20 5a5 5 0 0 0-8 1 5 5 0 0 0-8-1c-5 5 8 15 8 15s13-10 8-15',
+  volume: 'M4 9v6h4l5 4V5L8 9H4z M16.5 8.5a5 5 0 0 1 0 7',
+  mute: 'M4 9v6h4l5 4V5L8 9H4z M16 9l5 5 M21 9l-5 5',
 };
 export function Icon({ name = 'spark', size = 20, ...props }) {
   return (

@@ -208,6 +208,48 @@ test('SQL demo keeps failure and injection outcomes; normal text renders as text
   assert.match(s.d.querySelector('#info').textContent, /SELECT \* FROM users/);
   await s.close();
 });
+test('learning journey selects each step and links to the relevant experience', async () => {
+  const s = await open('testcopy2.html');
+  const journey = s.d.querySelector('.bb-journey');
+  const buttons = [...journey.querySelectorAll('.bb-journey-steps button')];
+  assert.equal(buttons.length, 3);
+  assert.equal(buttons[0].getAttribute('aria-pressed'), 'true');
+  assert.match(journey.textContent, /Choose your first challenge/);
+  await s.click(buttons[1]);
+  assert.equal(buttons[0].getAttribute('aria-pressed'), 'false');
+  assert.equal(buttons[1].getAttribute('aria-pressed'), 'true');
+  assert.match(journey.textContent, /Experiment, with hints nearby/);
+  assert.ok(journey.querySelector('.bb-journey-block-2.is-active'));
+  await s.click(buttons[2]);
+  assert.match(journey.textContent, /Completed labs are saved to your account/);
+  assert.equal(journey.querySelector('.bb-journey-link').getAttribute('href'), '/access');
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+test('guided SQL demo shows submitted examples, limitations, and parameterized query', async () => {
+  const s = await open('testcopy2.html');
+  const byText = (text) =>
+    [...s.d.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
+  await s.click(byText('Ordinary input'));
+  assert.equal(s.d.querySelector('#username').value, 'student');
+  await s.click(byText('Login'));
+  assert.equal(s.d.querySelector('#output').textContent, 'Login Failed!');
+  assert.match(s.d.querySelector('#info').textContent, /does not check credentials or run SQL/);
+  assert.match(s.d.querySelector('#info').textContent, /username = \? AND password = \?/);
+  await s.click(byText('Injection example'));
+  assert.equal(s.d.querySelector('#username').value, "' OR '1'='1");
+  await s.click(byText('Login'));
+  assert.match(s.d.querySelector('#output').textContent, /Simulated SQL Injection/);
+  assert.match(s.d.querySelector('#info').textContent, /quote alone does not necessarily/);
+  assert.match(s.d.querySelector('#info').textContent, /' OR '1'='1/);
+  await s.fill('#username', '<img src=x onerror=alert(1)>');
+  await s.click(byText('Login'));
+  assert.match(s.d.querySelector('#info').textContent, /<img src=x onerror=alert\(1\)>/);
+  assert.equal(s.d.querySelector('#info img'), null);
+  assert.deepEqual(s.requests, []);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
 test('FAQ expansion and disclaimer dismissal update React state', async () => {
   const s = await open('testcopy2.html');
   const faq = s.d.querySelector('[aria-expanded]');
