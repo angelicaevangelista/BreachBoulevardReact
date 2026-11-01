@@ -145,51 +145,27 @@ export function Mascot({ className = '', compact = false, ...props }) {
             strokeWidth="8"
             strokeLinecap="round"
           />
-          <g transform="translate(110 153) scale(.78) translate(-110 -153)">
+          <g transform="translate(110 153) scale(.74) translate(-110 -153)">
             <path
-              d="M110 151c-5-10-15-11-15-3 0 5 8 11 15 16 7-5 15-11 15-16 0-8-10-7-15 3Z"
+              d="M110 151c-5-9-13-10-13-2 0 5 7 10 13 14 6-4 13-9 13-14 0-8-8-7-13 2Z"
               fill="#142a3c"
             />
             {[false, true].map((mirror) => (
               <g
                 key={String(mirror)}
                 transform={mirror ? 'translate(220 0) scale(-1 1)' : undefined}
+                fill="#ffdaa9"
+                stroke="#b77d4a"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path
-                    d="M87 150q-4-4-6-10 M91 148q-3-7-4-13 M95 148q0-8-1-14"
-                    stroke="#a87348"
-                    strokeWidth="6"
-                  />
-                  <path
-                    d="M87 150q-4-4-6-10 M91 148q-3-7-4-13 M95 148q0-8-1-14"
-                    stroke="#ffe2b6"
-                    strokeWidth="3.8"
-                  />
-                </g>
-                <path
-                  d="M85 147q-4 4-2 10 2 6 8 5l6-2q4-4 1-10l-4-5Z"
-                  fill="#ffe2b6"
-                  stroke="#a87348"
-                  strokeWidth="1.1"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M94 148c-3-5-2-12 4-12 4 0 8 4 12 8 2 2 0 6-3 4l-8-6q-3-2-2 3l1 3"
-                  fill="#ffe2b6"
-                  stroke="#a87348"
-                  strokeWidth="1.1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M94 153q6 3 15 10c3 2 2 5-1 5-2-1-11-6-16-9"
-                  fill="#ffe2b6"
-                  stroke="#a87348"
-                  strokeWidth="1.1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <path d="M85 145c-4 5-2 13 3 16q5 4 11-1l1-11-7-8Z" />
+                <path d="M85 146c0-6 4-12 8-12 3-1 6 3 9 7q2 3 0 4-2 1-4-2l-3-4q-3-3-5 4l-1 4" />
+                <path d="M88 142c0-6 4-12 8-12q4 0 8 6 3 5 0 6-2 1-4-3l-2-2q-3-3-5 4" />
+                <path d="M93 139c-2-6 2-11 6-9q4 2 6 7 2 4-1 5-2 1-4-3-3-3-4 0" />
+                <path d="M92 148c-1-7 3-12 7-11q4 1 10 7 3 3 0 5-2 1-4-2l-5-4q-3-2-4 2l1 4" />
+                <path d="M95 153q6 2 14 9 3 3 1 6-2 2-5 0l-9-5q-6 0-7-4" />
               </g>
             ))}
           </g>
