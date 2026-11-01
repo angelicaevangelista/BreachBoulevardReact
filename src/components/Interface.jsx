@@ -132,37 +132,20 @@ export function Mascot({ className = '', compact = false, ...props }) {
         />
         <g className="bb-honey-hand-heart" aria-label="Honey makes a heart with her hands">
           <path
-            d="M50 125C32 148 48 165 82 153 M170 125c18 23 2 40-32 28"
-            stroke="#c5783b"
-            strokeWidth="17"
-            strokeLinecap="round"
+            d="M53 137Q60 157 87 153 M167 137q-7 20-34 16"
             fill="none"
-          />
-          <path
-            d="M50 125C32 148 48 165 82 153 M170 125c18 23 2 40-32 28"
             stroke="#ffb876"
-            strokeWidth="13"
+            strokeWidth="11"
             strokeLinecap="round"
-            fill="none"
           />
           <path
-            d="M110 154C105 145 94 145 96 153c2 5 9 9 14 13 5-4 12-8 14-13 2-8-9-8-14 1Z"
+            d="M110 153C102 142 92 144 95 151q5 7 15 13 10-6 15-13c3-7-7-9-15 2Z"
             fill="#142a3c"
           />
-          <g fill="#ffd5a9" stroke="#d98b51" strokeWidth="1.5" strokeLinejoin="round">
-            <path d="M110 146c-5-8-8-12-14-12-11 0-17 9-12 18 5 8 16 16 26 23v-9c-8-6-15-11-18-16-4-6 0-9 4-8 4 0 7 5 9 8 2 3 7 1 7-2Z" />
-            <path d="M110 146c5-8 8-12 14-12 11 0 17 9 12 18-5 8-16 16-26 23v-9c8-6 15-11 18-16 4-6 0-9-4-8-4 0-7 5-9 8-2 3-7 1-7-2Z" />
+          <g fill="#ffd3a4" stroke="#eeaf76" strokeWidth="1" strokeLinejoin="round">
+            <path d="M110 146c-6-8-8-11-13-11-8 0-12 5-12 11 0 8 13 18 25 25v-8c-7-4-12-8-15-13-3-4-2-7 1-7 4 0 6 4 9 7q3 3 5 0Z" />
+            <path d="M110 146c6-8 8-11 13-11 8 0 12 5 12 11 0 8-13 18-25 25v-8c7-4 12-8 15-13 3-4 2-7-1-7-4 0-6 4-9 7q-3 3-5 0Z" />
           </g>
-          <g fill="none" stroke="#cf8751" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M85 147q0 7 7 11 M88 154q2 6 9 9 M110 170l-10-8 M135 147q0 7-7 11 M132 154q-2 6-9 9 M110 170l10-8" />
-          </g>
-          <path
-            d="M88 142q5-7 11-2 M132 142q-5-7-11-2"
-            fill="none"
-            stroke="#ffe9cf"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
         </g>
         <rect x="73" y="170" width="23" height="15" rx="7" fill="#ffad67" />
         <rect x="124" y="170" width="23" height="15" rx="7" fill="#ffad67" />
