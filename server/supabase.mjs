@@ -95,15 +95,25 @@ export class SupabaseAccessCodes {
     }
   }
 
-  async generate() {
+  async generate({ code: customCode, expiresAt } = {}) {
     for (let attempt = 0; attempt < 3; attempt++) {
-      const code = randomBytes(4).toString('hex');
+      const code = customCode ?? randomBytes(4).toString('hex');
       try {
-        const data = await this.request('POST', 'breach_access_codes?select=code', { code }, true);
+        const data = await this.request(
+          'POST',
+          'breach_access_codes?select=code',
+          {
+            code,
+            ...(expiresAt ? { expires_at: expiresAt } : {}),
+          },
+          true
+        );
         if (data?.[0]?.code !== code)
           throw new DatabaseError('Supabase did not confirm the new access code.');
         return code;
       } catch (error) {
+        if (customCode && error.upstreamStatus === 409)
+          throw new DatabaseError('That access code already exists. Choose a different code.', 409);
         if (error.upstreamStatus !== 409 || attempt === 2) throw error;
       }
     }

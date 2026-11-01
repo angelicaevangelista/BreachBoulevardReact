@@ -47,7 +47,7 @@ test('Supabase Node.js integration preserves access-code workflows without expos
       }
       const row = {
         code: body.code,
-        expires_at: new Date(Date.now() + 86400000).toISOString(),
+        expires_at: body.expires_at || new Date(Date.now() + 86400000).toISOString(),
         created_at: new Date().toISOString(),
       };
       rows.unshift(row);
@@ -213,6 +213,55 @@ test('Supabase Node.js integration preserves access-code workflows without expos
       const response = await request('access-codes', { method: 'POST' });
       assert.equal(response.data.success, true);
       assert.equal(calls.length - before, 2);
+    });
+    await t.test(
+      'custom codes and selected expiration are persisted and duplicate codes return a useful conflict',
+      async () => {
+        const expiresAt = new Date(Date.now() + 100 * 86400000).toISOString();
+        const created = await request('access-codes', {
+          method: 'POST',
+          body: { codeMode: 'custom', code: 'CYBER-CLASS', duration: 'custom', expiresAt },
+        });
+        assert.equal(created.status, 200);
+        assert.equal(created.data.code, 'CYBER-CLASS');
+        assert.equal(rows.find((row) => row.code === 'CYBER-CLASS').expires_at, expiresAt);
+        collision = true;
+        const before = calls.length;
+        const duplicate = await request('access-codes', {
+          method: 'POST',
+          body: { codeMode: 'custom', code: 'CYBER-CLASS', duration: '7-days' },
+        });
+        assert.equal(duplicate.status, 409);
+        assert.match(duplicate.data.message, /already exists/);
+        assert.equal(calls.length - before, 1);
+        const list = await request('access-codes');
+        assert.equal(
+          list.data.codes.find((row) => row.code === 'CYBER-CLASS').expires_at,
+          expiresAt
+        );
+      }
+    );
+    await t.test('invalid generation settings never reach the database', async () => {
+      const before = calls.length;
+      for (const body of [
+        { duration: 'forever' },
+        { codeMode: 'custom', code: 'bad code' },
+        { duration: 'custom', expiresAt: '2000-01-01T00:00:00.000Z' },
+      ]) {
+        const result = await request('access-codes', { method: 'POST', body });
+        assert.equal(result.status, 400);
+      }
+      assert.equal(calls.length, before);
+      const started = Date.now();
+      const result = await request('access-codes', {
+        method: 'POST',
+        body: { duration: '7-days' },
+      });
+      assert.ok(Math.abs(Date.parse(result.data.expiresAt) - (started + 7 * 86400000)) < 5000);
+      assert.equal(
+        rows.find((row) => row.code === result.data.code).expires_at,
+        result.data.expiresAt
+      );
     });
     await t.test(
       'connection check performs a read-only check and does not print credentials',

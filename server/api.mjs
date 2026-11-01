@@ -3,7 +3,15 @@ import { projectRoot, readServerConfig } from './config.mjs';
 import { AdminAuth } from './admin-auth.mjs';
 import { LearnerAuth, AuthError, completedLabs, requireSameOrigin } from './learner-auth.mjs';
 import { evaluatePracticeLab } from './practice-labs.mjs';
+import { createHoneyService } from './honey.mjs';
+import {
+  CommunityError,
+  createCommunityService,
+  FileCommunityStore,
+  learnerProfile,
+} from './community.mjs';
 import { DatabaseError, SupabaseAccessCodes } from './supabase.mjs';
+import { accessCodeOptions, AccessCodeInputError } from './access-code-options.mjs';
 import { escapeHtml, simulateFileExecution, UploadStore } from './uploads.mjs';
 
 class HttpError extends Error {
@@ -79,9 +87,16 @@ export function createApiHandler({
   uploadDirectory = path.join(projectRoot, '.data/uploads'),
   maxUploadBytes = 10 * 1024 * 1024,
   basePath = '',
+  honey,
+  communityStore,
+  communityDirectory = path.join(projectRoot, '.data/community'),
 } = {}) {
   const uploads = uploadStore || new UploadStore(uploadDirectory);
   const getDatabase = () => database || SupabaseAccessCodes.fromEnvironment();
+  const honeyService = honey || createHoneyService();
+  const community = createCommunityService({
+    store: communityStore || new FileCommunityStore(communityDirectory),
+  });
   return async function handleApi(req, res) {
     const url = new URL(req.url, 'http://localhost');
     let route = url.pathname;
@@ -107,11 +122,33 @@ export function createApiHandler({
         route.startsWith('/api/uploads') ||
         route.startsWith('/api/labs/') ||
         route === '/api/account/progress' ||
+        route.startsWith('/api/community/') ||
         route === '/api/access-codes/validate';
       const student = learner && learnerRoute ? await learner.requireUser() : null;
       if (route === '/api/account/progress') {
         if (!requireMethod(req, res, ['GET'])) return true;
         json(res, 200, { success: true, completed: completedLabs(student) });
+        return true;
+      }
+      if (route.startsWith('/api/community/')) {
+        const result = await community({
+          method: req.method,
+          route,
+          query: url.searchParams,
+          body: req.method === 'POST' ? await readJson(req) : undefined,
+          viewer: student ? learnerProfile(student, completedLabs(student).length) : null,
+        });
+        if (!result) throw new HttpError(404, 'API route not found.');
+        json(res, 200, result);
+        return true;
+      }
+      if (route === '/api/honey/chat') {
+        if (!requireMethod(req, res, ['POST'])) return true;
+        const result = await honeyService.chat({
+          client: req.socket?.remoteAddress || 'unknown',
+          input: await readJson(req),
+        });
+        json(res, result.status, result.body);
         return true;
       }
       const practiceRoute = route.match(/^\/api\/practice\/([a-z-]+)$/);
@@ -184,8 +221,9 @@ export function createApiHandler({
       if (route === '/api/access-codes') {
         if (!requireMethod(req, res, ['GET', 'POST'])) return true;
         if (req.method === 'POST') {
-          await readJson(req);
-          json(res, 200, { success: true, code: await getDatabase().generate() });
+          const options = accessCodeOptions(await readJson(req));
+          const code = await getDatabase().generate(options);
+          json(res, 200, { success: true, code, expiresAt: options.expiresAt });
         } else json(res, 200, { success: true, codes: await getDatabase().all() });
         return true;
       }
@@ -319,7 +357,11 @@ export function createApiHandler({
       throw new HttpError(404, 'API route not found.');
     } catch (error) {
       const known =
-        error instanceof HttpError || error instanceof DatabaseError || error instanceof AuthError;
+        error instanceof HttpError ||
+        error instanceof DatabaseError ||
+        error instanceof AuthError ||
+        error instanceof CommunityError ||
+        error instanceof AccessCodeInputError;
       json(res, known ? error.status : 500, {
         success: false,
         message: known ? error.message : 'Server request failed.',

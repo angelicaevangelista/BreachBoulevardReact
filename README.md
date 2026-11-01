@@ -14,10 +14,27 @@ Existing authentication, training simulations, and access-code behavior are reta
 - `/practice` and `/labs`: six selectable lab cards, search, difficulty, and completion filters.
 - `/practice/:id`: interactive challenges, progressive hints, feedback, and saved completions.
 - `/courses`: topic cards with clickable links to working labs and tutorials.
-- `/admin`: the existing protected code-management tools in the shared visual design.
+- `/admin`: protected code management with random or custom codes and configurable expiry.
+- `/community`: a 3D Boulevard with six clickable landmarks leading to community streets.
 
 Loading screens show Byte, the security buddy. Motion respects the device's
 reduced-motion setting. Course dialogs support keyboard focus, Escape, and Tab.
+Honey uses a shared clay-style 3D bee model, with a matching SVG fallback.
+The map supports keyboard-accessible street markers, an illustrated fallback,
+and a pause control; reduced-motion preferences stop its ambient animation.
+
+## Access-code settings
+
+Admins can choose 1 day, 7 days, 1 month, 6 months, 1 year, or a custom date/time.
+The date picker uses the admin's local time and sends an absolute UTC timestamp.
+Month/year presets use calendar arithmetic with month-end clamping. The default
+remains a random eight-character code valid for one day.
+
+Custom codes are case-sensitive, unique, and accept 3–64 letters, numbers,
+hyphens, or underscores. The server validates all settings, rejects past expiry
+dates, and returns a conflict for duplicate codes. Expiry is saved in the existing
+`breach_access_codes.expires_at` column and checked against database time; no
+access-code schema migration is needed.
 
 ## Run locally
 

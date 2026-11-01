@@ -24,6 +24,7 @@ window.harness={act,navigate,configureBase,resolvePage,routePaths,
     loader: 'jsx',
   },
   bundle: true,
+  external: ['three', 'three/*'],
   write: false,
   format: 'iife',
   platform: 'browser',
@@ -40,6 +41,8 @@ async function open(
     user = { id: 'student-1', email: 'student@example.com' },
     progress = [],
     optionsFailure = false,
+    intervals = null,
+    reducedMotion = false,
   } = {}
 ) {
   const errors = [],
@@ -53,6 +56,21 @@ async function open(
   );
   const w = dom.window,
     d = w.document;
+  if (intervals) {
+    w.setInterval = (callback, delay) => {
+      const id = intervals.size + 1;
+      intervals.set(id, { callback, delay });
+      return id;
+    };
+    w.clearInterval = (id) => intervals.delete(id);
+  }
+  if (reducedMotion) {
+    w.matchMedia = () => ({
+      matches: true,
+      addEventListener() {},
+      removeEventListener() {},
+    });
+  }
   w.scrollTo = () => {};
   w.MessageChannel = class {
     port1 = { onmessage: null };
@@ -205,7 +223,7 @@ test('SQL demo keeps failure and injection outcomes; normal text renders as text
   await s.fill('#username', "' OR '1'='1");
   await s.click([...s.d.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Login'));
   assert.match(s.d.querySelector('#output').textContent, /Login Successful/);
-  assert.match(s.d.querySelector('#info').textContent, /SELECT \* FROM users/);
+  assert.equal(s.d.querySelector('#info'), null);
   await s.close();
 });
 test('learning journey selects each step and links to the relevant experience', async () => {
@@ -218,37 +236,111 @@ test('learning journey selects each step and links to the relevant experience', 
   await s.click(buttons[1]);
   assert.equal(buttons[0].getAttribute('aria-pressed'), 'false');
   assert.equal(buttons[1].getAttribute('aria-pressed'), 'true');
-  assert.match(journey.textContent, /Experiment, with hints nearby/);
-  assert.ok(journey.querySelector('.bb-journey-block-2.is-active'));
+  assert.match(journey.textContent, /Stuck\? Ask Honey/);
+  assert.match(journey.querySelector('.bb-flow-chat-user').textContent, /I'm stuck\. What now\?/);
+  assert.match(
+    journey.querySelector('.bb-flow-chat-honey').textContent,
+    /Check how your input joins the query\./
+  );
+  assert.match(journey.textContent, /Honey is your AI helper inside the platform/);
+  assert.equal(journey.querySelectorAll('.bb-flow-row.is-lit').length, 2);
+  assert.equal(journey.querySelectorAll('.bb-flow-lines path').length, 4);
+  assert.ok(journey.querySelector('.bb-honey'));
   await s.click(buttons[2]);
   assert.match(journey.textContent, /Completed labs are saved to your account/);
   assert.equal(journey.querySelector('.bb-journey-link').getAttribute('href'), '/access');
   assert.deepEqual(s.errors, []);
   await s.close();
 });
-test('guided SQL demo shows submitted examples, limitations, and parameterized query', async () => {
+test('Honey chat answers one hint at a time from the journey card', async () => {
+  const calls = [];
+  const hints = [
+    'Look at how your input appears inside the query.',
+    'A single quote can end a quoted SQL value.',
+  ];
+  const s = await open('testcopy2.html', {
+    fetch: async (url, options) => {
+      if (!String(url).endsWith('/api/honey/chat')) throw new Error('Unexpected request');
+      const body = JSON.parse(options.body);
+      calls.push(body);
+      const index = body.hintIndex;
+      return {
+        ok: true,
+        json: async () => ({
+          success: true,
+          reply: hints[index],
+          source: 'hints',
+          nextHintIndex: Math.min(index + 1, hints.length - 1),
+          hasMoreHints: index < hints.length - 1,
+        }),
+      };
+    },
+  });
+  const journey = s.d.querySelector('.bb-journey');
+  const flush = () => s.act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+  await s.click(journey.querySelector('.bb-honey-starters button'));
+  await flush();
+  assert.deepEqual(calls[0], {
+    message: "I'm stuck. What now?",
+    labId: 'sql-injection',
+    hintIndex: 0,
+  });
+  assert.match(
+    journey.querySelector('.bb-honey-log').textContent,
+    /Look at how your input appears/
+  );
+  await s.fill('.bb-honey-form input', 'Still stuck');
+  await s.submit('.bb-honey-form');
+  await flush();
+  assert.equal(calls[1].hintIndex, 1);
+  assert.match(journey.querySelector('.bb-honey-log').textContent, /A single quote can end/);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+test('SQL challenge is immediately visible and shows results without hints or explanations', async () => {
   const s = await open('testcopy2.html');
   const byText = (text) =>
     [...s.d.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
-  await s.click(byText('Ordinary input'));
-  assert.equal(s.d.querySelector('#username').value, 'student');
+  assert.ok(s.d.querySelector('#username'));
+  assert.ok(s.d.querySelector('#password'));
+  assert.equal(s.d.querySelector('.bb-sql-try'), null);
+  assert.equal(byText('Injection example'), undefined);
+  await s.fill('#username', 'student');
   await s.click(byText('Login'));
   assert.equal(s.d.querySelector('#output').textContent, 'Login Failed!');
-  assert.match(s.d.querySelector('#info').textContent, /does not check credentials or run SQL/);
-  assert.match(s.d.querySelector('#info').textContent, /username = \? AND password = \?/);
-  await s.click(byText('Injection example'));
-  assert.equal(s.d.querySelector('#username').value, "' OR '1'='1");
+  await s.fill('#username', "' OR '1'='1");
   await s.click(byText('Login'));
-  assert.match(s.d.querySelector('#output').textContent, /Simulated SQL Injection/);
-  assert.match(s.d.querySelector('#info').textContent, /quote alone does not necessarily/);
-  assert.match(s.d.querySelector('#info').textContent, /' OR '1'='1/);
+  assert.equal(s.d.querySelector('#output').textContent, 'Login Successful!');
+  assert.equal(s.d.querySelector('#info'), null);
   await s.fill('#username', '<img src=x onerror=alert(1)>');
   await s.click(byText('Login'));
-  assert.match(s.d.querySelector('#info').textContent, /<img src=x onerror=alert\(1\)>/);
-  assert.equal(s.d.querySelector('#info img'), null);
+  assert.equal(s.d.querySelector('#output').textContent, 'Login Failed!');
+  assert.equal(s.d.querySelector('.bb-sql-demo img'), null);
   assert.deepEqual(s.requests, []);
   assert.deepEqual(s.errors, []);
   await s.close();
+});
+test('learning journey plays automatically and supports pause, manual selection and reduced motion', async () => {
+  const intervals = new Map();
+  const s = await open('testcopy2.html', { intervals });
+  const journey = s.d.querySelector('.bb-journey');
+  const buttons = [...journey.querySelectorAll('.bb-journey-steps button')];
+  assert.equal(intervals.size, 1);
+  const interval = [...intervals.values()][0];
+  assert.equal(interval.delay, 4500);
+  await s.act(() => interval.callback());
+  assert.equal(buttons[1].getAttribute('aria-pressed'), 'true');
+  await s.click(buttons[2]);
+  assert.equal(intervals.size, 0);
+  assert.equal(journey.querySelector('.bb-journey-play').textContent, 'Play animation');
+  await s.click('.bb-journey-play');
+  assert.equal(intervals.size, 1);
+  await s.close();
+  assert.equal(intervals.size, 0);
+  const reduced = await open('testcopy2.html', { intervals, reducedMotion: true });
+  assert.equal(intervals.size, 0);
+  assert.equal(reduced.d.querySelector('.bb-journey-play').disabled, true);
+  await reduced.close();
 });
 test('FAQ expansion and disclaimer dismissal update React state', async () => {
   const s = await open('testcopy2.html');
@@ -386,9 +478,10 @@ test('admin lists, generates, and cleans up codes through the Node API', async (
   await s.click('#viewCodesBtn');
   assert.match(s.d.querySelector('#codesList').textContent, /example.*tomorrow/);
   await s.submit('#generateForm');
-  assert.match(s.alerts[0], /generated/);
+  assert.match(s.d.querySelector('.bb-code-result').textContent, /generated/);
+  assert.deepEqual(JSON.parse(s.requests[1][1].body), { duration: '1-day', codeMode: 'random' });
   await s.click('#cleanupBtn');
-  assert.match(s.alerts[1], /cleaned up/);
+  assert.match(s.alerts[0], /cleaned up/);
   assert.deepEqual(
     s.requests.map((r) => r[0]),
     ['/api/access-codes', '/api/access-codes', '/api/access-codes/cleanup']
@@ -674,6 +767,125 @@ test('every course popup entry opens a supported lab or tutorial route', async (
     assert.equal(s.d.querySelector('[role="dialog"]'), null);
     assert.equal(s.d.activeElement, button);
   }
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+
+test('dashboard teaser shows the learner rank and links to the boulevard', async () => {
+  const s = await open('dashboard.html', {
+    app: true,
+    url: 'http://localhost/dashboard',
+    progress: ['sql-injection', 'xss', 'idor'],
+  });
+  const flush = () => s.act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+  await flush();
+  const teaser = s.d.querySelector('.bb-boulevard-teaser');
+  assert.ok(teaser);
+  assert.match(teaser.textContent, /Block Captain/);
+  assert.match(teaser.textContent, /2 more labs until Boulevard Legend/);
+  const walk = [...teaser.querySelectorAll('a')].find(
+    (a) => a.textContent === 'Walk the boulevard'
+  );
+  assert.equal(walk.getAttribute('href'), '/community');
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+
+test('community page renders rank, streets and posts as plain text', async () => {
+  const payload = '<img src=x onerror=alert(1)>';
+  const streets = [
+    { id: 'main-street', name: 'Main Street', tagline: 'Start here', icon: 'heart', posts: 0 },
+    {
+      id: 'payload-alley',
+      name: 'Payload Alley',
+      tagline: 'Where payloads wait',
+      icon: 'heart',
+      posts: 1,
+    },
+  ];
+  const json = (data) => ({ ok: true, json: async () => ({ success: true, ...data }) });
+  const post = {
+    id: '33333333-3333-4333-8333-333333333333',
+    title: payload,
+    body: 'Body text',
+    street: 'payload-alley',
+    author: { name: 'Ana Rivera', block: 'Block Captain' },
+    votes: 0,
+    voted: false,
+    comments: 0,
+    createdAt: new Date().toISOString(),
+  };
+  const s = await open('community.html', {
+    app: true,
+    url: 'http://localhost/community',
+    fetch: async (url) => {
+      if (url === '/api/community/overview')
+        return json({
+          streets,
+          you: {
+            name: 'Ana Rivera',
+            rank: {
+              title: 'Block Captain',
+              note: 'Other learners ask you for directions.',
+              completed: 3,
+              progress: 0,
+              nextTitle: 'Boulevard Legend',
+              labsToNext: 2,
+            },
+          },
+        });
+      if (url.startsWith('/api/community/posts?street=payload-alley'))
+        return json({ posts: [post] });
+      return json({ posts: [] });
+    },
+  });
+  const flush = () => s.act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+  await flush();
+  assert.match(s.d.querySelector('.bb-rank-card').textContent, /Block Captain/);
+  const alley = [...s.d.querySelectorAll('.bb-street-card')].find((b) =>
+    b.textContent.includes('Payload Alley')
+  );
+  assert.ok(alley);
+  await s.click(alley);
+  await flush();
+  const title = s.d.querySelector('.bb-post h3');
+  assert.equal(title.textContent, payload);
+  assert.equal(s.d.querySelector('img[src="x"]'), null);
+  assert.match(s.d.querySelector('.bb-post').textContent, /Ana Rivera/);
+  assert.deepEqual(s.errors, []);
+  await s.close();
+});
+
+test('admin sends custom expiration and code settings and displays duplicate-code errors', async () => {
+  let duplicate = false;
+  const s = await open('access/admin.html', {
+    fetch: async () => ({
+      ok: !duplicate,
+      json: async () =>
+        duplicate
+          ? { success: false, message: 'That access code already exists. Choose a different code.' }
+          : { success: true, code: 'CLASS-2028', expiresAt: '2028-05-01T09:00:00.000Z' },
+    }),
+  });
+  await s.act(() => {
+    const select = s.d.querySelector('#codeDuration');
+    select.value = 'custom';
+    select.dispatchEvent(new s.w.Event('change', { bubbles: true }));
+  });
+  await s.fill('#codeExpiry', '2028-05-01T17:00');
+  await s.click('input[name="codeMode"][value="custom"]');
+  await s.fill('#customAccessCode', 'CLASS-2028');
+  await s.submit('#generateForm');
+  const payload = JSON.parse(s.requests[0][1].body);
+  assert.equal(payload.duration, 'custom');
+  assert.equal(payload.code, 'CLASS-2028');
+  assert.equal(payload.codeMode, 'custom');
+  assert.equal(payload.expiresAt, new s.w.Date('2028-05-01T17:00').toISOString());
+  assert.match(s.d.querySelector('.bb-code-result').textContent, /CLASS-2028/);
+  duplicate = true;
+  await s.submit('#generateForm');
+  assert.match(s.d.querySelector('[role="alert"]').textContent, /already exists/);
+  assert.equal(s.d.querySelector('#generateForm button').disabled, false);
   assert.deepEqual(s.errors, []);
   await s.close();
 });

@@ -2,8 +2,10 @@ import { createApiHandler } from '../server/api.mjs';
 import { AdminAuth } from '../server/admin-auth.mjs';
 import { readServerConfig } from '../server/config.mjs';
 import { SupabaseUploadStore } from '../server/supabase-uploads.mjs';
+import { SupabaseCommunityStore } from '../server/community.mjs';
 const handler = createApiHandler({
   uploadStore: new SupabaseUploadStore(),
+  communityStore: new SupabaseCommunityStore(),
   maxUploadBytes: 4 * 1024 * 1024,
   adminAuth: new AdminAuth({ password: readServerConfig().adminPassword, required: true }),
 });

@@ -3,6 +3,16 @@ import AppShell, { Icon, Mascot } from '../../components/Interface';
 import useAdmin from '../../hooks/useAdmin';
 export default function Admin() {
   const admin = useAdmin();
+  const localNow = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+  function formatExpiry(value) {
+    if (!value) return '—';
+    const date = new Date(value);
+    return Number.isFinite(date.getTime())
+      ? date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+      : value;
+  }
   return (
     <AppShell active="admin" title="Admin console" admin>
       <div className="bb-page-heading">
@@ -67,14 +77,104 @@ export default function Admin() {
           </span>
           <h2 className="bb-section-title">Generate Access Code</h2>
           <p className="bb-admin-note">
-            Create a fresh course access code. Your existing expiration rules still apply.
+            Choose how long access lasts, then create a random code or make it your own.
           </p>
-          <form id="generateForm" onSubmit={admin.generate}>
-            <button className="bb-button bb-button-primary" style={{ marginTop: 20 }}>
-              Generate Code
+          <form id="generateForm" className="bb-form bb-code-generator" onSubmit={admin.generate}>
+            <div className="bb-field">
+              <label htmlFor="codeDuration">Access expires after</label>
+              <select
+                id="codeDuration"
+                value={admin.duration}
+                onChange={(event) => admin.setDuration(event.target.value)}
+                disabled={admin.pending}
+              >
+                <option value="1-day">1 day</option>
+                <option value="7-days">7 days</option>
+                <option value="1-month">1 month</option>
+                <option value="6-months">6 months</option>
+                <option value="1-year">1 year</option>
+                <option value="custom">Custom date & time</option>
+              </select>
+            </div>
+            {admin.duration === 'custom' && (
+              <div className="bb-field">
+                <label htmlFor="codeExpiry">Expiration date & time</label>
+                <input
+                  id="codeExpiry"
+                  type="datetime-local"
+                  required
+                  min={localNow}
+                  value={admin.customExpiry}
+                  onChange={(event) => admin.setCustomExpiry(event.target.value)}
+                  disabled={admin.pending}
+                />
+                <p className="bb-field-help">
+                  Shown in your local time. The code stops working at this exact time.
+                </p>
+              </div>
+            )}
+            <fieldset className="bb-code-choice">
+              <legend>Choose your code</legend>
+              <div>
+                {[
+                  ['random', 'Random code', 'A fresh 8-character code'],
+                  ['custom', 'Custom code', 'Something your learners recognize'],
+                ].map(([value, label, note]) => (
+                  <label key={value} className={admin.codeMode === value ? 'is-selected' : ''}>
+                    <input
+                      type="radio"
+                      name="codeMode"
+                      value={value}
+                      checked={admin.codeMode === value}
+                      onChange={() => admin.setCodeMode(value)}
+                      disabled={admin.pending}
+                    />
+                    <span>
+                      <strong>{label}</strong>
+                      <small>{note}</small>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            {admin.codeMode === 'custom' && (
+              <div className="bb-field">
+                <label htmlFor="customAccessCode">Your custom access code</label>
+                <input
+                  id="customAccessCode"
+                  autoComplete="off"
+                  placeholder="e.g. CYBER-CLASS-2026"
+                  required
+                  minLength={3}
+                  maxLength={64}
+                  pattern="[A-Za-z0-9_\-]{3,64}"
+                  title="Use 3–64 letters, numbers, hyphens, or underscores."
+                  value={admin.customCode}
+                  onChange={(event) => admin.setCustomCode(event.target.value)}
+                  disabled={admin.pending}
+                />
+                <p className="bb-field-help">
+                  3–64 letters, numbers, hyphens, or underscores. Codes are case-sensitive.
+                </p>
+              </div>
+            )}
+            <button className="bb-button bb-button-primary" disabled={admin.pending}>
+              {admin.pending ? 'Creating…' : 'Generate Code'}
               <Icon name="arrow" size={16} />
             </button>
           </form>
+          {admin.message && (
+            <p className="bb-notice" role="alert">
+              {admin.message}
+            </p>
+          )}
+          {admin.generated && (
+            <div className="bb-code-result" role="status">
+              <span>Your access code is ready to share</span>
+              <code>{admin.generated.code}</code>
+              <p>Expires: {formatExpiry(admin.generated.expiresAt)}</p>
+            </div>
+          )}
         </section>
         <section className="bb-panel">
           <span className="bb-stat-icon">
@@ -123,7 +223,9 @@ export default function Admin() {
                       <td>
                         <code>{item.code}</code>
                       </td>
-                      <td>{item.expires_at}</td>
+                      <td>
+                        <time dateTime={item.expires_at}>{formatExpiry(item.expires_at)}</time>
+                      </td>
                     </tr>
                   ))
                 ) : (

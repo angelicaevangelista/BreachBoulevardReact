@@ -5,12 +5,14 @@ import { practiceLabs } from '../data/practice-labs';
 import useLabProgress from '../hooks/useLabProgress';
 import { useLearner } from '../components/LearnerGate';
 import { labIcons } from './practice';
+import { rankFor } from '../data/community';
 export default function Dashboard() {
   const { progress, completed, loading, error, reload } = useLabProgress();
   const learner = useLearner();
   const name =
     learner?.user?.name?.split(' ')[0] || learner?.user?.email?.split('@')[0] || 'curious human';
   const next = practiceLabs.find((lab) => !progress[lab.id]) || practiceLabs[0];
+  const rank = rankFor(completed.length);
   return (
     <AppShell title="Dashboard">
       <section className="bb-hero">
@@ -162,6 +164,26 @@ export default function Dashboard() {
           )}
         </section>
       </div>
+      <section className="bb-panel bb-boulevard-teaser">
+        <span className="bb-stat-icon">
+          <Icon name="shield" />
+        </span>
+        <div>
+          <small>BREACH BOULEVARD</small>
+          <h2>{loading ? 'Finding your block…' : rank.title}</h2>
+          <p>
+            {loading
+              ? 'Checking your progress.'
+              : rank.nextTitle
+                ? `${rank.labsToNext} more ${rank.labsToNext === 1 ? 'lab' : 'labs'} until ${rank.nextTitle}. Walk the streets, share what you learn and help the next learner.`
+                : 'Top rank reached. Walk the streets, share what you learn and help the next learner.'}
+          </p>
+        </div>
+        <Link className="bb-button bb-button-primary" to="/community">
+          Walk the boulevard
+          <Icon name="arrow" size={16} />
+        </Link>
+      </section>
     </AppShell>
   );
 }
