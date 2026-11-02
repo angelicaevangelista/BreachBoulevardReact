@@ -287,6 +287,11 @@
 .bb-mascot {
   overflow: visible;
 }
+[data-theme='light'] .bb-bee-wings ellipse {
+  fill: #c5dfe0;
+  stroke: #608e95;
+  stroke-width: 2.5;
+}
 .bb-buddy-float {
   animation: bb-float 4s ease-in-out infinite;
 }
