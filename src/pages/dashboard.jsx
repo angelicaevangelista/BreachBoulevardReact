@@ -13,9 +13,11 @@ export default function Dashboard() {
   const name =
     learner?.user?.name?.split(' ')[0] || learner?.user?.email?.split('@')[0] || 'curious human';
   const next = practiceLabs.find((lab) => !progress[lab.id]) || practiceLabs[0];
+  const remaining = practiceLabs.filter((lab) => !progress[lab.id]);
+  const pathPreview = (remaining.length ? remaining : practiceLabs).slice(0, 4);
   const rank = rankFor(completed.length);
   return (
-    <AppShell title="Dashboard">
+    <AppShell title="Dashboard" showSidebarBuddy={false}>
       <section className="bb-hero">
         <div className="bb-hero-copy">
           <span className="bb-eyebrow">
@@ -87,17 +89,17 @@ export default function Dashboard() {
         <section className="bb-panel">
           <div className="bb-panel-heading">
             <h2>Your learning path</h2>
-            <span>One discovery at a time</span>
+            <span>{remaining.length ? 'Up next for you' : 'Revisit a favorite'}</span>
           </div>
-          {practiceLabs.map((lab, index) => (
+          {pathPreview.map((lab, index) => (
             <div className="bb-topic-row" key={lab.id}>
               <span className="bb-stat-icon">
                 <Icon name={labIcons[index % labIcons.length]} size={19} />
               </span>
               <div>
-                <h3>{lab.category}</h3>
+                <h3>{lab.title}</h3>
                 <p>
-                  {lab.difficulty} · {lab.minutes} min ·{' '}
+                  {lab.platform.name} · {lab.difficulty} · {lab.minutes} min ·{' '}
                   {loading ? 'Loading…' : progress[lab.id] ? 'Completed' : 'Ready when you are'}
                 </p>
                 <div className="bb-topic-progress">
@@ -109,6 +111,10 @@ export default function Dashboard() {
               </Link>
             </div>
           ))}
+          <Link className="bb-path-view-all" to="/practice">
+            View all {practiceLabs.length} labs
+            <Icon name="arrow" size={15} />
+          </Link>
         </section>
         <section className="bb-panel">
           <div className="bb-panel-heading">
@@ -160,12 +166,18 @@ export default function Dashboard() {
           </div>
           {completed.length > 0 && (
             <div className="bb-complete-list">
-              {completed.map((lab) => (
+              {completed.slice(0, 3).map((lab) => (
                 <Link key={lab.id} to={`/practice/${lab.id}`}>
                   <Icon name="check" size={15} />
                   {lab.title}
                 </Link>
               ))}
+              {completed.length > 3 && (
+                <Link className="bb-path-more" to="/practice">
+                  +{completed.length - 3} more completed · See all progress
+                  <Icon name="arrow" size={13} />
+                </Link>
+              )}
             </div>
           )}
         </section>

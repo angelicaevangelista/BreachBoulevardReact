@@ -281,6 +281,7 @@ export default function AppShell({
   eyebrow = 'Your learning space',
   title = 'Overview',
   admin = false,
+  showSidebarBuddy = true,
 }) {
   const learner = useLearner();
   const name = learner?.user?.name || learner?.user?.email?.split('@')[0] || 'Curious learner';
@@ -318,18 +319,20 @@ export default function AppShell({
             </Link>
           ))}
         </nav>
-        <div className="bb-sidebar-buddy">
-          <Mascot compact />
-          <strong>You’ve got this.</strong>
-          <p>
-            Curiosity is your superpower.
-            <br />
-            Let’s put it to work.
-          </p>
-          <Link to="/practice">
-            Find a lab <Icon name="arrow" size={15} />
-          </Link>
-        </div>
+        {showSidebarBuddy && (
+          <div className="bb-sidebar-buddy">
+            <Mascot compact />
+            <strong>You’ve got this.</strong>
+            <p>
+              Curiosity is your superpower.
+              <br />
+              Let’s put it to work.
+            </p>
+            <Link to="/practice">
+              Find a lab <Icon name="arrow" size={15} />
+            </Link>
+          </div>
+        )}
         <div className="bb-sidebar-bottom">
           <span className="bb-status-dot" />A safe place to learn<Link to="/privacy">Privacy</Link>
         </div>

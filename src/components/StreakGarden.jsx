@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from '../routing';
-import { Icon, Mascot } from './Interface';
+import { Icon } from './Interface';
 const milestones = [
   [3, 'Little sprout'],
   [7, 'Honey week'],
@@ -96,7 +96,7 @@ export default function StreakGarden({ streak, loading, nextLab }) {
           <h2>Waking up your little garden…</h2>
           <p role="status">Loading your saved practice days.</p>
         </div>
-        <Mascot compact />
+        <Icon name="spark" size={28} />
       </section>
     );
   if (!streak)
@@ -107,7 +107,7 @@ export default function StreakGarden({ streak, loading, nextLab }) {
           <h2>Your garden will be here.</h2>
           <p>Your daily activity couldn’t be loaded. Refresh your progress to try again.</p>
         </div>
-        <Mascot compact />
+        <Icon name="spark" size={28} />
       </section>
     );
   const {
@@ -146,10 +146,22 @@ export default function StreakGarden({ streak, loading, nextLab }) {
                   : 'Your first flower is one discovery away. Let’s grow something lovely.'}
           </p>
         </div>
-        <span className={'streak-today-tag ' + (activeToday ? 'is-done' : '')}>
-          <Icon name={activeToday ? 'check' : 'clock'} size={14} />
-          {activeToday ? 'Today is blooming' : 'Today’s flower awaits'}
-        </span>
+        <div className="streak-heading-tools">
+          <span className={'streak-today-tag ' + (activeToday ? 'is-done' : '')}>
+            <Icon name={activeToday ? 'check' : 'clock'} size={14} />
+            {activeToday ? 'Today is blooming' : 'Today’s flower awaits'}
+          </span>
+          <button
+            type="button"
+            className="streak-celebrate"
+            onClick={() => setCheer(true)}
+            disabled={cheer}
+            aria-label="Celebrate my garden"
+          >
+            {cheer ? 'You’ve got this!' : 'A little cheer'}
+            <Icon name={cheer ? 'check' : 'spark'} size={13} />
+          </button>
+        </div>
       </div>
       <div className="streak-main">
         <div className="streak-score">
@@ -226,25 +238,6 @@ export default function StreakGarden({ streak, loading, nextLab }) {
                   ? 'Complete or replay one lab to make this flower bloom.'
                   : 'No practice recorded. New flowers are still ahead.'}
           </p>
-        </div>
-        <div className="streak-honey">
-          <div className="streak-honey-orbit">
-            <span>✦</span>
-            <span>✧</span>
-            <span>✦</span>
-            <Mascot compact />
-          </div>
-          <button
-            type="button"
-            className="streak-highfive"
-            onClick={() => setCheer(true)}
-            disabled={cheer}
-            aria-label="Send Honey a high-five"
-          >
-            {cheer ? 'Bzz! You’ve got this!' : 'High-five, Honey!'}
-            <Icon name={cheer ? 'check' : 'spark'} size={14} />
-          </button>
-          <small>A little cheer, just for you.</small>
         </div>
       </div>
       <div className="streak-bottom">

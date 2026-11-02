@@ -756,6 +756,9 @@ test('dashboard uses account progress and continues to the next incomplete lab',
     progress: ['sql-injection', 'xss'],
   });
   assert.match(s.d.querySelector('[aria-label="10% completed"]').textContent, /10/);
+  assert.equal(s.d.querySelectorAll('.bb-topic-row').length, 4);
+  assert.equal(s.d.querySelectorAll('.bb-mascot').length, 2);
+  assert.equal(s.d.querySelector('.bb-path-view-all').getAttribute('href'), '/practice');
   const next = [...s.d.querySelectorAll('a')].find((a) => a.textContent === 'Continue learning');
   assert.equal(next.getAttribute('href'), '/practice/authentication');
   await s.click(next);
@@ -1082,7 +1085,7 @@ test('streak garden shows saved days, interactive flowers, milestones and a Hone
     assert.match(s.d.querySelector('.streak-badges>p').textContent, /Earned/);
     await s.click(s.d.querySelectorAll('.streak-badge-list button')[1]);
     assert.match(s.d.querySelector('.streak-badges>p').textContent, /7 consecutive/);
-    await s.click('.streak-highfive');
+    await s.click('.streak-celebrate');
     assert.ok(s.d.querySelector('.streak-confetti'));
     assert.equal(s.requests.length, 0, 'A high-five must never change persisted activity');
     assert.match(s.d.querySelector('.streak-rules').textContent, /Asia\/Singapore/);

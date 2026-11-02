@@ -177,7 +177,7 @@ The dashboard shows a daily practice garden, current and best streaks, a weekly
 flower trail, a honey-jar goal, and milestones at 3, 7, 14, 30, 60 and 100 days.
 A successful guided lab or a submitted CTF flag records a practice day. Replays
 count; repeated completions on the same day do not add extra days. Merely logging
-in, sending an unsuccessful attempt, or pressing Honey’s high-five button does
+in, sending an unsuccessful attempt, or pressing the garden’s cheer button does
 not earn a day. Completed labs show a garden reward linking to the dashboard.
 
 The server uses its own clock and the account’s stored timezone. The browser’s
@@ -200,3 +200,9 @@ and the Streak Garden. Conversation starters are available in her chat panel.
 Casual chat preserves the current hint index; explicit requests for a lab hint
 still take priority. Honey does not infer account activity or record a completion
 from chat messages. No external language-model service or extra key is needed.
+
+
+The dashboard keeps the main welcome Honey and the Ask Honey launcher. Its
+learning path previews up to four unfinished labs with a link to the full
+collection, and its completion list previews three entries. The garden keeps
+its interactive flowers, badges and cheer button without another mascot.
