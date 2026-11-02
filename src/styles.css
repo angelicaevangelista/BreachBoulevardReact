@@ -7976,7 +7976,7 @@
   }
 }
 
-/* Shared theme tokens; simulations keep their dark training surfaces. */
+/* Shared theme tokens; practice simulations keep their training surfaces. */
 :root[data-theme='light'] {
   --bb-t-surface-0b1725: #f8f4ed;
   --bb-t-surface-122438: #fffdf9;
@@ -8574,7 +8574,7 @@
     .bb-art-terminal,
     .bb-terminal,
     .bb-town-stage
-  ) {
+  ):not(.bb-home *) {
   --bb-t-surface-0b1725: #0b1725;
   --bb-t-surface-122438: #122438;
   --bb-t-surface-192d42: #192d42;
@@ -9179,6 +9179,12 @@
 [data-theme='light'] .bb-home .bb-public-header {
   background: #faf6ef;
 }
+[data-theme='light'] .bb-home :is(.bb-flow-phone, .bb-flow-dash, .walkthrough-browser, .bb-term-shell, .bb-art-terminal, .bb-art-sticker) {
+  box-shadow: 0 16px 36px #7253321a;
+}
+[data-theme='light'] .bb-home .walkthrough-cursor > span {
+  color: #fffaf2;
+}
 [data-theme='light'] .bb-brand {
   color: #2b2d32 !important;
 }
@@ -9244,7 +9250,7 @@
     .bb-art-terminal,
     .bb-terminal,
     .bb-town-stage
-  ) {
+  ):not(.bb-home *) {
   --bb-t-alpha-0d1c2cc9: #0d1c2cc9;
   --bb-t-alpha-23394aee: #23394aee;
   --bb-t-alpha-030d1cbb: #030d1cbb;
