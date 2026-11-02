@@ -154,7 +154,11 @@ export function createApiHandler({
       const practiceRoute = route.match(/^\/api\/practice\/([a-z-]+)$/);
       if (practiceRoute) {
         if (!requireMethod(req, res, ['POST'])) return true;
-        const result = evaluatePracticeLab(practiceRoute[1], await readJson(req));
+        const ctfConfig = readServerConfig();
+        const result = evaluatePracticeLab(practiceRoute[1], await readJson(req), {
+          actorId: student?.id,
+          proofKey: ctfConfig.key || ctfConfig.adminPassword,
+        });
         if (!result) throw new HttpError(404, 'Practice lab not found.');
         if (result.completed && learner)
           result.completedLabs = await learner.saveCompletion(practiceRoute[1], student);

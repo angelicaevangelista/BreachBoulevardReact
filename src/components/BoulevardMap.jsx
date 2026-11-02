@@ -166,7 +166,7 @@ export default function BoulevardMap({ streets, onOpen }) {
         positions.forEach(([x, z], i) => {
           const group = new T.Group();
           group.position.set(x, 0, z);
-          const paint = material(colors[i]);
+          const paint = material(new T.Color(colors[i]).multiplyScalar(0.43));
           box(group, 0, 0.11, 0, 3.5, 0.2, 3.5, curb);
           box(group, 0, 0.23, 0, 3.25, 0.06, 3.25, ground);
           if (i === 0) {

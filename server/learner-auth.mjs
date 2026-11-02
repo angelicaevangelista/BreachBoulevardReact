@@ -1,3 +1,4 @@
+import { practiceLabs } from '../src/data/practice-labs.js';
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr';
 import { readServerConfig } from './config.mjs';
 
@@ -38,7 +39,7 @@ export function publicUser(user) {
     : null;
 }
 export function completedLabs(user) {
-  const ids = ['sql-injection', 'xss', 'authentication', 'idor', 'path-traversal', 'data-exposure'];
+  const ids = practiceLabs.map((lab) => lab.id);
   return Array.isArray(user?.user_metadata?.bb_completed_labs)
     ? user.user_metadata.bb_completed_labs.filter((id) => ids.includes(id))
     : [];
@@ -196,7 +197,10 @@ export class LearnerAuth {
     const callback = this.origin + this.basePath + '/api/auth/callback';
     if (route === '/api/auth/google') {
       if (!(await this.settings()).googleEnabled)
-        throw new AuthError(503, 'Google sign-in is currently unavailable. Please use email for now.');
+        throw new AuthError(
+          503,
+          'Google sign-in is currently unavailable. Please use email for now.'
+        );
       const { data, error } = await this.client().auth.signInWithOAuth({
         provider: 'google',
         options: {

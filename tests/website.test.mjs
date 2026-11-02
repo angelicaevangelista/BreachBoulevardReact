@@ -171,7 +171,7 @@ test('practice catalog, hints, feedback and completion survive navigation', asyn
       };
     },
   });
-  assert.equal(s.d.querySelectorAll('article').length, 6);
+  assert.equal(s.d.querySelectorAll('article').length, 21);
   await s.click('a[href="/practice/idor"]');
   assert.equal(s.w.location.pathname, '/practice/idor');
   await s.click(
@@ -180,11 +180,11 @@ test('practice catalog, hints, feedback and completion survive navigation', asyn
   assert.match(s.d.querySelector('ol').textContent, /101/);
   await s.fill('#invoiceId', '102');
   await s.submit('form');
-  assert.match(s.d.querySelector('[aria-live="polite"]').textContent, /Challenge completed/);
+  assert.match(s.d.querySelector('.bb-response').textContent, /Challenge completed/);
   assert.equal(JSON.parse(s.requests[0][1].body).invoiceId, '102');
   assert.equal(s.w.localStorage.getItem('breach.practice.progress.v1'), null);
   await s.click('a[href="/practice"]');
-  assert.match(s.d.querySelector('[role="status"]').textContent, /1 of 6/);
+  assert.match(s.d.querySelector('[role="status"]').textContent, /1 of 21/);
   assert.deepEqual(s.errors, []);
   await s.close();
   const restored = await open('practice.html', {
@@ -192,7 +192,7 @@ test('practice catalog, hints, feedback and completion survive navigation', asyn
     url: 'http://localhost/practice',
     progress: saved,
   });
-  assert.match(restored.d.querySelector('[role="status"]').textContent, /1 of 6/);
+  assert.match(restored.d.querySelector('[role="status"]').textContent, /1 of 21/);
   await restored.close();
 });
 test('terminal help/about/clear and three-question quiz are state-driven', async () => {
@@ -333,18 +333,19 @@ test('SQL challenge is immediately visible and shows results without hints or ex
 test('learning journey plays automatically and supports pause, manual selection and reduced motion', async () => {
   const intervals = new Map();
   const s = await open('testcopy2.html', { intervals });
+  const journeyTimers = () => [...intervals.values()].filter((timer) => timer.delay === 4500);
   const journey = s.d.querySelector('.bb-journey');
   const buttons = [...journey.querySelectorAll('.bb-journey-steps button')];
-  assert.equal(intervals.size, 1);
-  const interval = [...intervals.values()][0];
+  assert.equal(journeyTimers().length, 1);
+  const interval = journeyTimers()[0];
   assert.equal(interval.delay, 4500);
   await s.act(() => interval.callback());
   assert.equal(buttons[1].getAttribute('aria-pressed'), 'true');
   await s.click(buttons[2]);
-  assert.equal(intervals.size, 0);
+  assert.equal(journeyTimers().length, 0);
   assert.equal(journey.querySelector('.bb-journey-play').textContent, 'Play animation');
   await s.click('.bb-journey-play');
-  assert.equal(intervals.size, 1);
+  assert.equal(journeyTimers().length, 1);
   await s.close();
   assert.equal(intervals.size, 0);
   const reduced = await open('testcopy2.html', { intervals, reducedMotion: true });
@@ -509,11 +510,11 @@ test('profile edits save controlled values and return to display mode', async ()
   assert.equal(s.d.querySelector('#profileForm').classList.contains('hidden'), true);
   await s.close();
 });
-test('the legacy labs route offers six working selectable lab cards', async () => {
+test('the legacy labs route offers 21 working selectable lab cards', async () => {
   const s = await open('labs.html', { app: true, url: 'http://localhost/labs' });
-  assert.equal(s.d.querySelectorAll('article').length, 6);
+  assert.equal(s.d.querySelectorAll('article').length, 21);
   const links = [...s.d.querySelectorAll('article>a')];
-  assert.equal(new Set(links.map((a) => a.getAttribute('href'))).size, 6);
+  assert.equal(new Set(links.map((a) => a.getAttribute('href'))).size, 21);
   await s.click(links[2]);
   assert.match(s.w.location.pathname, /^\/practice\//);
   assert.ok(s.d.querySelector('form'));
@@ -735,7 +736,7 @@ test('lab search, difficulty and completion filters compose and can be cleared',
   await s.click(
     [...s.d.querySelectorAll('button')].find((button) => button.textContent === 'Clear filters')
   );
-  assert.equal(s.d.querySelectorAll('article').length, 6);
+  assert.equal(s.d.querySelectorAll('article').length, 21);
   await s.act(() => {
     const select = s.d.querySelector('[aria-label="Lab difficulty"]');
     select.value = 'Intermediate';
@@ -752,7 +753,7 @@ test('dashboard uses account progress and continues to the next incomplete lab',
     url: 'http://localhost/dashboard',
     progress: ['sql-injection', 'xss'],
   });
-  assert.match(s.d.querySelector('[aria-label="33% completed"]').textContent, /33/);
+  assert.match(s.d.querySelector('[aria-label="10% completed"]').textContent, /10/);
   const next = [...s.d.querySelectorAll('a')].find((a) => a.textContent === 'Continue learning');
   assert.equal(next.getAttribute('href'), '/practice/authentication');
   await s.click(next);
@@ -959,4 +960,100 @@ test('Honey is available on signed-in public pages and hidden from logged-out vi
   assert.ok(member.d.querySelector('[data-honey-antennas="two"]'));
   assert.deepEqual(member.errors, []);
   await member.close();
+});
+
+test('CTF collection filters to five labs per difficulty and opens a distinct target website', async () => {
+  const s = await open('practice.html', { app: true, url: 'http://localhost/practice?track=ctf' });
+  try {
+    assert.equal(s.d.querySelectorAll('article').length, 15);
+    for (const level of ['Easy', 'Medium', 'Hard']) {
+      await s.click(
+        [...s.d.querySelectorAll('.ctf-levels button')].find((b) =>
+          b.textContent.includes(level + ' CTFs')
+        )
+      );
+      assert.equal(s.d.querySelectorAll('article').length, 5);
+    }
+    await s.click('a[href="/practice/ctf-devops-build"]');
+    assert.match(s.d.querySelector('.target-browser').textContent, /PipelineNine/);
+    assert.equal(s.d.querySelectorAll('.lab-phase-bar button').length, 2);
+    assert.ok(s.d.querySelector('#ctfFlag'));
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+});
+
+test('CTF native controls send requests and only flag submission records completion', async () => {
+  let requestCount = 0;
+  const s = await open('practice.html', {
+    app: true,
+    url: 'http://localhost/practice/ctf-social-draft',
+    fetch: async () => ({
+      ok: true,
+      json: async () =>
+        ++requestCount === 1
+          ? {
+              success: true,
+              completed: false,
+              output: { recoveredFlag: 'BB{training_only}' },
+              feedback: 'Flag recovered',
+            }
+          : {
+              success: true,
+              completed: true,
+              flag: 'BB{training_only}',
+              output: { accepted: true },
+              feedback: 'Flag accepted',
+            },
+    }),
+  });
+  try {
+    await s.fill('#site-postId', '42');
+    assert.equal(s.d.querySelector('#postId').value, '42');
+    await s.submit('form');
+    assert.equal(JSON.parse(s.requests[0][1].body).action, 'interact');
+    assert.equal(s.d.querySelector('.bb-completion'), null);
+    await s.fill('#ctfFlag', 'BB{training_only}');
+    await s.submit('.lab-flag-form');
+    assert.equal(JSON.parse(s.requests[1][1].body).action, 'submit-flag');
+    assert.match(s.d.querySelector('.bb-completion').textContent, /Flag captured/);
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+});
+
+test('lab walkthrough types, changes phases, pauses, and respects reduced motion', async () => {
+  const intervals = new Map(),
+    s = await open('testcopy2.html', { intervals });
+  try {
+    const tick = [...intervals.values()].find((t) => t.delay === 80);
+    assert.ok(tick);
+    await s.act(() => {
+      for (let i = 0; i < 65; i++) tick.callback();
+    });
+    assert.match(s.d.querySelector('.walkthrough-input').textContent, /OR/);
+    await s.click(
+      [...s.d.querySelectorAll('.walkthrough-controls button')].find(
+        (b) => b.textContent === 'Pause demo'
+      )
+    );
+    assert.equal(
+      [...intervals.values()].some((t) => t.delay === 80),
+      false
+    );
+    await s.click([...s.d.querySelectorAll('.walkthrough-steps button')][3]);
+    assert.match(s.d.querySelector('.walkthrough-stage').textContent, /BB\{demo_query_bypass\}/);
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+  const reduced = await open('testcopy2.html', { reducedMotion: true, intervals });
+  try {
+    assert.equal(intervals.size, 0);
+    assert.match(reduced.d.querySelector('.walkthrough-controls').textContent, /Motion reduced/);
+  } finally {
+    await reduced.close();
+  }
 });

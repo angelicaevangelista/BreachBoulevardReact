@@ -3,18 +3,21 @@ import { Link, assetUrl, useRouter } from '../routing';
 import { practiceLabs, findPracticeLab } from '../data/practice-labs';
 import AppShell, { Icon, Mascot } from '../components/Interface';
 import useLabProgress from '../hooks/useLabProgress';
+import TargetWebsite from '../components/labs/TargetWebsite';
 export const labIcons = ['terminal', 'code', 'key', 'eye', 'shield', 'book'];
 function Challenge({ lab, onComplete, solved }) {
-  const [values, setValues] = useState(() =>
-    Object.fromEntries(lab.fields.map((field) => [field.key, field.initial]))
-  );
+  const [values, setValues] = useState(() => ({
+    ...Object.fromEntries(lab.fields.map((field) => [field.key, field.initial])),
+    ...(lab.difficulty === 'Hard' ? { stage: 'discover' } : {}),
+  }));
   const [hints, setHints] = useState(0),
     [result, setResult] = useState(null),
     [busy, setBusy] = useState(false);
   const request = useRef(null);
+  const [proof, setProof] = useState(''),
+    [flagAttempt, setFlagAttempt] = useState('');
   useEffect(() => () => request.current?.abort(), []);
-  async function submit(event) {
-    event.preventDefault();
+  async function attempt(payload) {
     if (busy) return;
     request.current?.abort();
     const controller = new AbortController();
@@ -25,7 +28,7 @@ function Challenge({ lab, onComplete, solved }) {
       const response = await fetch(assetUrl(`api/practice/${lab.id}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
         signal: controller.signal,
       });
       const data = await response.json();
@@ -33,6 +36,10 @@ function Challenge({ lab, onComplete, solved }) {
         throw new Error(data.message || 'The attempt could not be checked. Please try again.');
       if (!controller.signal.aborted) {
         setResult(data);
+        if (data.proof) {
+          setProof(data.proof);
+          setValues((previous) => ({ ...previous, stage: 'exploit' }));
+        }
         if (data.completed) onComplete(lab.id, data.completedLabs);
       }
     } catch (error) {
@@ -40,6 +47,16 @@ function Challenge({ lab, onComplete, solved }) {
     } finally {
       if (!controller.signal.aborted) setBusy(false);
     }
+  }
+  function submit(event) {
+    event.preventDefault();
+    attempt(
+      lab.track === 'ctf' ? { ...values, action: 'interact', ...(proof ? { proof } : {}) } : values
+    );
+  }
+  function captureFlag(event) {
+    event.preventDefault();
+    attempt({ action: 'submit-flag', flag: flagAttempt });
   }
   const next =
     practiceLabs[(practiceLabs.findIndex((item) => item.id === lab.id) + 1) % practiceLabs.length];
@@ -58,12 +75,45 @@ function Challenge({ lab, onComplete, solved }) {
           {solved ? '✓ Completed' : `${lab.difficulty} · ${lab.minutes} min`}
         </span>
       </div>
-      <div className="bb-challenge-grid">
+      {lab.difficulty === 'Hard' && (
+        <div className="lab-phase-bar" aria-label="Challenge phase">
+          {[
+            ['discover', '01', 'Investigate'],
+            ['exploit', '02', 'Exploit the chain'],
+          ].map(([stage, number, label]) => (
+            <button
+              type="button"
+              key={stage}
+              aria-pressed={values.stage === stage}
+              className={values.stage === stage ? 'is-active' : ''}
+              onClick={() => setValues((previous) => ({ ...previous, stage }))}
+            >
+              <span>{number}</span>
+              {label}
+              {stage === 'exploit' && proof && <Icon name="check" size={16} />}
+            </button>
+          ))}
+          <span>
+            {proof
+              ? 'Discovery ticket attached to this account'
+              : 'Complete discovery to unlock a signed ticket'}
+          </span>
+        </div>
+      )}
+      <TargetWebsite
+        lab={lab}
+        values={values}
+        setValues={setValues}
+        onSubmit={submit}
+        busy={busy}
+        result={result}
+      />
+      <div className="bb-challenge-grid lab-inspection-grid">
         <section className="bb-panel">
           <span className="bb-challenge-label">
             <Icon name="flag" size={15} /> YOUR MISSION
           </span>
-          <h2 className="bb-challenge-title">Let’s investigate.</h2>
+          <h2 className="bb-challenge-title">Mission & request inspector</h2>
           <p className="bb-challenge-description">{lab.objective}</p>
           <form className="bb-form" onSubmit={submit}>
             {lab.fields.map((field) => (
@@ -91,7 +141,7 @@ function Challenge({ lab, onComplete, solved }) {
             ))}
             <button disabled={busy} className="bb-button bb-button-primary bb-button-wide">
               <Icon name={busy ? 'refresh' : 'terminal'} size={17} />
-              {busy ? 'Checking…' : 'Run attempt'}
+              {busy ? 'Checking…' : lab.track === 'ctf' ? 'Send request' : 'Run attempt'}
             </button>
           </form>
           <div className="bb-hints">
@@ -158,6 +208,33 @@ function Challenge({ lab, onComplete, solved }) {
               </p>
             </div>
           )}
+          {lab.track === 'ctf' && (
+            <form className="lab-flag-form bb-form" onSubmit={captureFlag}>
+              <span className="bb-eyebrow">
+                <Icon name="flag" size={15} /> CAPTURE THE FLAG
+              </span>
+              <p>
+                Recover the flag from the website response, then submit it here. Only a valid flag
+                records completion.
+              </p>
+              <div className="bb-field">
+                <label htmlFor="ctfFlag">Recovered flag</label>
+                <input
+                  id="ctfFlag"
+                  value={flagAttempt}
+                  onChange={(event) => setFlagAttempt(event.target.value)}
+                  maxLength={256}
+                  autoComplete="off"
+                  placeholder="BB{…}"
+                  required
+                />
+              </div>
+              <button className="bb-button bb-button-primary bb-button-wide" disabled={busy}>
+                {busy ? 'Checking flag…' : 'Submit flag'}
+                <Icon name="flag" size={16} />
+              </button>
+            </form>
+          )}
           <p className="bb-response-footnote">
             <Icon name="shield" size={15} /> Fictional data. A safe space to experiment.
           </p>
@@ -175,9 +252,18 @@ export default function Practice() {
   const [query, setQuery] = useState(''),
     [difficulty, setDifficulty] = useState('all'),
     [status, setStatus] = useState('all');
-  const filtered = practiceLabs.filter(
+  const [track, setTrack] = useState('all');
+  useEffect(() => {
+    if (!id) {
+      const selected = new URLSearchParams(location.split('?')[1] || '').get('track');
+      setTrack(['ctf', 'guided'].includes(selected) ? selected : 'all');
+    }
+  }, [location, id]);
+  const trackLabs = practiceLabs.filter((item) => track === 'all' || item.track === track);
+  const trackCompleted = trackLabs.filter((item) => progress[item.id]).length;
+  const filtered = trackLabs.filter(
     (item) =>
-      `${item.title} ${item.category} ${item.summary}`
+      `${item.title} ${item.category} ${item.summary} ${item.platform.name}`
         .toLowerCase()
         .includes(query.toLowerCase()) &&
       (difficulty === 'all' || item.difficulty === difficulty) &&
@@ -229,6 +315,51 @@ export default function Practice() {
                 : `${completed.length} of ${practiceLabs.length} completed`}
             </span>
           </div>
+          <div className="lab-tracks" aria-label="Lab collection">
+            {[
+              ['all', 'All experiences', 21],
+              ['guided', 'Guided practice', 6],
+              ['ctf', 'CTF challenges', 15],
+            ].map(([value, label, count]) => (
+              <button
+                type="button"
+                key={value}
+                aria-pressed={track === value}
+                className={track === value ? 'is-active' : ''}
+                onClick={() => {
+                  setTrack(value);
+                  setDifficulty('all');
+                }}
+              >
+                {label}
+                <span>{count}</span>
+              </button>
+            ))}
+          </div>
+          <div className="ctf-levels">
+            {[
+              ['Easy', 'A first little flag', '5 focused challenges'],
+              ['Medium', 'Connect the clues', '5 deeper investigations'],
+              ['Hard', 'Follow the whole chain', '5 multi-stage missions'],
+            ].map(([level, title, note]) => (
+              <button
+                type="button"
+                key={level}
+                onClick={() => {
+                  setTrack('ctf');
+                  setDifficulty(level);
+                }}
+              >
+                <span className={'ctf-level-dot is-' + level.toLowerCase()} />
+                <div>
+                  <strong>{level} CTFs</strong>
+                  <h3>{title}</h3>
+                  <p>{note}</p>
+                </div>
+                <Icon name="arrow" size={18} />
+              </button>
+            ))}
+          </div>
           <div className="bb-lab-toolbar">
             <label className="bb-search">
               <Icon name="search" size={18} />
@@ -247,7 +378,7 @@ export default function Practice() {
               onChange={(e) => setDifficulty(e.target.value)}
             >
               <option value="all">All difficulties</option>
-              {[...new Set(practiceLabs.map((item) => item.difficulty))].map((value) => (
+              {[...new Set(trackLabs.map((item) => item.difficulty))].map((value) => (
                 <option key={value}>{value}</option>
               ))}
             </select>
@@ -257,9 +388,9 @@ export default function Practice() {
           </div>
           <div className="bb-tabs" aria-label="Filter labs by completion">
             {[
-              ['all', 'All labs', practiceLabs.length],
-              ['new', 'Not started', practiceLabs.length - completed.length],
-              ['completed', 'Completed', completed.length],
+              ['all', 'All labs', trackLabs.length],
+              ['new', 'Not started', trackLabs.length - trackCompleted],
+              ['completed', 'Completed', trackCompleted],
             ].map(([value, label, count]) => (
               <button
                 key={value}
@@ -289,16 +420,21 @@ export default function Practice() {
                       <span
                         className={`bb-lab-icon ${index % 3 === 1 ? 'is-purple' : index % 3 === 2 ? 'is-mint' : ''}`}
                       >
-                        <Icon name={labIcons[index]} size={23} />
+                        <Icon name={labIcons[index % labIcons.length]} size={23} />
                       </span>
                       <span className={`bb-tag ${progress[item.id] ? 'bb-tag-green' : ''}`}>
                         {progress[item.id] ? '✓ Completed' : item.difficulty}
                       </span>
                     </div>
-                    <p className="bb-lab-category">{item.category}</p>
+                    <p className="bb-lab-category">
+                      {item.platform.name} / {item.category}
+                    </p>
                     <h2>{item.title}</h2>
                     <p className="bb-lab-summary">{item.summary}</p>
                     <div className="bb-lab-meta">
+                      <span className="lab-track-badge">
+                        {item.track === 'ctf' ? 'CTF' : 'Guided'}
+                      </span>
                       <span>
                         <Icon name="clock" size={13} />
                         {item.minutes} min
@@ -321,13 +457,14 @@ export default function Practice() {
             <div className="bb-panel bb-empty">
               <Mascot />
               <h3>No labs in this little corner yet.</h3>
-              <p>Try another search or clear your filters to explore all six challenges.</p>
+              <p>Try another search or clear your filters to explore all 21 challenges.</p>
               <button
                 className="bb-button bb-button-secondary"
                 onClick={() => {
                   setQuery('');
                   setStatus('all');
                   setDifficulty('all');
+                  setTrack('all');
                 }}
               >
                 Clear filters

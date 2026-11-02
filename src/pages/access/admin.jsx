@@ -65,8 +65,8 @@ export default function Admin() {
           </span>
           <div>
             <small>Guided practice</small>
-            <strong>6</strong>
-            <p>Labs ready for your learners</p>
+            <strong>21</strong>
+            <p>6 guided labs + 15 CTFs</p>
           </div>
         </section>
       </div>

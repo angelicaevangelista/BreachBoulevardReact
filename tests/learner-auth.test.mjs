@@ -299,15 +299,13 @@ test('official SDK creates a PKCE challenge and keeps its verifier in a secure s
       },
     }
   );
-  const { data, error } = await auth
-    .client()
-    .auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'https://breachboulevard.vercel.app/api/auth/callback',
-        skipBrowserRedirect: true,
-      },
-    });
+  const { data, error } = await auth.client().auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://breachboulevard.vercel.app/api/auth/callback',
+      skipBrowserRedirect: true,
+    },
+  });
   assert.equal(error, null);
   const destination = new URL(data.url);
   assert.equal(destination.searchParams.get('code_challenge_method'), 's256');
@@ -316,4 +314,44 @@ test('official SDK creates a PKCE challenge and keeps its verifier in a secure s
   assert.match(cookie, /HttpOnly/);
   assert.match(cookie, /Secure/);
   assert.match(cookie, /SameSite=Lax/);
+});
+
+test('CTF API saves progress only after valid flag submission for the verified account', async () => {
+  const f = await fixture();
+  try {
+    const headers = { Cookie: 'bb_learner=session' };
+    const recovered = await f.request('/api/practice/ctf-social-draft', {
+      method: 'POST',
+      body: { postId: '42' },
+      headers,
+    });
+    const data = await recovered.json();
+    assert.equal(data.completed, false);
+    assert.equal(
+      f.calls.some((c) => Array.isArray(c) && c[0] === 'update'),
+      false
+    );
+    const rejected = await f.request('/api/practice/ctf-social-draft', {
+      method: 'POST',
+      body: { action: 'submit-flag', flag: 'BB{forged}', completed: true },
+      headers,
+    });
+    assert.equal((await rejected.json()).completed, false);
+    const accepted = await f.request('/api/practice/ctf-social-draft', {
+      method: 'POST',
+      body: { action: 'submit-flag', flag: data.output.recoveredFlag },
+      headers,
+    });
+    assert.deepEqual((await accepted.json()).completedLabs, ['idor', 'ctf-social-draft']);
+    assert.ok(
+      f.calls.some(
+        (c) =>
+          Array.isArray(c) &&
+          c[0] === 'update' &&
+          c[1].data.bb_completed_labs.includes('ctf-social-draft')
+      )
+    );
+  } finally {
+    await f.close();
+  }
 });

@@ -1,3 +1,4 @@
+import { ctfLabs } from './ctf-labs.js';
 export const practiceLabs = [
   {
     id: 'sql-injection',
@@ -115,4 +116,53 @@ export const practiceLabs = [
     lesson: 'Remove debugging fields from public responses and keep privileged keys on the server.',
   },
 ];
+const platforms = [
+  {
+    name: 'Gatehouse',
+    kind: 'login',
+    accent: '#e7b083',
+    domain: 'gatehouse.lab.invalid',
+    tagline: 'Your team’s front door.',
+  },
+  {
+    name: 'Chatterbox',
+    kind: 'social',
+    accent: '#ad9ce7',
+    domain: 'chatterbox.lab.invalid',
+    tagline: 'A little more connected.',
+  },
+  {
+    name: 'HuddleHQ',
+    kind: 'meeting',
+    accent: '#85bbd5',
+    domain: 'huddlehq.lab.invalid',
+    tagline: 'Make room for a good conversation.',
+  },
+  {
+    name: 'InvoicePilot',
+    kind: 'invoice',
+    accent: '#93c7b2',
+    domain: 'invoicepilot.lab.invalid',
+    tagline: 'Keep the little details in order.',
+  },
+  {
+    name: 'Cabinet',
+    kind: 'files',
+    accent: '#d5b87f',
+    domain: 'cabinet.lab.invalid',
+    tagline: 'Everything in its little place.',
+  },
+  {
+    name: 'Stride',
+    kind: 'fitness',
+    accent: '#e99caa',
+    domain: 'stride.lab.invalid',
+    tagline: 'A small step towards a stronger you.',
+  },
+];
+practiceLabs.forEach((lab, index) => {
+  lab.track = 'guided';
+  lab.platform = platforms[index];
+});
+practiceLabs.push(...ctfLabs);
 export const findPracticeLab = (id) => practiceLabs.find((lab) => lab.id === id);

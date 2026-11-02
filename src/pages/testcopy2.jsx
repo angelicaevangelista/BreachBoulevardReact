@@ -4,6 +4,7 @@ import { Brand, Icon, Mascot } from '../components/Interface';
 import QuizTerminal from '../components/QuizTerminal';
 import FaqItem from '../components/FaqItem';
 import LearningJourney from '../components/LearningJourney';
+import LabWalkthrough from '../components/LabWalkthrough';
 import SqlPlayground from '../components/SqlPlayground';
 export default function Home() {
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
@@ -72,7 +73,7 @@ export default function Home() {
           </div>
           <div className="bb-home-bits">
             <span>
-              <Icon name="flask" size={15} />6 guided labs
+              <Icon name="flask" size={15} />6 guided labs + 15 CTFs
             </span>
             <span>
               <Icon name="heart" size={15} />
@@ -114,7 +115,7 @@ export default function Home() {
             [
               'flask',
               'Try it. Break it. Get it.',
-              'Explore six guided security challenges with fictional data and real lessons.',
+              'Explore 21 fictional websites: six guided labs and 15 capture-the-flag challenges.',
             ],
             [
               'help',
@@ -138,6 +139,7 @@ export default function Home() {
         </div>
       </section>
       <LearningJourney />
+      <LabWalkthrough />
       <section className="bb-home-section bb-reveal" id="playground">
         <span className="bb-eyebrow">
           <Icon name="terminal" size={15} /> A LITTLE TASTE OF THE ADVENTURE

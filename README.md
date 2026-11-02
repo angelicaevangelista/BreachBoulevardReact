@@ -11,7 +11,7 @@ Existing authentication, training simulations, and access-code behavior are reta
 
 - `/access`: Google or email sign-in, followed by the existing course access-code step.
 - `/dashboard`: account-backed lab completions and the next incomplete challenge.
-- `/practice` and `/labs`: six selectable lab cards, search, difficulty, and completion filters.
+- `/practice` and `/labs`: 21 simulated websites: six guided labs plus 15 CTFs, with search and progress filters.
 - `/practice/:id`: interactive challenges, progressive hints, feedback, and saved completions.
 - `/courses`: topic cards with clickable links to working labs and tutorials.
 - `/admin`: protected code management with random or custom codes and configurable expiry.
@@ -148,3 +148,25 @@ stored in the signed-in Supabase account. The practice API requires a verified
 learner session. Get Started shows Google (recommended) and email/password sign-in
 before the original access-code step. See [Auth setup](supabase/AUTH_SETUP.md) for
 Google, confirmation email, password reset, and production configuration.
+
+## CTF practice
+
+The CTF collection contains five Easy, five Medium, and five Hard challenges.
+Each lab has its own fictional brand and website, including social feeds, meeting
+lobbies, shopping, streaming, banking, design tools, and developer pipelines.
+Use the website controls, then inspect and adjust requests in the mission panel.
+Recover a flag and submit it separately to record progress in the signed-in
+Supabase account. Flags are validated on the server and scoped to the account.
+Hard labs require a signed discovery ticket, valid for 30 minutes, before the
+second stage. Expired tickets can be renewed by repeating discovery.
+
+Training responses model vulnerabilities without executing supplied HTML,
+modifying JavaScript prototypes, reading server files, or making outbound requests.
+Meeting controls do not access cameras or microphones. The race-condition lab
+uses a deterministic shared-snapshot model. These are educational simulations.
+The dark homepage walkthrough demonstrates cursor movement, typing, request
+inspection, and flag capture; it has pause/replay controls and respects reduced
+motion. Its demo flag is illustrative and cannot complete a CTF.
+
+The expanded catalog uses the existing account progress mechanism; no new
+database migration or environment variable is required.

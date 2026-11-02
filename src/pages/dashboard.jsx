@@ -54,7 +54,7 @@ export default function Dashboard() {
             'flag',
             'Labs completed',
             loading ? '—' : completed.length,
-            `of ${practiceLabs.length} guided challenges`,
+            `of ${practiceLabs.length} security challenges`,
           ],
           [
             'flask',
@@ -66,7 +66,7 @@ export default function Dashboard() {
             'clock',
             'Guided practice',
             practiceLabs.reduce((sum, lab) => sum + lab.minutes, 0),
-            'minutes across all six labs',
+            'minutes across the full lab collection',
           ],
         ].map(([icon, label, value, note]) => (
           <section className="bb-stat" key={label}>
@@ -90,7 +90,7 @@ export default function Dashboard() {
           {practiceLabs.map((lab, index) => (
             <div className="bb-topic-row" key={lab.id}>
               <span className="bb-stat-icon">
-                <Icon name={labIcons[index]} size={19} />
+                <Icon name={labIcons[index % labIcons.length]} size={19} />
               </span>
               <div>
                 <h3>{lab.category}</h3>
@@ -112,7 +112,7 @@ export default function Dashboard() {
           <div className="bb-panel-heading">
             <h2>Your journey so far</h2>
             <span className="bb-tag bb-tag-orange">
-              {loading ? 'Loading…' : `${completed.length} of 6`}
+              {loading ? 'Loading…' : `${completed.length} of ${practiceLabs.length}`}
             </span>
           </div>
           {loading ? (
@@ -121,10 +121,10 @@ export default function Dashboard() {
             </p>
           ) : (
             <>
-              <ProgressRing completed={completed.length} />
+              <ProgressRing completed={completed.length} total={practiceLabs.length} />
               <p className="bb-journey-note">
-                {completed.length === 6 ? (
-                  <strong>All six flags captured. Nicely done!</strong>
+                {completed.length === practiceLabs.length ? (
+                  <strong>All challenges completed. Nicely done!</strong>
                 ) : completed.length ? (
                   <>
                     <strong>Look at you go.</strong> Keep that curiosity going.
@@ -144,10 +144,14 @@ export default function Dashboard() {
               <Icon name="spark" />
             </span>
             <div>
-              <h3>{completed.length === 6 ? 'Ready for another round?' : 'Up next for you'}</h3>
+              <h3>
+                {completed.length === practiceLabs.length
+                  ? 'Ready for another round?'
+                  : 'Up next for you'}
+              </h3>
               <p>{next.title}</p>
               <Link className="bb-button bb-button-soft" to={`/practice/${next.id}`}>
-                {completed.length === 6 ? 'Practice again' : 'Let’s try it'}
+                {completed.length === practiceLabs.length ? 'Practice again' : 'Let’s try it'}
                 <Icon name="arrow" size={14} />
               </Link>
             </div>

@@ -67,7 +67,7 @@ const steps = [
       { title: 'Clue found', tag: 'HINT', state: 'Done' },
       { title: 'Hint used', tag: 'HONEY', state: 'Done' },
     ],
-    footer: 'Flag captured, 3 of 6',
+    footer: 'Flag captured · Progress saved',
     rows: [
       ['Lab', 'Break the login query', 100],
       ['Clue', 'Found', 100],

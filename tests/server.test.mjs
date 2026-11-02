@@ -262,7 +262,7 @@ test('Honey answers platform questions and refuses everything else', async () =>
     assert.match(await reply('who are you?'), /AI helper bee inside Breach Boulevard/);
     assert.match(
       await reply('which labs are there'),
-      /Breach Boulevard has 6 labs: Break the login query/
+      /Breach Boulevard has 21 labs: Break the login query/
     );
     assert.equal(
       await reply('what is my objective', 'sql-injection'),

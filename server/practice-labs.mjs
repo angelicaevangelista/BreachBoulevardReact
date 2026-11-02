@@ -1,5 +1,7 @@
+import { evaluateCtfLab } from './ctf-labs.mjs';
 import path from 'node:path';
-export function evaluatePracticeLab(id, input = {}) {
+export function evaluatePracticeLab(id, input = {}, context = {}) {
+  if (id.startsWith('ctf-')) return evaluateCtfLab(id, input, context);
   const value = (name) => (typeof input[name] === 'string' ? input[name].slice(0, 4096) : '');
   let completed = false,
     output,
