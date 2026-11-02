@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from '../routing';
-import { Brand, Icon, Mascot } from '../components/Interface';
+import { Brand, Icon } from '../components/Interface';
 import QuizTerminal from '../components/QuizTerminal';
 import FaqItem from '../components/FaqItem';
 import LearningJourney from '../components/LearningJourney';
 import LabWalkthrough from '../components/LabWalkthrough';
 import SqlPlayground from '../components/SqlPlayground';
 import ThemeToggle from '../components/ThemeToggle';
+import BoulevardWelcome from '../components/BoulevardWelcome';
 export default function Home() {
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
   const home = useRef(null);
@@ -52,21 +53,21 @@ export default function Home() {
       <header className="bb-home-hero">
         <div>
           <span className="bb-eyebrow">
-            <Icon name="spark" size={15} /> FOR THE CURIOUS MINDS
+            <Icon name="spark" size={15} /> WELCOME TO BREACH BOULEVARD
           </span>
           <h1>
-            A little curious.
-            <br />A lot more
+            Every street.
+            <br />A new
             <br />
-            <span className="bb-orange">cyber smart.</span>
+            <span className="bb-orange">discovery.</span>
           </h1>
           <p>
-            Meet your friendly corner of cybersecurity. Explore hands-on labs, follow the clues, and
-            turn “what if?” into “I get it.”
+            A cozy neighborhood for curious minds. Step into fictional websites, follow a mystery,
+            and build real cybersecurity skills. Honey knows the way.
           </p>
           <div className="bb-hero-actions">
             <Link to="/access" className="bb-button bb-button-primary">
-              Let’s get started
+              Step onto the Boulevard
               <Icon name="arrow" size={17} />
             </Link>
             <Link to="/practice" className="bb-button bb-button-secondary">
@@ -87,29 +88,41 @@ export default function Home() {
             </span>
           </div>
         </div>
-        <div className="bb-auth-art">
-          <Mascot />
-          <div className="bb-art-terminal">
-            <div className="bb-code-dots">
-              <i />
-              <i />
-              <i />
-            </div>
-            <code>
-              <span>$ hello, curious human</span>
-              <br />
-              Initializing your next discovery…
-              <br />
-              <span className="bb-mint">✓ You’ve got this.</span>
-            </code>
-          </div>
-          <span className="bb-art-sticker">
-            <Icon name="flag" size={18} /> First flag? Coming right up.
-          </span>
-        </div>
+        <BoulevardWelcome />
       </header>
+      <nav className="boulevard-directory" aria-label="Explore the Boulevard">
+        <div className="boulevard-directory-label">
+          <span>YOUR NEIGHBORHOOD GUIDE</span>
+          <strong>Where shall we wander?</strong>
+        </div>
+        <Link to="/practice">
+          <span className="boulevard-stop">01</span>
+          <span>
+            <strong>The Lab Arcade</strong>
+            <small>21 doors. Plenty to discover.</small>
+          </span>
+          <Icon name="arrow" size={16} />
+        </Link>
+        <Link to="/missions">
+          <span className="boulevard-stop">02</span>
+          <span>
+            <strong>Case File Corner</strong>
+            <small>A phone, a clue, a little mystery.</small>
+          </span>
+          <Icon name="arrow" size={16} />
+        </Link>
+        <a href="#meet-honey">
+          <span className="boulevard-stop">03</span>
+          <span>
+            <strong>Honey’s Hideaway</strong>
+            <small>Your friendly AI neighbor.</small>
+          </span>
+          <Icon name="arrow" size={16} />
+        </a>
+      </nav>
       <section
         className="bb-home-section bb-honey-intro bb-reveal"
+        id="meet-honey"
         aria-labelledby="meet-honey-title"
       >
         <div className="bb-honey-intro-note">
@@ -157,25 +170,25 @@ export default function Home() {
         </div>
       </section>
       <section className="bb-home-section bb-reveal">
-        <span className="bb-eyebrow">SMALL STEPS. REAL SKILLS.</span>
-        <h2>Learning feels better here.</h2>
+        <span className="bb-eyebrow">THERE’S SOMETHING ON EVERY CORNER</span>
+        <h2>Your kind of neighborhood.</h2>
         <p>A little structure, a little play, and plenty of room to figure things out.</p>
         <div className="bb-home-features">
           {[
             [
               'flask',
-              'Try it. Break it. Get it.',
+              'A new door to try.',
               'Explore 21 fictional websites: six guided labs and 15 capture-the-flag challenges.',
             ],
             [
               'help',
-              'A nudge when you need it.',
+              'A friend around the corner.',
               'Reveal hints at your own pace. Every attempt is another clue.',
             ],
             [
               'flag',
-              'See how far you’ve come.',
-              'Keep your completed labs in your account and pick up your next challenge.',
+              'A story to get lost in.',
+              'Three mystery cases, an interactive phone, and evidence that connects to real lab challenges.',
             ],
           ].map(([icon, title, copy]) => (
             <article className="bb-home-feature" key={title}>
