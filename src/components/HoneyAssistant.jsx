@@ -77,7 +77,7 @@ export default function HoneyAssistant() {
             <Icon name="shield" size={14} />
             {labId
               ? 'A little hint for the lab you’re exploring.'
-              : 'Labs, hints, and finding your way around.'}
+              : 'A friendly hello, a little cheer, or your next clue.'}
           </p>
           <HoneyChat key={labId || 'platform'} labId={labId} />
           <p className="bb-assistant-footer">A little curiosity goes a long way.</p>

@@ -251,10 +251,10 @@ test('Honey validates messages, lab ids, and hint indexes', async () => {
   }
 });
 
-test('Honey answers platform questions and refuses everything else', async () => {
+test('Honey answers platform questions, chats simply, and redirects unrelated requests', async () => {
   const f = await fixture({ honey: createHoneyService() });
   const refusal =
-    'I can only help with Breach Boulevard. Ask me about the labs, a lab objective, or the next hint.';
+    "My little bee brain knows Breach Boulevard, labs, streaks, and a little friendly chat. Try asking how I am, my favorite color, or for a lab hint!";
   try {
     const reply = async (message, labId) =>
       (await (await honeyRequest(f.origin, { message, labId })).json()).reply;

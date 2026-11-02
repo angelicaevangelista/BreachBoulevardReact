@@ -1,30 +1,38 @@
 import { practiceLabs } from '../src/data/practice-labs.js';
+import { honeyConversation } from './honey-conversation.mjs';
 
 const MAX_MESSAGE_LENGTH = 500;
 const OFF_TOPIC_REPLY =
-  'I can only help with Breach Boulevard. Ask me about the labs, a lab objective, or the next hint.';
-const GREETING_REPLY =
-  "Hi, I'm Honey, your helper bee inside Breach Boulevard. Tell me which lab you're on, or ask for the next hint when you're stuck.";
+  'My little bee brain knows Breach Boulevard, labs, streaks, and a little friendly chat. Try asking how I am, my favorite color, or for a lab hint!';
 const IDENTITY_REPLY =
-  "I'm Honey, the AI helper bee inside Breach Boulevard. I can list the labs, explain a lab's objective, and give you hints one at a time. I only help with the platform.";
+  "I'm Honey, the AI helper bee inside Breach Boulevard. I use built-in replies to chat, explain lab objectives, share hints one at a time, and cheer you on. Ask about my favorite color, the Streak Garden, or your next little discovery!";
 const PLATFORM_REPLY =
   'Breach Boulevard is a hands-on practice platform for web security. Pick a lab, read its objective, and work through it. Use hints one at a time when you are stuck. Signed-in progress is saved to your account.';
 const ANSWER_PREFIX = "I won't hand over the answer, but here's a nudge: ";
-const NO_LAB_HINT = 'Pick a lab first, then I can give you a hint for it. Ask me which labs there are.';
-const NO_LAB_OBJECTIVE =
-  "Pick a lab and I'll tell you its objective. Ask me which labs there are.";
+const NO_LAB_HINT =
+  'Pick a lab first, then I can give you a hint for it. Ask me which labs there are.';
+const NO_LAB_OBJECTIVE = "Pick a lab and I'll tell you its objective. Ask me which labs there are.";
 
-const greetingPattern = /^(hi|hello|hey|yo|hiya|good (morning|afternoon|evening))[\s!.,?]*(honey)?[\s!.,?]*$/;
-const answerPattern = /\b(answer|solution|flag|password|payload|exact (input|string)|just tell me)\b/;
+const answerPattern =
+  /\b(answer|solution|flag|password|payload|exact (input|string)|just tell me)\b/;
 const intentPatterns = [
-  ['identity', /\b(who are you|who is honey|what are you|what can you do|your name|introduce yourself)\b/],
-  ['catalog', /\b(which labs|what labs|list (the )?labs|lab list|catalog|all labs|what can i (do|try|practice))\b/],
+  [
+    'identity',
+    /\b(who are you|who is honey|what are you|what can you do|your name|introduce yourself)\b/,
+  ],
+  [
+    'catalog',
+    /\b(which labs|what labs|list (the )?labs|lab list|catalog|all labs|what can i (do|try|practice))\b/,
+  ],
   ['objective', /\b(objective|goal|what am i (doing|supposed to do)|what do i need to do)\b/],
   [
     'help',
     /\b(stuck|hints?|clue|nudge|what now|what do i do|what should i do|confused|i'?m lost|i don'?t know|next hint|next step|what'?s next|another hint|more hints?|how do i (solve|start|beat|crack|get past))\b/,
   ],
-  ['platform', /\b(platform|breach boulevard|this site|this website|progress|sign ?in|log ?in|account|how does (this|it) work)\b/],
+  [
+    'platform',
+    /\b(platform|breach boulevard|this site|this website|progress|sign ?in|log ?in|account|how does (this|it) work)\b/,
+  ],
 ];
 
 const failure = (status, message) => ({ status, body: { success: false, message } });
@@ -59,15 +67,16 @@ function parseInput(input) {
 }
 
 function respond({ message, labId, hintIndex }) {
-  const text = message.toLowerCase().replace(/[‘’]/g, "'");
+  const text = message.toLowerCase().replace(/[‘’]/g, "'").replace(/\s+/g, ' ');
   const lab = labId ? practiceLabs.find((item) => item.id === labId) : null;
   const lastHint = lab ? lab.hints.length - 1 : 0;
   const index = lab ? Math.min(hintIndex, lastHint) : 0;
   const intent = intentPatterns.find(([, pattern]) => pattern.test(text))?.[0] ?? null;
-  const wantsHint = intent === 'help' || (!intent && answerPattern.test(text));
+  const conversation = honeyConversation(text);
+  const wantsHint = intent === 'help' || (!intent && !conversation && answerPattern.test(text));
 
-  if (greetingPattern.test(text)) return { reply: GREETING_REPLY, nextHintIndex: index, hasMoreHints: Boolean(lab) && index < lastHint };
-  if (intent === 'identity') return { reply: IDENTITY_REPLY, nextHintIndex: index, hasMoreHints: false };
+  if (intent === 'identity')
+    return { reply: IDENTITY_REPLY, nextHintIndex: index, hasMoreHints: false };
   if (intent === 'catalog') {
     const titles = practiceLabs.map((item) => item.title).join('; ');
     return {
@@ -92,8 +101,19 @@ function respond({ message, labId, hintIndex }) {
       hasMoreHints: index < lastHint,
     };
   }
-  if (intent === 'platform') return { reply: PLATFORM_REPLY, nextHintIndex: index, hasMoreHints: false };
-  return { reply: OFF_TOPIC_REPLY, nextHintIndex: index, hasMoreHints: Boolean(lab) && index < lastHint };
+  if (conversation)
+    return {
+      reply: conversation,
+      nextHintIndex: index,
+      hasMoreHints: Boolean(lab) && index < lastHint,
+    };
+  if (intent === 'platform')
+    return { reply: PLATFORM_REPLY, nextHintIndex: index, hasMoreHints: false };
+  return {
+    reply: OFF_TOPIC_REPLY,
+    nextHintIndex: index,
+    hasMoreHints: Boolean(lab) && index < lastHint,
+  };
 }
 
 export function createHoneyService({ now = Date.now, rateLimit = 20, windowMs = 60_000 } = {}) {

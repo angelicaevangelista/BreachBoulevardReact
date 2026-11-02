@@ -56,7 +56,7 @@ export default function HoneyChat({ labId }) {
           <p className="bb-honey-empty">
             {labId
               ? 'Stuck on this lab? Ask me for one hint at a time.'
-              : 'Hi, curious human! Ask me about the labs or how to find your way around.'}
+              : 'Hi, curious human! Say hello, ask about my favorites, or let me help you find your way around Breach Boulevard.'}
           </p>
         ) : (
           messages.map((item, index) => (
@@ -78,8 +78,14 @@ export default function HoneyChat({ labId }) {
       </div>
       <div className="bb-honey-starters">
         {(labId
-          ? ["I'm stuck. What now?", 'Give me the next hint']
-          : ['What can I practice?', 'How does this site work?']
+          ? ["I'm stuck. What now?", 'Give me the next hint', 'Cheer me up']
+          : [
+              'Hi Honey!',
+              'How are you?',
+              'Your favorite color?',
+              'What can I practice?',
+              'How do streaks work?',
+            ]
         ).map((starter) => (
           <button type="button" key={starter} disabled={busy} onClick={() => send(starter)}>
             {starter}
@@ -96,7 +102,9 @@ export default function HoneyChat({ labId }) {
         <input
           type="text"
           aria-label="Message Honey"
-          placeholder={labId ? 'Ask Honey for a hint' : 'Ask Honey a question…'}
+          placeholder={
+            labId ? 'A hint, a hello, or a little cheer…' : 'Say hello or ask Honey something…'
+          }
           maxLength={500}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}

@@ -192,3 +192,11 @@ control. No migration or additional environment variable is needed. Existing
 completions without dates are retained, but historical streak days are not
 invented. Motion respects reduced-motion preferences; the week and badge
 controls work with a keyboard.
+
+Honey also supports simple, built-in small talk: greetings, how her day is going,
+her fictional favorite color/place/snack/lab, hobbies, thanks, encouragement,
+celebrations, goodbyes, and a bee joke. Replies connect back to Breach Boulevard
+and the Streak Garden. Conversation starters are available in her chat panel.
+Casual chat preserves the current hint index; explicit requests for a lab hint
+still take priority. Honey does not infer account activity or record a completion
+from chat messages. No external language-model service or extra key is needed.
