@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import { profileAvatars } from '../src/data/avatars.js';
 fs.mkdirSync('public/avatars', { recursive: true });
-const e = (x, y, rx, ry, fill) =>
-  `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}"/>`;
-const p = (d, fill, stroke = 'none', width = 2) =>
+const e = (x, y, rx, ry, fill, stroke = 'none', width = 1.7) =>
+  `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" stroke="${stroke}" stroke-width="${width}"/>`;
+const p = (d, fill, stroke = '#8c6545', width = 1.3) =>
   `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"/>`;
 const rect = (x, y, w, h, r, fill) =>
   `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}"/>`;
@@ -13,7 +13,7 @@ const eyes = (sleepy) =>
   sleepy
     ? p('M36 45q4-4 8 0m8 0q4-4 8 0', 'none', '#604832', 2.4)
     : [40, 56]
-        .map((x) => e(x, 44, 3.4, 4.2, '#594331') + e(x - 1, 42.5, 1.1, 1.1, '#fff8e8'))
+        .map((x) => e(x, 44, 3.8, 4.6, '#493426') + e(x - 1, 42.5, 1.2, 1.2, '#fff8e8'))
         .join('');
 const styles = {
   'honey-bee': ['#f5e9cc', '#f4cc77', ''],
@@ -158,35 +158,56 @@ const styles = {
   ],
 };
 for (const avatar of profileAvatars) {
-  const [bg, honey, accessory] = styles[avatar.id];
-  const wings = `<ellipse cx="24" cy="55" rx="11" ry="17" transform="rotate(-28 24 55)" fill="#fdf9ed" stroke="#c0d5cf" stroke-width="1.5"/><ellipse cx="72" cy="55" rx="11" ry="17" transform="rotate(28 72 55)" fill="#fdf9ed" stroke="#c0d5cf" stroke-width="1.5"/>`;
+  const [bg, , originalAccessory] = styles[avatar.id];
+  const honey = avatar.id === 'honey-bee' ? '#f6bd48' : '#efbd58';
+  const richerColors = {
+    '#b18c9e': '#a3698a',
+    '#a3a4c3': '#777cba',
+    '#b8b4d1': '#9890bf',
+    '#bfb1cb': '#a38ab9',
+    '#b3a5c9': '#9480b5',
+    '#d39594': '#cb7679',
+    '#cf98a4': '#bd728e',
+    '#a9bdcc': '#789fae',
+    '#a79ab7': '#8873a0',
+    '#ae8e6a': '#9c754a',
+    '#b4bb8c': '#9ba869',
+    '#b1ad80': '#8d995d',
+    '#c19b83': '#ab795f',
+  };
+  const accessory = originalAccessory.replace(
+    /#[a-f0-9]{6}/gi,
+    (color) => richerColors[color] || color
+  );
+  const wings = `<ellipse cx="24" cy="55" rx="11" ry="17" transform="rotate(-28 24 55)" fill="#e9f5ef" stroke="#6b9695" stroke-width="2.2"/><ellipse cx="72" cy="55" rx="11" ry="17" transform="rotate(28 72 55)" fill="#e9f5ef" stroke="#6b9695" stroke-width="2.2"/>`;
   const body =
-    e(48, 68, 18, 17, honey) + p('M32 68q16 7 32 0m-28 10q12 5 24 0', 'none', '#80664a', 5);
+    e(48, 68, 18, 17, honey, '#8e632e') +
+    p('M32 68q16 7 32 0m-28 10q12 5 24 0', 'none', '#6c5138', 5.7);
   const antennas =
-    p('M37 28q-2-10-6-14m28 14q2-10 6-14', 'none', '#8f744f', 2.5) +
-    e(31, 12, 3, 3, honey) +
-    e(65, 12, 3, 3, honey);
+    p('M37 28q-2-10-6-14m28 14q2-10 6-14', 'none', '#795732', 2.8) +
+    e(31, 12, 3, 3, honey, '#9c7134', 1) +
+    e(65, 12, 3, 3, honey, '#9c7134', 1);
   const face =
-    e(48, 44, 25, 23, honey) +
+    e(48, 44, 25, 23, honey, '#9c6d36', 1.5) +
     p('M31 32q5-6 11-6', 'none', '#ffe9b7', 2.5) +
     eyes(avatar.id === 'sleepy-bee') +
-    e(32, 53, 4.5, 2.6, '#e7a49c') +
-    e(64, 53, 4.5, 2.6, '#e7a49c') +
-    p('M43 54q5 6 10 0', 'none', '#77523c', 2.3);
+    e(32, 53, 4.5, 2.6, '#dc8d7e') +
+    e(64, 53, 4.5, 2.6, '#dc8d7e') +
+    p('M43 54q5 6 10 0', 'none', '#674222', 2.5);
   fs.writeFileSync(
     `public/avatars/${avatar.id}.svg`,
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><title>${avatar.name}</title>${rect(0, 0, 96, 96, 28, bg)}${e(48, 87, 22, 3, '#6b58420c')}${wings}${body}${antennas}${face}${accessory}</svg>\n`
   );
 }
-const hex = (x, y, fill) => p(`m${x} ${y - 14} 12 7v14l-12 7-12-7V${y - 7}Z`, fill, '#fff0c8', 2);
+const hex = (x, y, fill) => p(`m${x} ${y - 14} 12 7v14l-12 7-12-7V${y - 7}Z`, fill, '#a57231', 1.5);
 const comb = [
-  [48, 48, '#edb55d'],
-  [23, 48, '#f4ca7e'],
-  [73, 48, '#f4ca7e'],
-  [35.5, 26.5, '#f7d99c'],
-  [60.5, 26.5, '#f0c16e'],
-  [35.5, 69.5, '#efbf6d'],
-  [60.5, 69.5, '#f6d394'],
+  [48, 48, '#d69432'],
+  [23, 48, '#edb44f'],
+  [73, 48, '#edb44f'],
+  [35.5, 26.5, '#f1c565'],
+  [60.5, 26.5, '#e9aa42'],
+  [35.5, 69.5, '#e9aa42'],
+  [60.5, 69.5, '#f1c565'],
 ]
   .map(([x, y, fill]) => hex(x, y, fill))
   .join('');

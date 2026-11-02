@@ -52,8 +52,8 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
 }
 .bb-profile-layout {
   --pf-panel: #152a39;
-  --pf-line: #344957;
-  --pf-muted: #b4c3cd;
+  --pf-line: #526773;
+  --pf-muted: #d0dbe2;
   --pf-accent: #f4bf85;
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
@@ -62,8 +62,8 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
 }
 [data-theme='light'] .bb-profile-layout {
   --pf-panel: #fffdf8;
-  --pf-line: #dfd3c0;
-  --pf-muted: #62645e;
+  --pf-line: #c5b69c;
+  --pf-muted: #4e5553;
   --pf-accent: #9b5c2e;
 }
 .bb-profile-preview {
@@ -94,8 +94,8 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   background: #d7b9880a;
 }
 .bb-profile-portrait > img {
-  width: 126px;
-  height: 126px;
+  width: 140px;
+  height: 140px;
 }
 .bb-profile-portrait > span {
   position: absolute;
@@ -259,7 +259,8 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   border: 1px solid transparent;
   border-radius: 15px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   line-height: 1.4;
   text-align: center;
   min-width: 0;
@@ -298,9 +299,9 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   border-color: var(--pf-line);
 }
 .bb-avatar-option.is-selected {
-  background: #efac5b13;
-  border-color: #dba065;
-  box-shadow: 0 0 0 2px #dba06514;
+  background: #efac5b25;
+  border-color: #e7a44e;
+  box-shadow: inset 0 0 0 1px #e7a44e;
 }
 .bb-avatar-option:has(input:focus-visible) {
   outline: 2px solid #e6b074;
@@ -311,7 +312,7 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   opacity: 0.7;
 }
 .bb-avatar-option-art {
-  width: 68px;
+  width: 76px;
   max-width: 100%;
   position: relative;
   display: block;
