@@ -17,7 +17,9 @@ export class CommunityError extends Error {
 
 export function cleanText(value, { min, max, label, multiline = false }) {
   if (typeof value !== 'string') throw new CommunityError(400, `${label} is required.`);
-  const control = multiline ? /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g : /[\u0000-\u001f\u007f]/g;
+  const control = multiline
+    ? /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g
+    : /[\u0000-\u001f\u007f]/g;
   const text = value.replace(/\r\n?/g, '\n').replace(control, '').trim();
   if (text.length < min) throw new CommunityError(400, `${label} is required.`);
   if (text.length > max)
@@ -27,9 +29,18 @@ export function cleanText(value, { min, max, label, multiline = false }) {
 
 function displayName(user) {
   const fullName =
-    typeof user?.user_metadata?.full_name === 'string' ? user.user_metadata.full_name : '';
-  const name = fullName.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 40);
-  return name || `Learner-${createHash('sha256').update(String(user.id)).digest('hex').slice(0, 4)}`;
+    typeof user?.user_metadata?.bb_display_name === 'string'
+      ? user.user_metadata.bb_display_name
+      : typeof user?.user_metadata?.full_name === 'string'
+        ? user.user_metadata.full_name
+        : '';
+  const name = fullName
+    .replace(/[\u0000-\u001f\u007f]/g, '')
+    .trim()
+    .slice(0, 40);
+  return (
+    name || `Learner-${createHash('sha256').update(String(user.id)).digest('hex').slice(0, 4)}`
+  );
 }
 
 export function learnerProfile(user, completedCount) {
@@ -322,7 +333,8 @@ export class SupabaseCommunityStore {
     });
   }
   async streetCounts() {
-    const rows = (await this.request('GET', 'breach_community_posts?select=street&limit=5000')) || [];
+    const rows =
+      (await this.request('GET', 'breach_community_posts?select=street&limit=5000')) || [];
     return rows.reduce((counts, row) => {
       counts[row.street] = (counts[row.street] || 0) + 1;
       return counts;
@@ -383,14 +395,16 @@ export function createCommunityService({ store }) {
     const vote = route.match(/^\/api\/community\/posts\/([^/]+)\/vote$/);
     if (vote) {
       requireMethod(method, ['POST']);
-      const result = await store.toggleVote({ postId: requirePostId(vote[1]), viewerId: viewer.id });
+      const result = await store.toggleVote({
+        postId: requirePostId(vote[1]),
+        viewerId: viewer.id,
+      });
       return { success: true, ...result };
     }
     const comments = route.match(/^\/api\/community\/posts\/([^/]+)\/comments$/);
     if (comments) {
       const postId = requirePostId(comments[1]);
-      if (method === 'GET')
-        return { success: true, comments: await store.listComments(postId) };
+      if (method === 'GET') return { success: true, comments: await store.listComments(postId) };
       requireMethod(method, ['POST']);
       const comment = await store.addComment({
         postId,

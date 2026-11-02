@@ -33,6 +33,7 @@ async function fixture({ user = confirmed, verified = true } = {}) {
       },
       async updateUser(input) {
         calls.push(['update', input]);
+        if (input.data) user = { ...user, user_metadata: { ...user.user_metadata, ...input.data } };
         return { data: { user }, error: null };
       },
       async exchangeCodeForSession(code) {
@@ -166,7 +167,13 @@ test('password sign-in requires same-origin JSON and never exposes tokens', asyn
     });
     assert.equal(good.status, 200);
     const data = await good.json();
-    assert.deepEqual(Object.keys(data.user).sort(), ['email', 'id', 'name']);
+    assert.deepEqual(Object.keys(data.user).sort(), [
+      'avatarId',
+      'email',
+      'id',
+      'name',
+      'organization',
+    ]);
     assert.equal(data.access_token, undefined);
   } finally {
     await f.close();
@@ -231,7 +238,7 @@ test('verified progress is scoped to the current account and uploaded files enfo
       )
     );
     const progress = await f.request('/api/account/progress', { headers });
-    assert.deepEqual((await progress.json()).completed, ['idor']);
+    assert.deepEqual((await progress.json()).completed, ['idor', 'path-traversal']);
     assert.equal(
       (
         await f.request('/api/uploads/12345678-1234-1234-1234-123456789abc/private.txt', {
@@ -357,6 +364,64 @@ test('CTF API saves progress only after valid flag submission for the verified a
           c[1].data.bb_completed_labs.includes('ctf-social-draft')
       )
     );
+  } finally {
+    await f.close();
+  }
+});
+
+test('profile changes require a verified same-origin account and cannot overwrite learning data', async () => {
+  const f = await fixture();
+  const headers = { Cookie: 'bb_learner=fixture' };
+  const profile = {
+    name: 'Bee Learner',
+    organization: 'Boulevard Campus',
+    avatarId: 'cloud-bunny',
+  };
+  try {
+    assert.equal((await f.request('/api/auth/profile')).status, 401);
+    assert.equal(
+      (
+        await f.request('/api/auth/profile', {
+          method: 'POST',
+          headers: { ...headers, Origin: 'https://other.example' },
+          body: profile,
+        })
+      ).status,
+      403
+    );
+    assert.equal(
+      (await f.request('/api/auth/profile', { method: 'PUT', headers, body: profile })).status,
+      405
+    );
+    assert.equal(
+      (
+        await f.request('/api/auth/profile', {
+          method: 'POST',
+          headers,
+          body: { ...profile, userId: 'someone-else' },
+        })
+      ).status,
+      400
+    );
+    const saved = await f.request('/api/auth/profile', { method: 'POST', headers, body: profile });
+    assert.equal(saved.status, 200);
+    const data = await saved.json();
+    assert.equal(data.user.name, profile.name);
+    assert.equal(data.user.organization, profile.organization);
+    assert.equal(data.user.avatarId, profile.avatarId);
+    const update = f.calls.find((c) => Array.isArray(c) && c[0] === 'update');
+    assert.deepEqual(update[1], {
+      data: {
+        bb_display_name: profile.name,
+        bb_organization: profile.organization,
+        bb_avatar_id: profile.avatarId,
+      },
+    });
+    const reloaded = await f.request('/api/auth/profile?userId=someone-else', { headers });
+    assert.equal(reloaded.status, 200);
+    assert.equal((await reloaded.json()).user.id, confirmed.id);
+    const progress = await f.request('/api/account/progress', { headers });
+    assert.deepEqual((await progress.json()).completed, ['idor']);
   } finally {
     await f.close();
   }

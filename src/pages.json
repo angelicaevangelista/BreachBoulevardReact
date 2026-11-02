@@ -1,5 +1,16 @@
 [
   {
+    "path": "account-profile.html",
+    "title": "My Profile | Breach Boulevard",
+    "body": {
+      "class": "",
+      "style": ""
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
     "path": "missions.html",
     "title": "Story Missions | Breach Boulevard",
     "body": {

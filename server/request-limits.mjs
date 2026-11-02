@@ -27,6 +27,7 @@ export function requestPolicy(route, method) {
     if (route === '/api/auth/signup') return { name: 'account-signup', limit: 10, seconds: 3600 };
     if (route === '/api/auth/google') return { name: 'google-start', limit: 30, seconds: 300 };
     if (route === '/api/auth/password') return { name: 'password-change', limit: 10, seconds: 300 };
+    if (route === '/api/auth/profile') return { name: 'profile-update', limit: 20, seconds: 300 };
     if (route === '/api/auth/reset-request')
       return { name: 'account-reset', limit: 5, seconds: 900 };
     if (route === '/api/access-codes/validate')

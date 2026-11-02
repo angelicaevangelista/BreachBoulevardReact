@@ -104,5 +104,7 @@ verified account ID, validates bounded notes and catalog IDs, and checks the
 current chapter, recovered evidence and deduction prerequisites. Revision checks
 reject concurrent stale writes. Auth-user deletion cascades to case rows. This
 is private learning state, not a new authorization role or certificate boundary.
+Profile edits require a verified account, same-origin JSON, and a bounded allowlist of display fields and avatar IDs. The server updates only the signed-in Supabase user's metadata; client-supplied account IDs, roles, email, passwords, and progress fields are rejected. Profile metadata is never used for authorization. Avatars are local SVG assets with no external image requests or uploads. School/company is returned only with the current account's private session/profile response and is excluded from community data. Temporary-account browser tests verify saves across sign-ins, preservation of progress, and account isolation.
+
 Browser tests completed all nine chapters, restored notes and replies, rejected
 conflicting saves, and verified isolation between two disposable accounts.

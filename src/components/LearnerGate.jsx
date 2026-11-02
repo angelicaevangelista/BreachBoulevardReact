@@ -313,7 +313,19 @@ export default function LearnerGate({ children, integrated = false }) {
   if (!state.user)
     return <SignIn onSignedIn={(user) => setState({ loading: false, user, error: '' })} />;
   return (
-    <LearnerContext.Provider value={{ user: state.user, signOut, signingOut, error: state.error }}>
+    <LearnerContext.Provider
+      value={{
+        user: state.user,
+        signOut,
+        signingOut,
+        error: state.error,
+        updateProfile: async (input) => {
+          const data = await accountRequest('profile', input);
+          setState((previous) => ({ ...previous, user: data.user, error: '' }));
+          return data.user;
+        },
+      }}
+    >
       {!integrated && (
         <aside
           className="bg-[#0d1b2a] text-gray-300 px-5 py-3 border-b border-gray-700 flex flex-wrap items-center justify-between gap-3 text-sm"

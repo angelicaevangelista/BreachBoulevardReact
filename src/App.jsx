@@ -81,6 +81,7 @@ export default function App() {
         'dashboard.html',
         'community.html',
         'missions.html',
+        'account-profile.html',
         'access/access.html',
         'access/admin.html',
       ].includes(source) && <ThemeToggle className="bb-theme-standalone" />}
@@ -106,6 +107,7 @@ export default function App() {
             'dashboard.html',
             'community.html',
             'missions.html',
+            'account-profile.html',
           ].includes(source)}
         >
           <Page />

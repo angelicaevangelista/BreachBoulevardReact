@@ -2,8 +2,10 @@ import React, { useId, useEffect, useState } from 'react';
 import { Link, assetUrl } from '../routing';
 import { useLearner } from './LearnerGate';
 import ThemeToggle from './ThemeToggle';
+import ProfileAvatar from './ProfileAvatar';
 
 const paths = {
+  user: 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0 M4 21v-2a8 8 0 0 1 16 0v2',
   grid: 'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
   flask: 'M9 3h6 M10 3v6L4.6 18a2 2 0 0 0 1.7 3h11.4a2 2 0 0 0 1.7-3L14 9V3 M8 14h8',
   book: 'M4 4h6a3 3 0 0 1 3 3v14a4 4 0 0 0-4-2H4z M13 7a3 3 0 0 1 3-3h5v15h-4a4 4 0 0 0-4 2',
@@ -97,8 +99,22 @@ export function Mascot({ className = '', compact = false, ...props }) {
             stroke="#f0fcff"
             strokeWidth="2"
           />
-          <path d="M32 87q-8 18 7 35 M188 87q8 18-7 35" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" opacity=".75" />
-          <path d="M38 99q7 9 11 24 M182 99q-7 9-11 24" fill="none" stroke="#8db5be" strokeWidth="1.2" strokeLinecap="round" opacity=".55" />
+          <path
+            d="M32 87q-8 18 7 35 M188 87q8 18-7 35"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            opacity=".75"
+          />
+          <path
+            d="M38 99q7 9 11 24 M182 99q-7 9-11 24"
+            fill="none"
+            stroke="#8db5be"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            opacity=".55"
+          />
         </g>
         <path
           d="M86 66Q80 43 68 35 M134 66q6-23 18-31"
@@ -122,27 +138,42 @@ export function Mascot({ className = '', compact = false, ...props }) {
           stroke="#ffe0ae"
           strokeWidth="3"
         />
-        <path d="M67 82q12-13 30-13" fill="none" stroke="#fff0ce" strokeWidth="4" strokeLinecap="round" opacity=".7" />
+        <path
+          d="M67 82q12-13 30-13"
+          fill="none"
+          stroke="#fff0ce"
+          strokeWidth="4"
+          strokeLinecap="round"
+          opacity=".7"
+        />
         <rect x="62" y="80" width="96" height="67" rx="30" fill={`url(#${gradient}-face)`} />
-        <path d="M82 96q5-3 10-1 M128 95q5-2 10 1" fill="none" stroke="#ffe2b8" strokeWidth="1.7" strokeLinecap="round" opacity=".8" />
+        <path
+          d="M82 96q5-3 10-1 M128 95q5-2 10 1"
+          fill="none"
+          stroke="#ffe2b8"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          opacity=".8"
+        />
         <g className="bb-buddy-eyes">
           {[87, 133].map((x) => (
             <g key={x} transform={`translate(${x} 110)`}>
               <g className={x === 133 ? 'bb-eye-open-right' : undefined}>
-              <ellipse rx="9.5" ry="11" fill="#fff1d6" />
-              <ellipse cx={x === 87 ? 1 : -1} cy="1" rx="6.5" ry="8" fill="#523627" />
-              <ellipse cx={x === 87 ? 1 : -1} cy="5.4" rx="3.8" ry="2.2" fill="#aa7046" />
-              <circle
-                className="bb-eye-sparkle"
-                cx="-2"
-                cy="-3"
-                r="3"
-                fill="#fffdf8"
-              />
-              <circle cx="3" cy="2.6" r="1.5" fill="#fffdf8" />
+                <ellipse rx="9.5" ry="11" fill="#fff1d6" />
+                <ellipse cx={x === 87 ? 1 : -1} cy="1" rx="6.5" ry="8" fill="#523627" />
+                <ellipse cx={x === 87 ? 1 : -1} cy="5.4" rx="3.8" ry="2.2" fill="#aa7046" />
+                <circle className="bb-eye-sparkle" cx="-2" cy="-3" r="3" fill="#fffdf8" />
+                <circle cx="3" cy="2.6" r="1.5" fill="#fffdf8" />
               </g>
               {x === 133 && (
-                <path className="bb-eye-wink" d="M-7 2q7-8 14 0" fill="none" stroke="#fff1d6" strokeWidth="3.8" strokeLinecap="round" />
+                <path
+                  className="bb-eye-wink"
+                  d="M-7 2q7-8 14 0"
+                  fill="none"
+                  stroke="#fff1d6"
+                  strokeWidth="3.8"
+                  strokeLinecap="round"
+                />
               )}
             </g>
           ))}
@@ -156,7 +187,13 @@ export function Mascot({ className = '', compact = false, ...props }) {
         />
         <ellipse cx="76" cy="124" rx="8" ry="4.8" fill="#f7a497" opacity=".85" />
         <ellipse cx="144" cy="124" rx="8" ry="4.8" fill="#f7a497" opacity=".85" />
-        <path d="m73 123 1 2m3-2 1 2m64-2 1 2m3-2 1 2" stroke="#ffe0ca" strokeWidth="1" strokeLinecap="round" opacity=".7" />
+        <path
+          d="m73 123 1 2m3-2 1 2m64-2 1 2m3-2 1 2"
+          stroke="#ffe0ca"
+          strokeWidth="1"
+          strokeLinecap="round"
+          opacity=".7"
+        />
         <path
           d="M54 150q56 20 112 0 M65 166q45 13 90 0"
           stroke="#624b3b"
@@ -217,7 +254,14 @@ export function Mascot({ className = '', compact = false, ...props }) {
         <path d="M78 175h9 M129 175h9" stroke="#ffe4b7" strokeWidth="2.2" strokeLinecap="round" />
         <g transform="translate(151 71) rotate(18)" aria-hidden="true">
           {[0, 72, 144, 216, 288].map((angle) => (
-            <ellipse key={angle} cy="-4" rx="3" ry="4.3" transform={`rotate(${angle})`} fill="#fff3d9" />
+            <ellipse
+              key={angle}
+              cy="-4"
+              rx="3"
+              ry="4.3"
+              transform={`rotate(${angle})`}
+              fill="#fff3d9"
+            />
           ))}
           <circle r="3.2" fill="#e9a744" />
           <circle cx="-1" cy="-1" r="1" fill="#ffe5a6" />
@@ -337,6 +381,7 @@ export default function AppShell({
         ['flask', 'Practice labs', '/practice', 'labs'],
         ['heart', 'Community', '/community', 'community'],
         ['search', 'Story missions', '/missions', 'missions'],
+        ['user', 'My profile', '/account/profile', 'profile'],
         ['book', 'Courses', '/courses', 'courses'],
         ['help', 'Help & FAQ', '/faq', 'help'],
       ];
@@ -390,11 +435,27 @@ export default function AppShell({
           </div>
           <div className="bb-header-account" aria-label="Your account">
             <ThemeToggle />
-            <span className="bb-avatar">{admin ? 'A' : name.slice(0, 1).toUpperCase()}</span>
-            <div>
-              <strong>{admin ? 'Administrator' : name}</strong>
-              <span>{admin ? 'Breach Boulevard workspace' : 'One small step at a time'}</span>
-            </div>
+            {admin ? (
+              <>
+                <span className="bb-avatar">A</span>
+                <div>
+                  <strong>Administrator</strong>
+                  <span>Breach Boulevard workspace</span>
+                </div>
+              </>
+            ) : (
+              <Link
+                to="/account/profile"
+                className="bb-account-profile"
+                aria-label="Edit your profile"
+              >
+                <ProfileAvatar id={learner?.user?.avatarId} size={42} decorative />
+                <div>
+                  <strong>{name}</strong>
+                  <span>Edit your profile</span>
+                </div>
+              </Link>
+            )}
             {learner?.signOut && (
               <button
                 className="bb-icon-button"

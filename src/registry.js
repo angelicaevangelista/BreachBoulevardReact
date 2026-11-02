@@ -1,4 +1,5 @@
 import Missions from './pages/missions.jsx';
+import AccountProfile from './pages/account-profile.jsx';
 import Page0 from './pages/about.jsx';
 import Privacy from './pages/privacy.jsx';
 import Dashboard from './pages/dashboard.jsx';
@@ -35,6 +36,7 @@ import Page29 from './pages/testupload.jsx';
 import Practice from './pages/practice.jsx';
 import ResetPassword from './pages/reset-password.jsx';
 export default {
+  'account-profile.html': AccountProfile,
   'missions.html': Missions,
   'dashboard.html': Dashboard,
   'community.html': Community,

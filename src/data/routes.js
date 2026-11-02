@@ -1,4 +1,5 @@
 export const routePaths = {
+  'account-profile.html': '/account/profile',
   'dashboard.html': '/dashboard',
   'missions.html': '/missions',
   'community.html': '/community',

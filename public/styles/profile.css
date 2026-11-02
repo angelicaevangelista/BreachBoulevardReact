@@ -1,0 +1,387 @@
+.bb-account-profile {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: inherit;
+  min-width: 0;
+  border-radius: 12px;
+}
+.bb-account-profile > div {
+  min-width: 0;
+  max-width: 180px;
+}
+.bb-account-profile strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 650;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bb-account-profile span {
+  display: block;
+  font-size: 12px;
+  color: var(--bb-reading-muted, #a6b6c3);
+}
+.bb-account-profile:focus-visible {
+  outline: 2px solid #e4ad70;
+  outline-offset: 5px;
+}
+.bb-profile-avatar {
+  display: block;
+  object-fit: contain;
+  border-radius: 26%;
+  flex-shrink: 0;
+}
+body:has(.bb-profile-layout) .bb-assistant-launcher {
+  width: 59px;
+  height: 59px;
+  min-height: 59px;
+  padding: 5px;
+  border-radius: 50%;
+  justify-content: center;
+}
+body:has(.bb-profile-layout) .bb-assistant-launcher > span,
+body:has(.bb-profile-layout) .bb-assistant-launcher > svg:last-child { display: none; }
+body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot { width: 46px; height: 46px; flex-shrink: 0; }
+.bb-profile-layout {
+  --pf-panel: #152a39;
+  --pf-line: #344957;
+  --pf-muted: #b4c3cd;
+  --pf-accent: #f4bf85;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+[data-theme='light'] .bb-profile-layout {
+  --pf-panel: #fffdf8;
+  --pf-line: #dfd3c0;
+  --pf-muted: #62645e;
+  --pf-accent: #9b5c2e;
+}
+.bb-profile-preview {
+  position: sticky;
+  top: 24px;
+  text-align: center;
+  border: 1px solid var(--pf-line);
+  border-radius: 26px;
+  padding: 29px 22px;
+  background: radial-gradient(ellipse at 50% 28%, #eab8761a, transparent 65%), var(--pf-panel);
+  overflow-wrap: anywhere;
+}
+.bb-profile-preview-label {
+  color: var(--pf-accent);
+  font-size: 11px;
+  letter-spacing: 1.3px;
+  font-weight: 650;
+}
+.bb-profile-portrait {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 26px auto 20px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #c8ad8360;
+  border-radius: 50%;
+  background: #d7b9880a;
+}
+.bb-profile-portrait > img {
+  width: 126px;
+  height: 126px;
+}
+.bb-profile-portrait > span {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  color: var(--pf-accent);
+  font-size: 28px;
+}
+.bb-ui .bb-profile-preview h2 {
+  font-size: 26px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+.bb-ui .bb-profile-preview p {
+  font-size: 15px;
+  color: var(--pf-muted);
+  line-height: 1.6;
+}
+.bb-profile-preview-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--pf-line);
+  border-radius: 99px;
+  padding: 8px 10px;
+  color: var(--pf-accent);
+  font-size: 12px;
+  margin: 23px 0 25px;
+}
+.bb-profile-preview > small {
+  display: block;
+  color: var(--pf-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.bb-profile-form {
+  min-width: 0;
+  display: grid;
+  gap: 22px;
+}
+.bb-profile-section {
+  padding: 28px;
+  background: var(--pf-panel);
+  border: 1px solid var(--pf-line);
+  border-radius: 22px;
+  min-width: 0;
+}
+.bb-profile-section-heading {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+.bb-profile-section-heading > span {
+  display: grid;
+  place-items: center;
+  width: 33px;
+  height: 36px;
+  border: 1px solid #d7ac7540;
+  border-radius: 11px;
+  color: var(--pf-accent);
+  background: #d7ac750b;
+  font:
+    500 16px 'Outfit',
+    system-ui;
+  flex-shrink: 0;
+}
+.bb-ui .bb-profile-section-heading h2 {
+  font-size: 23px;
+  line-height: 1.25;
+  margin-bottom: 6px;
+}
+.bb-ui .bb-profile-section-heading p {
+  font-size: 15px;
+  color: var(--pf-muted);
+  line-height: 1.6;
+}
+.bb-profile-form .bb-form {
+  display: grid;
+  gap: 10px;
+}
+.bb-profile-form .bb-form > label {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.bb-profile-form .bb-form > input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--pf-line);
+  border-radius: 11px;
+  background: #0a1a252b;
+  color: inherit;
+}
+[data-theme='light'] .bb-profile-form .bb-form > input {
+  background: #faf7f0;
+  color: #353a39;
+}
+.bb-profile-form input:focus-visible {
+  outline: 2px solid #d6a56d;
+  outline-offset: 3px;
+}
+.bb-profile-optional {
+  color: var(--pf-muted);
+  font-size: 13px;
+  font-weight: 400;
+  margin-left: 8px;
+}
+.bb-profile-form .bb-form > small {
+  color: var(--pf-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.bb-profile-email {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px dashed var(--pf-line);
+  border-radius: 11px;
+  color: var(--pf-muted);
+  min-width: 0;
+}
+.bb-profile-email > div {
+  flex: 1;
+  min-width: 0;
+}
+.bb-profile-email strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+.bb-profile-email span {
+  display: block;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.bb-profile-email > svg {
+  flex-shrink: 0;
+}
+.bb-avatar-picker {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.bb-ui .bb-avatar-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 12px 6px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.bb-avatar-option > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.bb-avatar-option:hover {
+  background: #c5ad8e0c;
+  border-color: var(--pf-line);
+}
+.bb-avatar-option.is-selected {
+  background: #efac5b13;
+  border-color: #dba065;
+  box-shadow: 0 0 0 2px #dba06514;
+}
+.bb-avatar-option:has(input:focus-visible) {
+  outline: 2px solid #e6b074;
+  outline-offset: 3px;
+}
+.bb-avatar-picker:disabled .bb-avatar-option {
+  cursor: wait;
+  opacity: 0.7;
+}
+.bb-avatar-option-art {
+  width: 68px;
+  max-width: 100%;
+  position: relative;
+  display: block;
+}
+.bb-avatar-option-art > img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+.bb-avatar-check {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  background: #e5ad70;
+  border: 2px solid var(--pf-panel);
+  border-radius: 50%;
+  color: #283a38;
+}
+.bb-ui .bb-profile-avatar-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--pf-accent);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 23px;
+}
+.bb-profile-avatar-note > svg {
+  flex-shrink: 0;
+}
+.bb-profile-save {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.bb-profile-save > span {
+  font-size: 13px;
+  color: var(--pf-muted);
+}
+.bb-profile-save > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.bb-ui .bb-profile-notice {
+  border: 1px solid #86bca45c;
+  border-radius: 12px;
+  padding: 15px 18px;
+  color: #b8e0c8;
+  background: #6dae8d0d;
+  font-size: 15px;
+}
+.bb-ui .bb-profile-notice.is-error {
+  color: #f0bdb0;
+  border-color: #d185705c;
+}
+[data-theme='light'] .bb-ui .bb-profile-notice {
+  color: #32654b;
+}
+[data-theme='light'] .bb-ui .bb-profile-notice.is-error {
+  color: #a23e34;
+}
+@media (max-width: 1100px) {
+  .bb-profile-layout {
+    grid-template-columns: 1fr;
+  }
+  .bb-profile-preview {
+    position: static;
+  }
+}
+@media (max-width: 760px) {
+  .bb-account-profile > div {
+    display: none;
+  }
+  .bb-profile-section {
+    padding: 22px 18px;
+  }
+  .bb-profile-preview {
+    padding: 24px;
+  }
+  .bb-avatar-picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .bb-profile-save > div {
+    width: 100%;
+  }
+  .bb-profile-save > div > button {
+    flex: 1;
+  }
+  .bb-ui .bb-profile-section-heading h2 {
+    font-size: 22px;
+  }
+}

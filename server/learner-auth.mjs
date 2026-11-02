@@ -2,6 +2,7 @@ import { practiceLabs } from '../src/data/practice-labs.js';
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr';
 import { readServerConfig } from './config.mjs';
 import { practiceStreak, recordPracticeDay } from './streaks.mjs';
+import { validateProfile, safeAvatarId } from './profile.mjs';
 
 export class AuthError extends Error {
   constructor(status, message) {
@@ -32,10 +33,17 @@ export function publicUser(user) {
     ? {
         id: user.id,
         email: user.email,
-        name:
-          typeof user.user_metadata?.full_name === 'string'
-            ? user.user_metadata.full_name.slice(0, 100)
+        organization:
+          typeof user.user_metadata?.bb_organization === 'string'
+            ? user.user_metadata.bb_organization.slice(0, 120)
             : '',
+        avatarId: safeAvatarId(user.user_metadata?.bb_avatar_id),
+        name:
+          typeof user.user_metadata?.bb_display_name === 'string'
+            ? user.user_metadata.bb_display_name.slice(0, 60)
+            : typeof user.user_metadata?.full_name === 'string'
+              ? user.user_metadata.full_name.slice(0, 100)
+              : '',
       }
     : null;
 }
@@ -166,6 +174,9 @@ export class LearnerAuth {
       if (!requireMethod(req, res, ['GET'])) return true;
       return send({ user: publicUser(await this.user()) });
     }
+    if (route === '/api/auth/profile' && req.method === 'GET') {
+      return send({ user: publicUser(await this.requireUser()) });
+    }
     if (route === '/api/auth/options') {
       if (!requireMethod(req, res, ['GET'])) return true;
       return send(await this.settings());
@@ -191,6 +202,7 @@ export class LearnerAuth {
         '/api/auth/logout',
         '/api/auth/reset-request',
         '/api/auth/password',
+        '/api/auth/profile',
       ].includes(route)
     )
       throw new AuthError(404, 'Account endpoint not found.');
@@ -200,6 +212,20 @@ export class LearnerAuth {
       throw new AuthError(415, 'Send a JSON request.');
     const input = await readJson(req);
     const callback = this.origin + this.basePath + '/api/auth/callback';
+    if (route === '/api/auth/profile') {
+      await this.requireUser();
+      let fields;
+      try {
+        fields = validateProfile(input);
+      } catch (error) {
+        throw new AuthError(400, error.message);
+      }
+      const { data, error } = await this.client().auth.updateUser({ data: fields });
+      if (error || !data?.user)
+        throw new AuthError(503, 'Your profile could not be saved. Please try again.');
+      this.verified = data.user;
+      return send({ user: publicUser(data.user), message: 'Your little corner is all updated!' });
+    }
     if (route === '/api/auth/google') {
       if (!(await this.settings()).googleEnabled)
         throw new AuthError(
