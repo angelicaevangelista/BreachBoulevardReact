@@ -63,11 +63,16 @@ export function Mascot({ className = '', compact = false, ...props }) {
     >
       <defs>
         <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="#ffbd78" />
-          <stop offset="1" stopColor="#f97316" />
+          <stop stopColor="#ffd495" />
+          <stop offset=".55" stopColor="#ffb45f" />
+          <stop offset="1" stopColor="#f39643" />
+        </linearGradient>
+        <linearGradient id={`${gradient}-face`} x1="0" y1="0" x2="0" y2="1">
+          <stop stopColor="#304550" />
+          <stop offset="1" stopColor="#20343f" />
         </linearGradient>
       </defs>
-      <ellipse cx="110" cy="193" rx="52" ry="10" fill="#07111e" opacity=".3" />
+      <ellipse cx="110" cy="193" rx="43" ry="7" fill="#07111e" opacity=".18" />
       <g className={compact ? '' : 'bb-buddy-float'}>
         <g className="bb-bee-wings">
           <ellipse
@@ -92,6 +97,8 @@ export function Mascot({ className = '', compact = false, ...props }) {
             stroke="#f0fcff"
             strokeWidth="2"
           />
+          <path d="M32 87q-8 18 7 35 M188 87q8 18-7 35" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" opacity=".75" />
+          <path d="M38 99q7 9 11 24 M182 99q-7 9-11 24" fill="none" stroke="#8db5be" strokeWidth="1.2" strokeLinecap="round" opacity=".55" />
         </g>
         <path
           d="M86 66Q80 43 68 35 M134 66q6-23 18-31"
@@ -103,17 +110,21 @@ export function Mascot({ className = '', compact = false, ...props }) {
         />
         <circle cx="67" cy="31" r="8" fill="#ffe0a9" />
         <circle cx="153" cy="31" r="8" fill="#ffe0a9" />
+        <circle cx="64.5" cy="28.5" r="2.5" fill="#fff6de" />
+        <circle cx="150.5" cy="28.5" r="2.5" fill="#fff6de" />
         <rect
           x="49"
-          y="64"
+          y="61"
           width="122"
-          height="111"
-          rx="40"
+          height="117"
+          rx="49"
           fill={`url(#${gradient})`}
-          stroke="#ffcb94"
+          stroke="#ffe0ae"
           strokeWidth="3"
         />
-        <rect x="63" y="83" width="94" height="62" rx="25" fill="#132b3c" />
+        <path d="M67 82q12-13 30-13" fill="none" stroke="#fff0ce" strokeWidth="4" strokeLinecap="round" opacity=".7" />
+        <rect x="62" y="80" width="96" height="67" rx="30" fill={`url(#${gradient}-face)`} />
+        <path d="M82 96q5-3 10-1 M128 95q5-2 10 1" fill="none" stroke="#ffe2b8" strokeWidth="1.7" strokeLinecap="round" opacity=".8" />
         <g className="bb-buddy-eyes">
           {[87, 133].map((x) => (
             <g key={x} transform={`translate(${x} 110)`}>
@@ -138,12 +149,13 @@ export function Mascot({ className = '', compact = false, ...props }) {
           strokeWidth="4"
           strokeLinecap="round"
         />
-        <ellipse cx="76" cy="124" rx="7" ry="4" fill="#ff997c" opacity=".7" />
-        <ellipse cx="144" cy="124" rx="7" ry="4" fill="#ff997c" opacity=".7" />
+        <ellipse cx="76" cy="124" rx="8" ry="4.8" fill="#f7a497" opacity=".85" />
+        <ellipse cx="144" cy="124" rx="8" ry="4.8" fill="#f7a497" opacity=".85" />
+        <path d="m73 123 1 2m3-2 1 2m64-2 1 2m3-2 1 2" stroke="#ffe0ca" strokeWidth="1" strokeLinecap="round" opacity=".7" />
         <path
           d="M54 150q56 20 112 0 M65 166q45 13 90 0"
-          stroke="#21394b"
-          strokeWidth="8"
+          stroke="#624b3b"
+          strokeWidth="7"
           fill="none"
         />
         <g className="bb-honey-hand-heart" aria-label="Honey makes a heart with her hands">
@@ -195,8 +207,16 @@ export function Mascot({ className = '', compact = false, ...props }) {
             ))}
           </g>
         </g>
-        <rect x="73" y="170" width="23" height="15" rx="7" fill="#ffad67" />
-        <rect x="124" y="170" width="23" height="15" rx="7" fill="#ffad67" />
+        <rect x="72" y="171" width="25" height="16" rx="8" fill="#ffc383" />
+        <rect x="123" y="171" width="25" height="16" rx="8" fill="#ffc383" />
+        <path d="M78 175h9 M129 175h9" stroke="#ffe4b7" strokeWidth="2.2" strokeLinecap="round" />
+        <g transform="translate(151 71) rotate(18)" aria-hidden="true">
+          {[0, 72, 144, 216, 288].map((angle) => (
+            <ellipse key={angle} cy="-4" rx="3" ry="4.3" transform={`rotate(${angle})`} fill="#fff3d9" />
+          ))}
+          <circle r="3.2" fill="#e9a744" />
+          <circle cx="-1" cy="-1" r="1" fill="#ffe5a6" />
+        </g>
       </g>
       <path
         d="m185 48 3 7 8 2-8 3-3 7-2-7-8-3 8-2z M31 74l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"
