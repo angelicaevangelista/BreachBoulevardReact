@@ -5,6 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="dc83WYbOjKvlD-PFqjFz5wOuCpSDpCHbygegueTjaRc" />
     <title>Breach Boulevard</title>
+    <script>
+      (function () {
+        var t;
+        try {
+          t = localStorage.getItem('bb.theme');
+        } catch (e) {}
+        if (t !== 'light' && t !== 'dark')
+          t =
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+        document.documentElement.dataset.theme = t;
+        document.documentElement.style.colorScheme = t;
+      })();
+    </script>
+    <meta name="theme-color" content="#f9a34d" />
+    <link rel="icon" type="image/svg+xml" href="/honey-icon.svg?v=2" />
+    <link rel="alternate icon" href="/favicon.ico?v=2" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2" />
+    <style>
+      html {
+        background: #191e24;
+        color: #f3eee5;
+      }
+      html[data-theme='light'] {
+        background: #faf6ef;
+        color: #292b30;
+      }
+      body {
+        margin: 0;
+      }
+      .bb-brand img {
+        width: 39px;
+        height: 39px;
+      }
+      .bb-boot {
+        min-height: 100vh;
+        display: grid;
+        place-content: center;
+        text-align: center;
+        font: 14px system-ui;
+        color: inherit;
+      }
+      .bb-boot span {
+        color: #c47b34;
+        letter-spacing: 6px;
+        margin-top: 12px;
+      }
+    </style>
+    <link rel="stylesheet" href="/styles/tailwind.css" />
   </head>
-  <body><div id="root" style="display:contents"></div><script type="module" src="/src/main.jsx"></script></body>
+  <body>
+    <div id="root" style="display: contents">
+      <div class="bb-boot" role="status">
+        A little discovery is loading…<span aria-hidden="true">• • •</span>
+      </div>
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

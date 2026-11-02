@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { assetUrl } from '../routing';
 import { Brand, Mascot, LoadingScreen } from './Interface';
 import HoneyAssistant from './HoneyAssistant';
+import ThemeToggle from './ThemeToggle';
 
 export default function AdminGate({ children }) {
   const [session, setSession] = useState(null),
@@ -61,6 +62,7 @@ export default function AdminGate({ children }) {
     <div className="bb-ui bb-auth" style={{ minHeight: '100vh' }}>
       <header className="bb-public-header">
         <Brand />
+        <ThemeToggle />
       </header>
       <main className="bb-admin-auth">
         <form className="bb-auth-card bb-form" onSubmit={login}>

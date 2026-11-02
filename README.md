@@ -206,3 +206,20 @@ The dashboard keeps the main welcome Honey and the Ask Honey launcher. Its
 learning path previews up to four unfinished labs with a link to the full
 collection, and its completion list previews three entries. The garden keeps
 its interactive flowers, badges and cheer button without another mascot.
+
+## Appearance and Honey branding
+
+The landing page introduces Honey as the Boulevard companion, with a clear note
+that her current replies use prepared conversations and guided lab hints.
+The sun/moon button switches between a warm cream light theme and a dark theme.
+The first visit follows the device color scheme; an explicit choice is saved
+under `bb.theme` in local storage and reused across routes and reloads. Core
+headers include the switch; older pages have a small floating appearance button.
+Training website previews and animated request/response scenes keep their dark
+editor surfaces within either theme.
+
+The shared HTML shell applies the theme before React starts and loads the main
+stylesheet in the head. A small text loading state replaces an unstyled image
+splash. Brand images have explicit dimensions. Honey's eyes and two antennas
+form the shared SVG favicon, with ICO and Apple touch PNG fallbacks; individual
+routes no longer replace it with the previous logo.

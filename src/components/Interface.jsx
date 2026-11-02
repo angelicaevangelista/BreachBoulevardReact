@@ -1,6 +1,7 @@
 import React, { useId, useEffect, useState } from 'react';
 import { Link, assetUrl } from '../routing';
 import { useLearner } from './LearnerGate';
+import ThemeToggle from './ThemeToggle';
 
 const paths = {
   grid: 'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
@@ -53,6 +54,8 @@ export function Mascot({ className = '', compact = false, ...props }) {
   return (
     <svg
       viewBox="0 0 220 220"
+      width={220}
+      height={220}
       className={`bb-mascot ${className}`}
       role="img"
       aria-label="Honey, your friendly security bee"
@@ -189,10 +192,10 @@ export function Mascot({ className = '', compact = false, ...props }) {
     </svg>
   );
 }
-export function Brand({ logo = 'BBLOGO.png' }) {
+export function Brand({ logo = 'honey-icon.svg' }) {
   return (
     <Link to="/" className="bb-brand">
-      <img src={assetUrl(logo)} alt="Breach Boulevard Logo" />
+      <img src={assetUrl(logo)} width="39" height="39" alt="Breach Boulevard Logo" />
       <span>
         Breach
         <span className="bb-brand-second">
@@ -347,6 +350,7 @@ export default function AppShell({
             <strong>{title}</strong>
           </div>
           <div className="bb-header-account" aria-label="Your account">
+            <ThemeToggle />
             <span className="bb-avatar">{admin ? 'A' : name.slice(0, 1).toUpperCase()}</span>
             <div>
               <strong>{admin ? 'Administrator' : name}</strong>

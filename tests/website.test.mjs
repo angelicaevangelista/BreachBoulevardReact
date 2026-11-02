@@ -369,7 +369,7 @@ test('FAQ expansion and disclaimer dismissal update React state', async () => {
 });
 test('course modal shows the selected list and closes', async () => {
   const s = await open('content/main.html');
-  await s.click('button');
+  await s.click('.bb-course-card button');
   assert.equal(s.d.querySelector('#vulnerabilityTitle').textContent, 'SQL Injection');
   assert.equal(s.d.querySelectorAll('#vulnerabilityList li').length, 4);
   await s.click([...s.d.querySelectorAll('button')].find((b) => b.textContent === 'Close'));
@@ -417,7 +417,7 @@ test('Get Started requires login, shows Google first, then restores the original
     }),
   });
   assert.equal(s.d.querySelector('#accessForm'), null);
-  const buttons = [...s.d.querySelectorAll('button')];
+  const buttons = [...s.d.querySelectorAll('.bb-auth-card button')];
   assert.match(buttons[0].textContent, /Continue with Google/);
   assert.equal(buttons[0].disabled, false);
   await s.fill('#accountEmail', 'learner@example.com');
@@ -1113,5 +1113,42 @@ test('a missed streak preserves the personal best and a failed progress request 
     assert.match(empty.d.querySelector('.streak-garden').textContent, /couldn’t be loaded/);
   } finally {
     await empty.close();
+  }
+});
+
+test('appearance switch persists across routes and Honey is introduced on the landing page', async () => {
+  const s = await open('testcopy2.html', { app: true, url: 'http://localhost/' });
+  try {
+    assert.match(s.d.querySelector('#meet-honey-title').textContent, /Your AI companion/);
+    assert.match(
+      s.d.querySelector('.bb-honey-intro-note small').textContent,
+      /prepared conversations/
+    );
+    await s.click('[aria-label="Switch to light mode"]');
+    assert.equal(s.d.documentElement.dataset.theme, 'light');
+    assert.equal(s.w.localStorage.getItem('bb.theme'), 'light');
+    await s.act(() => s.w.harness.navigate('/dashboard'));
+    assert.equal(s.d.documentElement.dataset.theme, 'light');
+    assert.equal(s.d.querySelectorAll('.bb-theme-toggle').length, 1);
+    await s.click('[aria-label="Switch to dark mode"]');
+    assert.equal(s.w.localStorage.getItem('bb.theme'), 'dark');
+    assert.equal(s.d.querySelectorAll('.bb-mascot').length, 2);
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+});
+
+test('theme control still works when browser storage is unavailable', async () => {
+  const s = await open('testcopy2.html');
+  try {
+    s.w.Storage.prototype.setItem = () => {
+      throw Error('Storage blocked');
+    };
+    await s.click('[aria-label="Switch to light mode"]');
+    assert.equal(s.d.documentElement.dataset.theme, 'light');
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
   }
 });

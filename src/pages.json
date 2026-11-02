@@ -252,11 +252,6 @@
     "css": "\n\n        \n\n        \n\n        \n\n        \n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n\n        \n\n    \n",
     "links": [
       {
-        "rel": "icon",
-        "type": "image/png",
-        "href": "bblogo.png"
-      },
-      {
         "rel": "stylesheet",
         "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
       }
@@ -272,11 +267,6 @@
     "css": "\n\n        \n\n        \n\n        \n\n        \n\n        .arrow-box {\n            position: absolute;\n            top: -40px;\n            left: 50%;\n            transform: translateX(-50%);\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            z-index: 10;\n        }\n\n        .arrow-box span {\n            background: #f97316;\n            color: white;\n            font-weight: bold;\n            padding: 5px 10px;\n            border-radius: 5px;\n            font-size: 14px;\n            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);\n        }\n\n        .arrow-box::after {\n            content: '';\n            width: 0;\n            height: 0;\n            border-left: 8px solid transparent;\n            border-right: 8px solid transparent;\n            border-top: 10px solid #f97316;\n            margin-top: 5px;\n        }\n\n        .rotate-180 {\n            transform: rotate(180deg);\n        }\n        .rotate-0 {\n            transform: rotate(0deg);\n        }\n        .transition-transform {\n            transition: transform 0.3s;\n        }\n\n        \n\n    \n",
     "links": [
       {
-        "rel": "icon",
-        "type": "image/png",
-        "href": "bblogo.png"
-      },
-      {
         "rel": "stylesheet",
         "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
       }
@@ -285,18 +275,13 @@
   },
   {
     "path": "testcopy2.html",
-    "title": "Vulnerable Testing Landing Page",
+    "title": "Breach Boulevard | Learn with Honey",
     "body": {
       "class": "",
       "style": ""
     },
     "css": "",
     "links": [
-      {
-        "rel": "icon",
-        "type": "image/png",
-        "href": "bblogo.png"
-      },
       {
         "rel": "stylesheet",
         "href": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"

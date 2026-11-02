@@ -6,6 +6,7 @@ import FaqItem from '../components/FaqItem';
 import LearningJourney from '../components/LearningJourney';
 import LabWalkthrough from '../components/LabWalkthrough';
 import SqlPlayground from '../components/SqlPlayground';
+import ThemeToggle from '../components/ThemeToggle';
 export default function Home() {
   const [disclaimerVisible, setDisclaimerVisible] = useState(true);
   const home = useRef(null);
@@ -39,6 +40,7 @@ export default function Home() {
       <nav className="bb-public-header">
         <Brand />
         <div className="bb-home-links">
+          <ThemeToggle />
           <Link to="/about">About</Link>
           <Link to="/practice">Labs</Link>
           <Link to="/access" className="bb-button bb-button-primary">
@@ -106,6 +108,54 @@ export default function Home() {
           </span>
         </div>
       </header>
+      <section
+        className="bb-home-section bb-honey-intro bb-reveal"
+        aria-labelledby="meet-honey-title"
+      >
+        <div className="bb-honey-intro-note">
+          <span className="bb-eyebrow">
+            <Icon name="spark" size={15} /> A LITTLE AI. A LOT OF HEART.
+          </span>
+          <h2 id="meet-honey-title">
+            Meet Honey.
+            <br />
+            <span>Your AI companion on the Boulevard.</span>
+          </h2>
+          <p>
+            A friendly bee for curious minds. Honey helps you follow lab clues, explains your next
+            step, and cheers for your little wins.
+          </p>
+          <div className="bb-honey-intro-tags">
+            <span>
+              <Icon name="help" size={15} /> Hints at your pace
+            </span>
+            <span>
+              <Icon name="heart" size={15} /> A hello and a little cheer
+            </span>
+            <span>
+              <Icon name="flag" size={15} /> Your next discovery
+            </span>
+          </div>
+          <small>
+            Honey follows prepared conversations and guided hints, so her help stays focused on your
+            learning.
+          </small>
+        </div>
+        <div className="bb-honey-intro-chat">
+          <span className="bb-honey-intro-label">
+            <Icon name="spark" size={14} /> A HELLO FROM HONEY
+          </span>
+          <p className="bb-honey-intro-user">Hi Honey, what’s your favorite place?</p>
+          <p className="bb-honey-intro-answer">
+            The Streak Garden! Tiny smiling flowers, sweet honey jars, and a reminder that little
+            steps matter.<span>— Honey, your little Boulevard guide</span>
+          </p>
+          <Link to="/access" className="bb-button bb-button-soft">
+            Meet her inside
+            <Icon name="arrow" size={15} />
+          </Link>
+        </div>
+      </section>
       <section className="bb-home-section bb-reveal">
         <span className="bb-eyebrow">SMALL STEPS. REAL SKILLS.</span>
         <h2>Learning feels better here.</h2>

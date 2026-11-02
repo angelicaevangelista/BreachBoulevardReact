@@ -5,6 +5,7 @@ import registry from './registry';
 import AdminGate from './components/AdminGate';
 import LearnerGate from './components/LearnerGate';
 import { PublicHoneyAssistant } from './components/HoneyAssistant';
+import ThemeToggle from './components/ThemeToggle';
 import { assetUrl, Link, resolvePage, routePaths, useRouter } from './routing';
 
 function DocumentFrame({ page, children }) {
@@ -30,17 +31,19 @@ function DocumentFrame({ page, children }) {
       {createPortal(
         <>
           {page.tailwind && <link rel="stylesheet" href={assetUrl('styles/tailwind.css')} />}
-          {page.links.map((link, index) => (
-            <link
-              key={index}
-              {...link}
-              href={
-                /^(https?:|\/\/)/.test(link.href)
-                  ? link.href
-                  : assetUrl(link.href.toLowerCase() === 'bblogo.png' ? 'BBLOGO.png' : link.href)
-              }
-            />
-          ))}
+          {page.links
+            .filter((link) => !/icon/i.test(link.rel))
+            .map((link, index) => (
+              <link
+                key={index}
+                {...link}
+                href={
+                  /^(https?:|\/\/)/.test(link.href)
+                    ? link.href
+                    : assetUrl(link.href.toLowerCase() === 'bblogo.png' ? 'BBLOGO.png' : link.href)
+                }
+              />
+            ))}
           {page.css && <style>{page.css}</style>}
         </>,
         document.head
@@ -74,6 +77,16 @@ export default function App() {
     );
   return (
     <DocumentFrame key={source} page={page}>
+      {![
+        'testcopy2.html',
+        'practice.html',
+        'labs.html',
+        'content/main.html',
+        'dashboard.html',
+        'community.html',
+        'access/access.html',
+        'access/admin.html',
+      ].includes(source) && <ThemeToggle className="bb-theme-standalone" />}
       {source === 'access/admin.html' ? (
         <AdminGate>
           <Page />

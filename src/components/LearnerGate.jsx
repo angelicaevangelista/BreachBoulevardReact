@@ -1,4 +1,5 @@
 import GoogleSignInButton from './GoogleSignInButton';
+import ThemeToggle from './ThemeToggle';
 import HoneyAssistant from './HoneyAssistant';
 import { Brand, Icon, Mascot, LoadingScreen } from './Interface';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -84,6 +85,7 @@ export function SignIn({ onSignedIn }) {
     <div className="bb-ui bb-auth">
       <nav className="bb-public-header">
         <Brand />
+        <ThemeToggle />
         <Link to="/" className="hover:underline">
           Back to home
         </Link>

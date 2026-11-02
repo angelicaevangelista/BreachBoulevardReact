@@ -30,6 +30,7 @@ const sections = [
     [
       'Authentication cookies keep you signed in. Production account cookies use HttpOnly, Secure, and SameSite attributes. Authentication tokens are not returned to application JavaScript or stored by this app in local storage. Some training demonstrations use browser storage for local state.',
       'Signing out clears this browser’s active application session. Clearing cookies or browser storage can remove local sessions and demonstration state; it does not delete information already saved in Supabase.',
+      'Your light or dark appearance preference is saved in this browser’s local storage. It does not contain account credentials.',
     ],
   ],
   [
