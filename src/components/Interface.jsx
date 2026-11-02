@@ -232,10 +232,10 @@ export function Mascot({ className = '', compact = false, ...props }) {
 }
 export function Brand({ logo = 'honey-icon.svg' }) {
   return (
-    <Link to="/" className="bb-brand">
-      <img src={assetUrl(logo)} width="39" height="39" alt="Breach Boulevard Logo" />
-      <span>
-        Breach
+    <Link to="/" className="bb-brand" aria-label="Breach Boulevard home">
+      <img src={`${assetUrl(logo)}?v=3`} width="39" height="39" alt="" />
+      <span className="bb-brand-wordmark">
+        <span className="bb-brand-first">Breach</span>
         <span className="bb-brand-second">
           Boulevard<span className="bb-orange">.</span>
         </span>

@@ -7,7 +7,7 @@ export default function Access() {
   return (
     <div className="bb-ui bb-auth">
       <nav className="bb-public-header">
-        <Brand logo="access/BBLOGO.png" />
+        <Brand />
         <Link to="/" className="bb-text-link">
           <Icon name="back" size={16} /> Back to home
         </Link>

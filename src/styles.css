@@ -76,6 +76,23 @@
 }
 .bb-brand-second {
   display: block;
+  font-weight: 800;
+  letter-spacing: -.7px;
+  line-height: 1.15;
+}
+.bb-brand-first {
+  display: block;
+  font-size: .52em;
+  font-weight: 750;
+  letter-spacing: .22em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--bb-t-ink-dbb991, #dbb991);
+}
+.bb-brand:focus-visible {
+  outline: 2px solid #e2aa67;
+  outline-offset: 6px;
+  border-radius: 6px;
 }
 .bb-button {
   display: inline-flex;

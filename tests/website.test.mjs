@@ -643,7 +643,7 @@ test('base paths preserve clean routes, images, and API requests', async () => {
   assert.equal(s.w.location.pathname, '/BreachBoulevardReact/access');
   assert.equal(
     s.d.querySelector('img').getAttribute('src'),
-    '/BreachBoulevardReact/access/BBLOGO.png'
+    '/BreachBoulevardReact/honey-icon.svg?v=3'
   );
   await s.fill('#accessCode', 'example');
   await s.submit('#accessForm');

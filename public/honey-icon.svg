@@ -1,1 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>Honey — Breach Boulevard</title><rect width="64" height="64" rx="19" fill="#ffbe73"/><path d="m22 22-3-11m23 11 3-11" stroke="#28323a" stroke-width="4" stroke-linecap="round"/><circle cx="18" cy="10" r="5" fill="#fff1c0"/><circle cx="46" cy="10" r="5" fill="#fff1c0"/><rect x="7" y="21" width="50" height="36" rx="15" fill="#304550" stroke="#ffe0a0" stroke-width="2"/><path d="M11 21q5-5 12-5" fill="none" stroke="#fff0ce" stroke-width="2" stroke-linecap="round"/><circle cx="16.5" cy="8.5" r="1.5" fill="#fff9e8"/><circle cx="44.5" cy="8.5" r="1.5" fill="#fff9e8"/><g transform="translate(51 23)"><ellipse cy="-2.3" rx="1.7" ry="2.4" transform="rotate(0)" fill="#fff3d9"/><ellipse cy="-2.3" rx="1.7" ry="2.4" transform="rotate(72)" fill="#fff3d9"/><ellipse cy="-2.3" rx="1.7" ry="2.4" transform="rotate(144)" fill="#fff3d9"/><ellipse cy="-2.3" rx="1.7" ry="2.4" transform="rotate(216)" fill="#fff3d9"/><ellipse cy="-2.3" rx="1.7" ry="2.4" transform="rotate(288)" fill="#fff3d9"/><circle r="1.8" fill="#e9a744"/></g><g transform="translate(23 36)"><ellipse rx="5.3" ry="6.1" fill="#fff1d6"/><ellipse cx=".5" cy=".6" rx="3.6" ry="4.5" fill="#523627"/><ellipse cy="3" rx="2.1" ry="1.2" fill="#aa7046"/><circle cx="-1.1" cy="-1.7" r="1.7" fill="#fffdf8"/><circle cx="1.7" cy="1.5" r=".8" fill="#fffdf8"/></g><g transform="translate(41 36)"><ellipse rx="5.3" ry="6.1" fill="#fff1d6"/><ellipse cx="-.5" cy=".6" rx="3.6" ry="4.5" fill="#523627"/><ellipse cy="3" rx="2.1" ry="1.2" fill="#aa7046"/><circle cx="-1.1" cy="-1.7" r="1.7" fill="#fffdf8"/><circle cx="1.7" cy="1.5" r=".8" fill="#fffdf8"/></g><path d="M27 46q5 5 10 0" fill="none" stroke="#ffe4a6" stroke-width="3" stroke-linecap="round"/><ellipse cx="15.5" cy="44" rx="4" ry="2.2" fill="#f7a497"/><ellipse cx="48.5" cy="44" rx="4" ry="2.2" fill="#f7a497"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Honey — Breach Boulevard</title>
+  <defs>
+    <linearGradient id="honey" x2=".8" y2="1">
+      <stop stop-color="#ffda95"/>
+      <stop offset="1" stop-color="#f6a34d"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 4q8-4 16 0l16 9q5 3 5 9v20q0 7-6 10l-15 9q-8 4-16 0L9 52q-6-3-6-10V22q0-6 5-9Z" fill="url(#honey)" stroke="#ffe9b9" stroke-width="1.5"/>
+  <path d="M12 18 26 10" fill="none" stroke="#fff2d0" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+  <path d="M24 25q-1-8-5-12m21 12q1-8 5-12" fill="none" stroke="#735335" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="18" cy="11" r="4.2" fill="#fff3d2"/>
+  <circle cx="46" cy="11" r="4.2" fill="#fff3d2"/>
+  <rect x="8.5" y="23" width="47" height="31" rx="14" fill="#263c45" stroke="#fff0c8" stroke-width="2"/>
+  <ellipse cx="23" cy="36" rx="5" ry="5.8" fill="#fff2d7"/>
+  <ellipse cx="41" cy="36" rx="5" ry="5.8" fill="#fff2d7"/>
+  <ellipse cx="23.5" cy="36.6" rx="3.4" ry="4.2" fill="#63452f"/>
+  <ellipse cx="40.5" cy="36.6" rx="3.4" ry="4.2" fill="#63452f"/>
+  <circle cx="22" cy="34" r="1.8" fill="#fffdf5"/>
+  <circle cx="39" cy="34" r="1.8" fill="#fffdf5"/>
+  <path d="M27 45q5 5 10 0" fill="none" stroke="#ffe6b2" stroke-width="2.8" stroke-linecap="round"/>
+  <ellipse cx="16" cy="43" rx="3.5" ry="2" fill="#eaa497"/>
+  <ellipse cx="48" cy="43" rx="3.5" ry="2" fill="#eaa497"/>
+</svg>

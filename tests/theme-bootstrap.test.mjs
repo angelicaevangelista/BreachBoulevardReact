@@ -35,6 +35,7 @@ test('reload shell loads styles and Honey favicon before React, without a logo s
   assert.match(dom.window.document.querySelector('#root').textContent, /discovery is loading/);
   const ico = fs.readFileSync('public/favicon.ico');
   assert.equal(ico.readUInt16LE(2), 1);
-  assert.equal(ico.readUInt16LE(4), 1);
+  assert.equal(ico.readUInt16LE(4), 3);
+  assert.deepEqual([ico[6], ico[22], ico[38]], [16, 32, 48]);
   dom.window.close();
 });
