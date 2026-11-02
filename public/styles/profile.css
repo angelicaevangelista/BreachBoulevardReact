@@ -67,8 +67,7 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   --pf-accent: #9b5c2e;
 }
 .bb-profile-preview {
-  position: sticky;
-  top: 24px;
+  position: relative;
   text-align: center;
   border: 1px solid var(--pf-line);
   border-radius: 26px;
@@ -134,8 +133,12 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
 }
 .bb-profile-form {
   min-width: 0;
-  display: grid;
-  gap: 22px;
+  display: contents;
+}
+.bb-profile-form > .bb-profile-section:nth-of-type(2),
+.bb-profile-form > .bb-profile-save,
+.bb-profile-form > .bb-profile-notice {
+  grid-column: 1/-1;
 }
 .bb-profile-section {
   padding: 28px;
@@ -176,7 +179,7 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
 }
 .bb-profile-form .bb-form {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 .bb-profile-form .bb-form > label {
   margin: 10px 0 0;
@@ -255,7 +258,7 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
-  padding: 12px 6px;
+  padding: 12px 10px;
   border: 1px solid transparent;
   border-radius: 15px;
   cursor: pointer;
@@ -312,8 +315,8 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   opacity: 0.7;
 }
 .bb-avatar-option-art {
-  width: 76px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 160px;
   position: relative;
   display: block;
 }
@@ -412,5 +415,14 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
   }
   .bb-ui .bb-profile-section-heading h2 {
     font-size: 22px;
+  }
+}
+@media (max-width: 560px) {
+  .bb-avatar-picker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .bb-ui .bb-avatar-option {
+    padding: 10px 6px;
   }
 }

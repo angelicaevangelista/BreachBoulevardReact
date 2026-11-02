@@ -13,7 +13,12 @@ const eyes = (sleepy) =>
   sleepy
     ? p('M36 45q4-4 8 0m8 0q4-4 8 0', 'none', '#604832', 2.4)
     : [40, 56]
-        .map((x) => e(x, 44, 3.8, 4.6, '#493426') + e(x - 1, 42.5, 1.2, 1.2, '#fff8e8'))
+        .map(
+          (x) =>
+            e(x, 44, 5, 6.1, '#493426') +
+            e(x - 1.3, 41.8, 1.8, 1.8, '#fffdf4') +
+            e(x + 1.5, 46, 0.8, 0.8, '#ffe4aa')
+        )
         .join('');
 const styles = {
   'honey-bee': ['#f5e9cc', '#f4cc77', ''],
@@ -188,15 +193,18 @@ for (const avatar of profileAvatars) {
     e(31, 12, 3, 3, honey, '#9c7134', 1) +
     e(65, 12, 3, 3, honey, '#9c7134', 1);
   const face =
-    e(48, 44, 25, 23, honey, '#9c6d36', 1.5) +
+    e(48, 43, 28.5, 25, honey, '#9c6d36', 1.5) +
     p('M31 32q5-6 11-6', 'none', '#ffe9b7', 2.5) +
     eyes(avatar.id === 'sleepy-bee') +
-    e(32, 53, 4.5, 2.6, '#dc8d7e') +
-    e(64, 53, 4.5, 2.6, '#dc8d7e') +
-    p('M43 54q5 6 10 0', 'none', '#674222', 2.5);
+    e(29, 54, 5.8, 3.4, '#dc8d7e') +
+    e(67, 54, 5.8, 3.4, '#dc8d7e') +
+    (avatar.id === 'sleepy-bee'
+      ? p('M43 55q5 6 10 0', 'none', '#674222', 2.5)
+      : p('M42 55q6 4 12 0-1 9-6 9t-6-9Z', '#76503d', '#674222', 1) +
+        e(48, 61.8, 3.3, 1.5, '#eea194'));
   fs.writeFileSync(
     `public/avatars/${avatar.id}.svg`,
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><title>${avatar.name}</title>${rect(0, 0, 96, 96, 28, bg)}${e(48, 87, 22, 3, '#6b58420c')}${wings}${body}${antennas}${face}${accessory}</svg>\n`
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><title>${avatar.name}</title>${rect(0, 0, 96, 96, 28, bg)}<g transform="translate(-4 -2) scale(1.08)">${e(48, 87, 22, 3, '#6b58420c')}${wings}${body}${antennas}${face}${accessory}</g></svg>\n`
   );
 }
 const hex = (x, y, fill) => p(`m${x} ${y - 14} 12 7v14l-12 7-12-7V${y - 7}Z`, fill, '#a57231', 1.5);
