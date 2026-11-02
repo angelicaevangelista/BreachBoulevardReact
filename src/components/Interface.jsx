@@ -115,13 +115,18 @@ export function Mascot({ className = '', compact = false, ...props }) {
         />
         <rect x="63" y="83" width="94" height="62" rx="25" fill="#132b3c" />
         <g className="bb-buddy-eyes">
-          <path
-            d="M80 112q7-10 14 0 M126 112q7-10 14 0"
-            fill="none"
-            stroke="#fff2db"
-            strokeWidth="4.5"
-            strokeLinecap="round"
-          />
+          {[87, 133].map((x) => (
+            <g key={x} transform={`translate(${x} 110)`}>
+              <ellipse rx="8" ry="8.5" fill="#ffd999" />
+              <ellipse cy=".5" rx="5.8" ry="6.2" fill="#344451" />
+              <path
+                className="bb-eye-sparkle"
+                d="M-2-5.3l.9 2.2 2.2.9-2.2.9-.9 2.2-.9-2.2-2.2-.9 2.2-.9Z"
+                fill="#fffdf4"
+              />
+              <circle cx="2.5" cy="3" r="1.3" fill="#fff4da" />
+            </g>
+          ))}
         </g>
         <path
           d="M101 124q9 9 18 0"

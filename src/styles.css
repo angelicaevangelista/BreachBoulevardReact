@@ -299,6 +299,18 @@
   transform-origin: 110px 110px;
   animation: bb-blink 5.2s infinite;
 }
+.bb-eye-sparkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bb-eye-twinkle 4.8s ease-in-out infinite;
+}
+@keyframes bb-eye-twinkle {
+  0%, 65%, 100% { opacity: .85; transform: scale(1); }
+  78% { opacity: 1; transform: scale(1.15); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bb-buddy-eyes, .bb-eye-sparkle { animation: none; }
+}
 .bb-status-dot {
   display: inline-block;
   width: 6px;
