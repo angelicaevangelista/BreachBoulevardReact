@@ -117,14 +117,17 @@ export function Mascot({ className = '', compact = false, ...props }) {
         <g className="bb-buddy-eyes">
           {[87, 133].map((x) => (
             <g key={x} transform={`translate(${x} 110)`}>
-              <ellipse rx="8" ry="8.5" fill="#ffd999" />
-              <ellipse cy=".5" rx="5.8" ry="6.2" fill="#344451" />
-              <path
+              <ellipse rx="9.5" ry="11" fill="#fff1d6" />
+              <ellipse cx={x === 87 ? 1 : -1} cy="1" rx="6.5" ry="8" fill="#523627" />
+              <ellipse cx={x === 87 ? 1 : -1} cy="5.4" rx="3.8" ry="2.2" fill="#aa7046" />
+              <circle
                 className="bb-eye-sparkle"
-                d="M-2-5.3l.9 2.2 2.2.9-2.2.9-.9 2.2-.9-2.2-2.2-.9 2.2-.9Z"
-                fill="#fffdf4"
+                cx="-2"
+                cy="-3"
+                r="3"
+                fill="#fffdf8"
               />
-              <circle cx="2.5" cy="3" r="1.3" fill="#fff4da" />
+              <circle cx="3" cy="2.6" r="1.5" fill="#fffdf8" />
             </g>
           ))}
         </g>
