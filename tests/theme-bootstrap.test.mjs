@@ -10,7 +10,11 @@ for (const [saved, system, expected] of [
   [null, false, 'dark'],
 ])
   test(`theme bootstrap before React: saved ${saved}, light preference ${system}`, () => {
-    const dom = new JSDOM(html, {
+    const executableHtml = html.replace(
+      /<script src="\/theme-init\.js"><\/script>/,
+      () => '<script>' + fs.readFileSync('public/theme-init.js', 'utf8') + '</script>'
+    );
+    const dom = new JSDOM(executableHtml, {
       url: 'http://localhost/',
       runScripts: 'dangerously',
       beforeParse(w) {

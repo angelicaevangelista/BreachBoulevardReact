@@ -541,7 +541,7 @@ test('XSS lab retains raw teaching content and comments on new and original post
   await s.submit('#postForm');
   const posts = s.d.querySelector('#posts');
   const preview = posts.querySelector('iframe[title="Post content preview"]');
-  assert.match(preview.srcdoc, /<b>HTML training content<\/b>/);
+  assert.match(new URL(preview.src).searchParams.get('html'), /<b>HTML training content<\/b>/);
   assert.equal(preview.getAttribute('sandbox'), 'allow-scripts allow-modals');
   assert.equal(posts.querySelector('b'), null);
   const toggles = [...posts.querySelectorAll('button')].filter((b) =>
@@ -557,7 +557,7 @@ test('XSS lab retains raw teaching content and comments on new and original post
   );
   assert.ok(
     [...posts.querySelectorAll('.comments iframe')].some((frame) =>
-      frame.srcdoc.includes('<em>Comment example</em>')
+      new URL(frame.src).searchParams.get('html').includes('<em>Comment example</em>')
     )
   );
   await s.fill('#postTitle', 'Second post');
@@ -1147,6 +1147,46 @@ test('theme control still works when browser storage is unavailable', async () =
     };
     await s.click('[aria-label="Switch to light mode"]');
     assert.equal(s.d.documentElement.dataset.theme, 'light');
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+});
+
+test('unknown routes show Honey’s public 404 and return safely to the homepage', async () => {
+  for (const path of ['/lost-little-bee', '/practice/not-a-real-lab', '/%ZZ']) {
+    const s = await open('testcopy2.html', {
+      app: true,
+      url: 'http://localhost' + path,
+      user: null,
+    });
+    try {
+      assert.match(s.d.querySelector('h1').textContent, /scenic route/);
+      assert.match(s.d.title, /404/);
+      assert.equal(s.d.querySelector('meta[name="robots"]').content, 'noindex, nofollow');
+      assert.ok(s.d.querySelector('.bb-not-found .bb-mascot'));
+      assert.equal(s.d.querySelector('.bb-auth-card'), null);
+      await s.click('.bb-lost-actions a');
+      assert.equal(s.w.location.pathname, '/');
+      assert.match(s.d.title, /Breach Boulevard/);
+      assert.doesNotMatch(s.d.title, /404/);
+      assert.equal(s.d.querySelector('meta[name="robots"]'), null);
+      assert.deepEqual(s.errors, []);
+    } finally {
+      await s.close();
+    }
+  }
+});
+test('legacy DOM XSS input is confined to an opaque sandbox rather than evaluated by the app', async () => {
+  const s = await open('dom.html');
+  try {
+    await s.fill('#nameInput', '<img src=x onerror="parent.document.body.innerHTML=123">');
+    await s.click('button');
+    const frame = s.d.querySelector('iframe');
+    assert.ok(frame);
+    assert.equal(frame.getAttribute('sandbox'), 'allow-scripts allow-modals');
+    assert.match(new URL(frame.src).searchParams.get('html'), /onerror/);
+    assert.ok(s.d.querySelector('#nameInput'));
     assert.deepEqual(s.errors, []);
   } finally {
     await s.close();

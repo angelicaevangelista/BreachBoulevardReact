@@ -14,7 +14,143 @@
       "destination": "/api/index?__route=:path*"
     },
     {
-      "source": "/:path*",
+      "source": "/dashboard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/community",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/practice",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/access",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/access/protected",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/courses",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/cards",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/csrf",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/dom-xss",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/file-injection",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/idor",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/reflected-xss",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/demos/landing",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/demos/landing-test",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profile/upload",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/demos/terminal",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terminal/network",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terminal/linux",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/demos/home",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/demos/home-copy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/tutorial/sql-injection",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/upload",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/uploaded-xss",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/error-sql",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/union-sql",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/xss",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/labs/file-upload",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/practice/:lab(sql-injection|xss|authentication|idor|path-traversal|data-exposure|ctf-social-draft|ctf-meeting-guest|ctf-shop-price|ctf-blog-preview|ctf-files-backup|ctf-support-ticket|ctf-video-manifest|ctf-travel-coupon|ctf-recruit-resume|ctf-bank-transfer|ctf-devops-build|ctf-health-record|ctf-design-export|ctf-course-replay|ctf-music-hook)",
       "destination": "/index.html"
     }
   ],
@@ -27,16 +163,37 @@
           "value": "nosniff"
         },
         {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
           "key": "Referrer-Policy",
           "value": "no-referrer"
         },
         {
-          "key": "X-Frame-Options",
-          "value": "DENY"
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
         },
         {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
+          "key": "X-Permitted-Cross-Domain-Policies",
+          "value": "none"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/((?!api/).*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; frame-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
         }
       ]
     }

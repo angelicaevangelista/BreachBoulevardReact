@@ -6,6 +6,7 @@ import AdminGate from './components/AdminGate';
 import LearnerGate from './components/LearnerGate';
 import { PublicHoneyAssistant } from './components/HoneyAssistant';
 import ThemeToggle from './components/ThemeToggle';
+import NotFound from './components/NotFound';
 import { assetUrl, Link, resolvePage, routePaths, useRouter } from './routing';
 
 function DocumentFrame({ page, children }) {
@@ -68,13 +69,7 @@ export default function App() {
         replace: true,
       });
   }, [pathname, source, navigate]);
-  if (!Page)
-    return (
-      <main className="p-6">
-        <h1>Page not found</h1>
-        <Link to="/">Return to Breach Boulevard</Link>
-      </main>
-    );
+  if (!Page) return <NotFound />;
   return (
     <DocumentFrame key={source} page={page}>
       {![

@@ -14,6 +14,8 @@ import {
 import { DatabaseError, SupabaseAccessCodes } from './supabase.mjs';
 import { accessCodeOptions, AccessCodeInputError } from './access-code-options.mjs';
 import { escapeHtml, simulateFileExecution, UploadStore } from './uploads.mjs';
+import { setSecurityHeaders } from './security-headers.mjs';
+import { RequestLimiter, clientFingerprint, requestPolicy } from './request-limits.mjs';
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -29,9 +31,10 @@ const json = (res, status, data) => {
   res.end(JSON.stringify(data));
 };
 const html = (res, body) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader(
     'Content-Security-Policy',
-    "sandbox allow-scripts allow-modals allow-downloads allow-popups; default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'"
+    "sandbox allow-scripts allow-modals allow-downloads allow-popups; default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'self'"
   );
   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
   res.end(body);
@@ -54,14 +57,39 @@ async function readBody(req, limit) {
     req.resume();
     throw new HttpError(413, 'Upload exceeds the allowed size.');
   }
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of req) {
-    size += chunk.length;
-    if (size <= limit) chunks.push(chunk);
-  }
-  if (size > limit) throw new HttpError(413, 'Upload exceeds the allowed size.');
-  return Buffer.concat(chunks);
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    const cleanup = () => {
+      req.off('data', data);
+      req.off('end', end);
+      req.off('error', error);
+      req.off('aborted', aborted);
+    };
+    const error = () => {
+      cleanup();
+      reject(new HttpError(400, 'Incomplete request body.'));
+    };
+    const aborted = error;
+    const end = () => {
+      cleanup();
+      resolve(Buffer.concat(chunks));
+    };
+    const data = (chunk) => {
+      size += chunk.length;
+      if (size > limit) {
+        cleanup();
+        req.resume();
+        reject(new HttpError(413, 'Upload exceeds the allowed size.'));
+        return;
+      }
+      chunks.push(chunk);
+    };
+    req.on('data', data);
+    req.once('end', end);
+    req.once('error', error);
+    req.once('aborted', aborted);
+  });
 }
 async function readJson(req) {
   const text = (await readBody(req, 65536)).toString('utf8');
@@ -89,12 +117,14 @@ export function createApiHandler({
   maxUploadBytes = 10 * 1024 * 1024,
   basePath = '',
   honey,
+  requestLimiter,
   communityStore,
   communityDirectory = path.join(projectRoot, '.data/community'),
 } = {}) {
   const uploads = uploadStore || new UploadStore(uploadDirectory);
   const getDatabase = () => database || SupabaseAccessCodes.fromEnvironment();
   const honeyService = honey || createHoneyService();
+  const limiter = requestLimiter || new RequestLimiter();
   const community = createCommunityService({
     store: communityStore || new FileCommunityStore(communityDirectory),
   });
@@ -107,14 +137,22 @@ export function createApiHandler({
     }
     if (!route.startsWith('/api/')) return false;
     try {
-      res.setHeader('X-Content-Type-Options', 'nosniff');
-      res.setHeader('Referrer-Policy', 'no-referrer');
+      setSecurityHeaders(res, { api: true, https: Boolean(process.env.VERCEL) });
       const learner =
         userAuth === false
           ? null
           : typeof userAuth === 'function'
             ? userAuth(req, res)
             : new LearnerAuth(req, res, { basePath });
+      const policy = requestPolicy(route, req.method);
+      if (policy) {
+        if (learner) requireSameOrigin(req, learner.origin);
+        const allowance = await limiter.consume(clientFingerprint(req), policy);
+        if (!allowance?.allowed) {
+          res.setHeader('Retry-After', String(Math.max(1, allowance?.retry_after_seconds || 60)));
+          throw new HttpError(429, 'Too many requests. Please wait before trying again.');
+        }
+      }
       if (learner && (await learner.handle(route, { readJson, json, requireMethod }))) return true;
       if (learner && !['GET', 'HEAD', 'OPTIONS'].includes(req.method))
         requireSameOrigin(req, learner.origin);
@@ -126,6 +164,19 @@ export function createApiHandler({
         route.startsWith('/api/community/') ||
         route === '/api/access-codes/validate';
       const student = learner && learnerRoute ? await learner.requireUser() : null;
+      if (route === '/api/labs/preview') {
+        if (!requireMethod(req, res, ['GET'])) return true;
+        const markup = url.searchParams.get('html') || '';
+        if (markup.length > 12000) throw new HttpError(413, 'Preview is too long.');
+        html(
+          res,
+          page(
+            '<style>body{margin:0;color:#d1d5db;background:#1f2937;font:16px/1.5 Arial,sans-serif;overflow-wrap:anywhere}h3{color:#f97316;font-size:18px}</style>' +
+              markup
+          )
+        );
+        return true;
+      }
       if (route === '/api/account/progress') {
         if (!requireMethod(req, res, ['GET'])) return true;
         json(res, 200, {
@@ -150,7 +201,7 @@ export function createApiHandler({
       if (route === '/api/honey/chat') {
         if (!requireMethod(req, res, ['POST'])) return true;
         const result = await honeyService.chat({
-          client: req.socket?.remoteAddress || 'unknown',
+          client: clientFingerprint(req),
           input: await readJson(req),
         });
         json(res, result.status, result.body);
@@ -323,7 +374,7 @@ export function createApiHandler({
           });
           return true;
         }
-        const link = `<p>File uploaded successfully: <a href="${escapeHtml(saved.url)}" target="_blank">${escapeHtml(saved.filename)}</a></p>`;
+        const link = `<p>File uploaded successfully: <a href="${escapeHtml(saved.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(saved.filename)}</a></p>`;
         const simulation =
           extension === '.php' && route !== '/api/uploads'
             ? simulateFileExecution(saved.contents)
@@ -397,6 +448,7 @@ export function createApiHandler({
       }
       throw new HttpError(404, 'API route not found.');
     } catch (error) {
+      if (error.status === 413 && !process.env.VERCEL) res.setHeader('Connection', 'close');
       const known =
         error instanceof HttpError ||
         error instanceof DatabaseError ||

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from '../routing';
 import { assetUrl } from '../routing';
+import LabMarkup from '../components/LabMarkup';
 
 export default function Page() {
   const [name, setName] = useState('');
@@ -20,9 +21,11 @@ export default function Page() {
         onChange={(event) => setName(event.target.value)}
       />
 
-      <button onClick={() => window.eval('alert("Hello, ' + name + '!")')}>{'Submit'}</button>
+      <button onClick={() => setGreeting('Hello, ' + name + '!')}>{'Submit'}</button>
 
-      <div id={'greeting'}></div>
+      <div id={'greeting'}>
+        <LabMarkup html={greeting} title="Isolated DOM XSS preview" />
+      </div>
     </>
   );
 }

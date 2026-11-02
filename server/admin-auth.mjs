@@ -14,7 +14,9 @@ export class AdminAuth {
         .map((value) => value.trim())
         .find((value) => value.startsWith('bb_admin='))
         ?.slice(9);
-      const [payload, signature] = token.split('.');
+      if (!token || token.length > 1024) return false;
+      const [payload, signature, ...extra] = token.split('.');
+      if (!payload || !signature || extra.length) return false;
       const expected = createHmac('sha256', this.password).update(payload).digest();
       const actual = Buffer.from(signature, 'base64url');
       return (

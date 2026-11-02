@@ -9,4 +9,5 @@ for (const page of pages) {
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, shell);
 }
+fs.writeFileSync(path.join(output, '404.html'), shell);
 console.log('React build ready. The Node.js server handles API requests and SPA route fallback.');

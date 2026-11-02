@@ -4,6 +4,8 @@ const output = path.resolve('release/BreachBoulevardReact-Node');
 await fs.mkdir(output, { recursive: true });
 for (const directory of ['dist', 'server'])
   await fs.cp(directory, path.join(output, directory), { recursive: true });
+await fs.cp('src/data', path.join(output, 'src/data'), { recursive: true });
+await fs.copyFile('SECURITY.md', path.join(output, 'SECURITY.md'));
 await fs.copyFile('.env.server.example', path.join(output, '.env.server.example'));
 await fs.copyFile('package-lock.json', path.join(output, 'package-lock.json'));
 const sourcePackage = JSON.parse(await fs.readFile('package.json', 'utf8'));

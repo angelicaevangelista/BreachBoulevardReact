@@ -223,3 +223,17 @@ stylesheet in the head. A small text loading state replaces an unstyled image
 splash. Brand images have explicit dimensions. Honey's eyes and two antennas
 form the shared SVG favicon, with ICO and Apple touch PNG fallbacks; individual
 routes no longer replace it with the previous logo.
+
+## 404 pages and security
+
+Unknown pages and unknown CTF IDs show Honey's themed 404 with links home and
+to practice. Vercel rewrites explicitly list supported application routes; its
+custom `404.html` handles other URLs. Node uses the same route catalog to return
+real 404 responses. Keep `vercel.json` in sync when adding routes or challenges.
+
+See [SECURITY.md](SECURITY.md) for the November 2026 review, verification results,
+and the remaining Supabase leaked-password protection setting. Apply
+`supabase/migrations/20261102021005_server_request_limits.sql` for a new database.
+It is already applied to the configured project. Shared production request
+counters are server-only and fail closed if unavailable. No new environment
+variable or external AI/security service was added.

@@ -12,3 +12,4 @@ qa-test.log
 release/
 .legacy-php/
 .vercel/
+supabase/.temp/

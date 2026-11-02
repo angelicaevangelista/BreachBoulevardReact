@@ -6,7 +6,7 @@ const sections = [
     'Information used by the website',
     [
       'Account information includes your account ID, email address, and authentication-provider information. When you use Google, Supabase Auth can receive your basic profile, including your name and profile picture.',
-      'Completed practice lab IDs are saved with your account. Practice inputs are processed to produce training responses. Some demonstrations keep their state only in your browser.',
+      'Completed practice lab IDs, practice dates, and your streak timezone are saved with your account. Practice inputs are processed to produce training responses. Some demonstrations keep their state only in your browser.',
       'Files you choose to upload are stored with their filename, content type, and an account ID used to restrict access. Avoid submitting confidential or personal files to training labs.',
       'Requests to the website, hosting, and authentication services can include IP addresses, browser information, timestamps, and diagnostic or security logs.',
     ],
@@ -31,6 +31,7 @@ const sections = [
       'Authentication cookies keep you signed in. Production account cookies use HttpOnly, Secure, and SameSite attributes. Authentication tokens are not returned to application JavaScript or stored by this app in local storage. Some training demonstrations use browser storage for local state.',
       'Signing out clears this browser’s active application session. Clearing cookies or browser storage can remove local sessions and demonstration state; it does not delete information already saved in Supabase.',
       'Your light or dark appearance preference is saved in this browser’s local storage. It does not contain account credentials.',
+      'Security throttling stores keyed hashes of client network addresses with short-lived request counters in Supabase. These counters do not store the original network address or your messages. Expired counters are removed during subsequent requests.',
     ],
   ],
   [

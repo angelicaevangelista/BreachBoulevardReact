@@ -4,6 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { projectRoot } from './config.mjs';
 import { createApiHandler } from './api.mjs';
+import { resolveRoute } from '../src/data/routes.js';
+import { setSecurityHeaders } from './security-headers.mjs';
 
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -28,11 +30,11 @@ export function createAppServer({
 } = {}) {
   const handleApi = createApiHandler({ ...apiOptions, basePath });
   const staticRoot = path.resolve(staticDirectory);
-  return http.createServer(async (req, res) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('Referrer-Policy', 'no-referrer');
-    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  return http.createServer({ headersTimeout: 15000, requestTimeout: 30000 }, async (req, res) => {
+    setSecurityHeaders(res, {
+      development: Boolean(middleware),
+      https: Boolean(process.env.VERCEL),
+    });
     try {
       if (await handleApi(req, res)) return;
       if (middleware) {
@@ -47,7 +49,14 @@ export function createAppServer({
         res.end('Method not allowed');
         return;
       }
-      let pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+      let pathname;
+      try {
+        pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+      } catch {
+        res.writeHead(400);
+        res.end('Invalid request path.');
+        return;
+      }
       if (basePath) {
         if (pathname !== basePath && !pathname.startsWith(basePath + '/')) {
           res.writeHead(404);
@@ -67,7 +76,8 @@ export function createAppServer({
         res.end('Not found');
         return;
       }
-      let stats;
+      let stats,
+        status = 200;
       try {
         stats = await fs.stat(filename);
       } catch {}
@@ -78,9 +88,10 @@ export function createAppServer({
           return;
         }
         filename = path.join(staticRoot, 'index.html');
+        status = resolveRoute(pathname) ? 200 : 404;
       }
       const data = await fs.readFile(filename);
-      res.writeHead(200, {
+      res.writeHead(status, {
         'Content-Type': contentTypes[path.extname(filename)] || 'application/octet-stream',
         'X-Content-Type-Options': 'nosniff',
       });
