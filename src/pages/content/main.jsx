@@ -22,7 +22,8 @@ export default function Courses() {
             <Icon name="book" size={15} /> FOLLOW YOUR CURIOSITY
           </span>
           <h1>
-            A world of little discoveries<span className="bb-orange">.</span>
+            A world of <span className="bb-course-heading-accent">little discoveries</span>
+            <span className="bb-orange">.</span>
           </h1>
           <p>Explore a topic, choose an exercise, and turn a new idea into a skill you can use.</p>
         </div>
