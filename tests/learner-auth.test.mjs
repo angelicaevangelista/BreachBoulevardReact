@@ -319,7 +319,7 @@ test('official SDK creates a PKCE challenge and keeps its verifier in a secure s
 test('CTF API saves progress only after valid flag submission for the verified account', async () => {
   const f = await fixture();
   try {
-    const headers = { Cookie: 'bb_learner=session' };
+    const headers = { Cookie: 'bb_learner=session', 'X-Learner-Timezone': 'Asia/Singapore' };
     const recovered = await f.request('/api/practice/ctf-social-draft', {
       method: 'POST',
       body: { postId: '42' },
@@ -342,7 +342,13 @@ test('CTF API saves progress only after valid flag submission for the verified a
       body: { action: 'submit-flag', flag: data.output.recoveredFlag },
       headers,
     });
-    assert.deepEqual((await accepted.json()).completedLabs, ['idor', 'ctf-social-draft']);
+    const capture = await accepted.json();
+    assert.deepEqual(capture.completedLabs, ['idor', 'ctf-social-draft']);
+    assert.equal(capture.streak.current, 1);
+    assert.equal(capture.streak.activeToday, true);
+    assert.equal(capture.streak.timeZone, 'Asia/Singapore');
+    const activityWrite = f.calls.find((c) => Array.isArray(c) && c[0] === 'update');
+    assert.deepEqual(activityWrite[1].data.bb_practice_days, [capture.streak.today]);
     assert.ok(
       f.calls.some(
         (c) =>

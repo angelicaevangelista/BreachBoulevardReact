@@ -170,3 +170,25 @@ motion. Its demo flag is illustrative and cannot complete a CTF.
 
 The expanded catalog uses the existing account progress mechanism; no new
 database migration or environment variable is required.
+
+## Honey’s streak garden
+
+The dashboard shows a daily practice garden, current and best streaks, a weekly
+flower trail, a honey-jar goal, and milestones at 3, 7, 14, 30, 60 and 100 days.
+A successful guided lab or a submitted CTF flag records a practice day. Replays
+count; repeated completions on the same day do not add extra days. Merely logging
+in, sending an unsuccessful attempt, or pressing Honey’s high-five button does
+not earn a day. Completed labs show a garden reward linking to the dashboard.
+
+The server uses its own clock and the account’s stored timezone. The browser’s
+IANA timezone is saved on the first successful completion; UTC is the fallback.
+A streak remains active through the day after the last practice day. Missing
+that day resets the current streak while preserving the best and earned badges.
+The dashboard refreshes its daily state when the date changes or the tab resumes.
+
+Activity dates use the existing Supabase user-metadata mechanism, alongside lab
+progress. They are personal motivation data, never authorization or access
+control. No migration or additional environment variable is needed. Existing
+completions without dates are retained, but historical streak days are not
+invented. Motion respects reduced-motion preferences; the week and badge
+controls work with a keyboard.

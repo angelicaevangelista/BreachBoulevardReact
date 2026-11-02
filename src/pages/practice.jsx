@@ -4,6 +4,7 @@ import { practiceLabs, findPracticeLab } from '../data/practice-labs';
 import AppShell, { Icon, Mascot } from '../components/Interface';
 import useLabProgress from '../hooks/useLabProgress';
 import TargetWebsite from '../components/labs/TargetWebsite';
+import { learnerTimeZoneHeaders } from '../data/learner-timezone';
 export const labIcons = ['terminal', 'code', 'key', 'eye', 'shield', 'book'];
 function Challenge({ lab, onComplete, solved }) {
   const [values, setValues] = useState(() => ({
@@ -27,7 +28,7 @@ function Challenge({ lab, onComplete, solved }) {
     try {
       const response = await fetch(assetUrl(`api/practice/${lab.id}`), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...learnerTimeZoneHeaders() },
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
@@ -40,7 +41,7 @@ function Challenge({ lab, onComplete, solved }) {
           setProof(data.proof);
           setValues((previous) => ({ ...previous, stage: 'exploit' }));
         }
-        if (data.completed) onComplete(lab.id, data.completedLabs);
+        if (data.completed) onComplete(lab.id, data.completedLabs, data.streak);
       }
     } catch (error) {
       if (!controller.signal.aborted) setResult({ feedback: error.message });
@@ -189,6 +190,15 @@ function Challenge({ lab, onComplete, solved }) {
                     <Icon name="check" size={17} /> Nicely done. Flag captured!
                   </strong>
                   <code>{result.flag}</code>
+                  {result.streak?.activeToday && (
+                    <Link className="streak-lab-reward" to="/dashboard">
+                      <Icon name="spark" size={20} />
+                      <span>
+                        <strong>Day {result.streak.current}! Your garden bloomed.</strong>
+                        <small>Honey saved today’s flower. Visit your streak garden →</small>
+                      </span>
+                    </Link>
+                  )}
                   <h3>How to prevent it</h3>
                   <p>{lab.lesson}</p>
                   <Link className="bb-button bb-button-soft" to={`/practice/${next.id}`}>

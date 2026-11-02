@@ -1,6 +1,7 @@
 import { practiceLabs } from '../src/data/practice-labs.js';
 import { createServerClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr';
 import { readServerConfig } from './config.mjs';
+import { practiceStreak, recordPracticeDay } from './streaks.mjs';
 
 export class AuthError extends Error {
   constructor(status, message) {
@@ -136,11 +137,15 @@ export class LearnerAuth {
   }
   async saveCompletion(id, user) {
     const completed = [...new Set([...completedLabs(user), id])];
+    const activity = recordPracticeDay(user, {
+      timeZoneHint: this.req.headers['x-learner-timezone'],
+    });
     const { error } = await this.client().auth.updateUser({
-      data: { bb_completed_labs: completed },
+      data: { bb_completed_labs: completed, ...activity },
     });
     if (error)
       throw new AuthError(503, 'Lab completed, but progress could not be saved. Please retry.');
+    this.savedStreak = practiceStreak({ user_metadata: { ...user?.user_metadata, ...activity } });
     return completed;
   }
   async handle(route, { readJson, json, requireMethod }) {

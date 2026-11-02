@@ -6,8 +6,9 @@ import useLabProgress from '../hooks/useLabProgress';
 import { useLearner } from '../components/LearnerGate';
 import { labIcons } from './practice';
 import { rankFor } from '../data/community';
+import StreakGarden from '../components/StreakGarden';
 export default function Dashboard() {
-  const { progress, completed, loading, error, reload } = useLabProgress();
+  const { progress, streak, completed, loading, error, reload } = useLabProgress();
   const learner = useLearner();
   const name =
     learner?.user?.name?.split(' ')[0] || learner?.user?.email?.split('@')[0] || 'curious human';
@@ -48,6 +49,7 @@ export default function Dashboard() {
           <button onClick={reload}>Try again</button>
         </p>
       )}
+      <StreakGarden streak={streak} loading={loading} nextLab={next.id} />
       <div className="bb-stats">
         {[
           [

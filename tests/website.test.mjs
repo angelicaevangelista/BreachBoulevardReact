@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { build } from 'esbuild';
 import { JSDOM, VirtualConsole } from 'jsdom';
+import { practiceStreak } from '../server/streaks.mjs';
 
 const pages = JSON.parse(fs.readFileSync('src/pages.json', 'utf8'));
 const built = await build({
@@ -40,6 +41,7 @@ async function open(
     base = '',
     user = { id: 'student-1', email: 'student@example.com' },
     progress = [],
+    streak = null,
     optionsFailure = false,
     intervals = null,
     reducedMotion = false,
@@ -94,7 +96,7 @@ async function open(
         }),
       };
     if (app && args[0] === base + '/api/account/progress')
-      return { ok: true, json: async () => ({ success: true, completed: progress }) };
+      return { ok: true, json: async () => ({ success: true, completed: progress, streak }) };
     requests.push(args);
     if (!fetch) throw new Error('Unexpected network request');
     return fetch(...args);
@@ -1055,5 +1057,58 @@ test('lab walkthrough types, changes phases, pauses, and respects reduced motion
     assert.match(reduced.d.querySelector('.walkthrough-controls').textContent, /Motion reduced/);
   } finally {
     await reduced.close();
+  }
+});
+
+test('streak garden shows saved days, interactive flowers, milestones and a Honey high-five', async () => {
+  const streak = practiceStreak(
+    {
+      user_metadata: {
+        bb_practice_days: ['2026-10-31', '2026-11-01', '2026-11-02'],
+        bb_streak_timezone: 'Asia/Singapore',
+      },
+    },
+    { now: Date.parse('2026-11-02T12:00Z') }
+  );
+  const s = await open('dashboard.html', { app: true, url: 'http://localhost/dashboard', streak });
+  try {
+    assert.equal(s.d.querySelector('.streak-count>span').textContent, '3');
+    assert.equal(s.d.querySelectorAll('.streak-day').length, 7);
+    assert.equal(s.d.querySelectorAll('.streak-day.is-active').length, 1);
+    assert.match(s.d.querySelector('.streak-today-tag').textContent, /blooming/);
+    await s.click(s.d.querySelectorAll('.streak-day')[1]);
+    assert.match(s.d.querySelector('.streak-day-detail').textContent, /future discovery/);
+    await s.click(s.d.querySelectorAll('.streak-badge-list button')[0]);
+    assert.match(s.d.querySelector('.streak-badges>p').textContent, /Earned/);
+    await s.click(s.d.querySelectorAll('.streak-badge-list button')[1]);
+    assert.match(s.d.querySelector('.streak-badges>p').textContent, /7 consecutive/);
+    await s.click('.streak-highfive');
+    assert.ok(s.d.querySelector('.streak-confetti'));
+    assert.equal(s.requests.length, 0, 'A high-five must never change persisted activity');
+    assert.match(s.d.querySelector('.streak-rules').textContent, /Asia\/Singapore/);
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+});
+test('a missed streak preserves the personal best and a failed progress request never invents activity', async () => {
+  const streak = practiceStreak(
+    { user_metadata: { bb_practice_days: ['2026-10-28', '2026-10-29', '2026-10-30'] } },
+    { now: Date.parse('2026-11-02T12:00Z') }
+  );
+  const s = await open('dashboard.html', { app: true, url: 'http://localhost/dashboard', streak });
+  try {
+    assert.equal(s.d.querySelector('.streak-count>span').textContent, '0');
+    assert.match(s.d.querySelector('.streak-records').textContent, /3 personal best/);
+    assert.match(s.d.querySelector('.streak-heading p').textContent, /comeback/);
+  } finally {
+    await s.close();
+  }
+  const empty = await open('dashboard.html', { app: true, url: 'http://localhost/dashboard' });
+  try {
+    assert.equal(empty.d.querySelector('.streak-count'), null);
+    assert.match(empty.d.querySelector('.streak-garden').textContent, /couldn’t be loaded/);
+  } finally {
+    await empty.close();
   }
 });

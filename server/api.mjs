@@ -3,6 +3,7 @@ import { projectRoot, readServerConfig } from './config.mjs';
 import { AdminAuth } from './admin-auth.mjs';
 import { LearnerAuth, AuthError, completedLabs, requireSameOrigin } from './learner-auth.mjs';
 import { evaluatePracticeLab } from './practice-labs.mjs';
+import { practiceStreak } from './streaks.mjs';
 import { createHoneyService } from './honey.mjs';
 import {
   CommunityError,
@@ -127,7 +128,11 @@ export function createApiHandler({
       const student = learner && learnerRoute ? await learner.requireUser() : null;
       if (route === '/api/account/progress') {
         if (!requireMethod(req, res, ['GET'])) return true;
-        json(res, 200, { success: true, completed: completedLabs(student) });
+        json(res, 200, {
+          success: true,
+          completed: completedLabs(student),
+          streak: practiceStreak(student, { timeZoneHint: req.headers['x-learner-timezone'] }),
+        });
         return true;
       }
       if (route.startsWith('/api/community/')) {
@@ -160,8 +165,10 @@ export function createApiHandler({
           proofKey: ctfConfig.key || ctfConfig.adminPassword,
         });
         if (!result) throw new HttpError(404, 'Practice lab not found.');
-        if (result.completed && learner)
+        if (result.completed && learner) {
           result.completedLabs = await learner.saveCompletion(practiceRoute[1], student);
+          result.streak = learner.savedStreak;
+        }
         json(res, 200, result);
         return true;
       }
