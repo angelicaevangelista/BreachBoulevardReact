@@ -42,8 +42,14 @@ body:has(.bb-profile-layout) .bb-assistant-launcher {
   justify-content: center;
 }
 body:has(.bb-profile-layout) .bb-assistant-launcher > span,
-body:has(.bb-profile-layout) .bb-assistant-launcher > svg:last-child { display: none; }
-body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot { width: 46px; height: 46px; flex-shrink: 0; }
+body:has(.bb-profile-layout) .bb-assistant-launcher > svg:last-child {
+  display: none;
+}
+body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+}
 .bb-profile-layout {
   --pf-panel: #152a39;
   --pf-line: #344957;
@@ -264,6 +270,28 @@ body:has(.bb-profile-layout) .bb-assistant-launcher > .bb-mascot { width: 46px; 
   width: 1px;
   height: 1px;
   opacity: 0;
+}
+.bb-ui .bb-avatar-default {
+  grid-column: 1/-1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  text-align: left;
+  border: 1px dashed var(--pf-line);
+  margin-bottom: 10px;
+  padding: 13px 16px;
+  font-size: 15px;
+}
+.bb-avatar-default .bb-avatar-option-art {
+  width: 48px;
+  flex-shrink: 0;
+}
+.bb-avatar-default > span > small {
+  display: block;
+  font-size: 13px;
+  color: var(--pf-muted);
+  margin-top: 3px;
 }
 .bb-avatar-option:hover {
   background: #c5ad8e0c;

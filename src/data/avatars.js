@@ -1,21 +1,26 @@
 export const profileAvatars = [
-  ['honey-bee', 'Honey bee', 'Your sunny little sidekick'],
-  ['peach-cat', 'Peach kitten', 'A curious little explorer'],
-  ['mint-frog', 'Mint frog', 'One happy little hop'],
-  ['cloud-bunny', 'Cloud bunny', 'Soft ears, brave heart'],
-  ['lavender-owl', 'Lavender owl', 'A thoughtful night owl'],
-  ['cocoa-puppy', 'Cocoa puppy', 'Here for every little win'],
-  ['red-panda', 'Red panda', 'A cozy problem solver'],
-  ['honey-bear', 'Honey bear', 'Sweet, steady, and curious'],
-  ['sleepy-koala', 'Sleepy koala', 'Learning at your own pace'],
-  ['maple-fox', 'Maple fox', 'Always following a clue'],
-  ['butter-chick', 'Butter chick', 'A bright new beginning'],
-  ['ice-penguin', 'Ice penguin', 'Cool under pressure'],
-  ['pink-axolotl', 'Pink axolotl', 'A little different, a lot of heart'],
-  ['moon-seal', 'Moon seal', 'Small steps, soft landings'],
-  ['strawberry-mushroom', 'Strawberry mushroom', 'Growing one discovery at a time'],
+  ['honey-bee', 'Sunny bee', 'A little sunshine, a lot of curiosity'],
+  ['bookworm-bee', 'Bookworm bee', 'One more page, one more discovery'],
+  ['detective-bee', 'Detective bee', 'Always following the next little clue'],
+  ['explorer-bee', 'Explorer bee', 'A tiny explorer with a brave heart'],
+  ['artist-bee', 'Artist bee', 'A little color outside the lines'],
+  ['garden-bee', 'Garden bee', 'Growing one discovery at a time'],
+  ['cosmic-bee', 'Cosmic bee', 'Curiosity that reaches the stars'],
+  ['royal-bee', 'Royal bee', 'A little confidence looks good on you'],
+  ['sleepy-bee', 'Sleepy bee', 'Learning at your own cozy pace'],
+  ['strawberry-bee', 'Berry bee', 'A sweet little spark of curiosity'],
+  ['cozy-bee', 'Cozy bee', 'A warm scarf for a new adventure'],
+  ['chef-bee', 'Chef bee', 'Cooking up your next discovery'],
+  ['music-bee', 'Music bee', 'Finding your own learning rhythm'],
+  ['wizard-bee', 'Wizard bee', 'A little wonder in every what if'],
+  ['bow-bee', 'Ribbon bee', 'Small wins, tied up with a little joy'],
 ].map(([id, name, description]) => ({ id, name, description }));
-export const defaultAvatarId = 'honey-bee';
+export const defaultAvatarId = 'honeycomb';
+export const defaultProfileAvatar = {
+  id: defaultAvatarId,
+  name: 'Honeycomb',
+  description: 'Your simple little place in the hive',
+};
 export function profileAvatar(id) {
-  return profileAvatars.find((avatar) => avatar.id === id) || profileAvatars[0];
+  return profileAvatars.find((avatar) => avatar.id === id) || defaultProfileAvatar;
 }

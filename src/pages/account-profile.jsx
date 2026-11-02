@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import AppShell, { Icon, LoadingScreen } from '../components/Interface';
 import { useLearner } from '../components/LearnerGate';
 import ProfileAvatar from '../components/ProfileAvatar';
-import { profileAvatars, profileAvatar } from '../data/avatars';
+import { profileAvatars, profileAvatar, defaultProfileAvatar } from '../data/avatars';
 
 export default function AccountProfile() {
   const learner = useLearner();
@@ -131,14 +131,14 @@ function ProfileEditor({ learner }) {
               <span>02</span>
               <div>
                 <h2>Pick your little companion</h2>
-                <p>15 friendly faces. Choose the one that feels like you.</p>
+                <p>15 little bees, each with their own personality. Or keep a simple honeycomb.</p>
               </div>
             </div>
             <fieldset className="bb-avatar-picker" disabled={busy}>
               <legend className="sr-only">Choose your avatar</legend>
-              {profileAvatars.map((avatar) => (
+              {[defaultProfileAvatar, ...profileAvatars].map((avatar) => (
                 <label
-                  className={`bb-avatar-option ${form.avatarId === avatar.id ? 'is-selected' : ''}`}
+                  className={`bb-avatar-option ${avatar.id === defaultProfileAvatar.id ? 'bb-avatar-default' : ''} ${form.avatarId === avatar.id ? 'is-selected' : ''}`}
                   key={avatar.id}
                 >
                   <input
@@ -156,7 +156,12 @@ function ProfileEditor({ learner }) {
                       </span>
                     )}
                   </span>
-                  <span>{avatar.name}</span>
+                  <span>
+                    {avatar.name}
+                    {avatar.id === defaultProfileAvatar.id && (
+                      <small>Default · Keep it simple</small>
+                    )}
+                  </span>
                 </label>
               ))}
             </fieldset>

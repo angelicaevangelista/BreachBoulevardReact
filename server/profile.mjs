@@ -16,7 +16,10 @@ export function validateProfile(input) {
   };
   const name = text(input.name, 60, true, 'Display name');
   const organization = text(input.organization, 120, false, 'School or company');
-  if (!profileAvatars.some((avatar) => avatar.id === input.avatarId))
+  if (
+    input.avatarId !== defaultAvatarId &&
+    !profileAvatars.some((avatar) => avatar.id === input.avatarId)
+  )
     throw new Error('Choose one of the available avatars.');
   return { bb_display_name: name, bb_organization: organization, bb_avatar_id: input.avatarId };
 }

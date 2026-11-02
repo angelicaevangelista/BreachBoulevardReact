@@ -375,7 +375,7 @@ test('profile changes require a verified same-origin account and cannot overwrit
   const profile = {
     name: 'Bee Learner',
     organization: 'Boulevard Campus',
-    avatarId: 'cloud-bunny',
+    avatarId: 'garden-bee',
   };
   try {
     assert.equal((await f.request('/api/auth/profile')).status, 401);

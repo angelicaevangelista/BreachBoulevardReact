@@ -9,7 +9,7 @@ Existing authentication, training simulations, and access-code behavior are reta
 
 ## Learning workspace
 
-- `/account/profile`: edit your display name, optional school/company, and one of 15 original avatars. Open it from **My profile** or your account avatar. Choices are saved in Supabase Auth profile metadata, separate from provider names and learning progress; no new environment variables or database migration are needed.
+- `/account/profile`: edit your display name, optional school/company, and one of 15 illustrated bee avatars, or keep the plain honeycomb default. Open it from **My profile** or your account avatar. Choices are saved in Supabase Auth profile metadata, separate from provider names and learning progress; no new environment variables or database migration are needed.
 - `/access`: Google or email sign-in, followed by the existing course access-code step.
 - `/dashboard`: account-backed lab completions and the next incomplete challenge.
 - `/practice` and `/labs`: 21 simulated websites: six guided labs plus 15 CTFs, with search and progress filters.

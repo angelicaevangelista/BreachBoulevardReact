@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { validateProfile, safeAvatarId } from '../server/profile.mjs';
-import { profileAvatars } from '../src/data/avatars.js';
+import { profileAvatars, profileAvatar, defaultAvatarId } from '../src/data/avatars.js';
 import { publicUser } from '../server/learner-auth.mjs';
 test('15 original avatars are available and only catalog IDs can be saved', () => {
   assert.equal(profileAvatars.length, 15);
@@ -14,16 +14,30 @@ test('15 original avatars are available and only catalog IDs can be saved', () =
       avatar.id
     );
   }
-  assert.equal(safeAvatarId('../../secrets'), 'honey-bee');
+  assert.equal(safeAvatarId('../../secrets'), 'honeycomb');
+  assert.equal(profileAvatar(undefined).id, 'honeycomb');
+  assert.equal(profileAvatar('peach-cat').id, 'honeycomb');
+  assert.equal(
+    validateProfile({ name: 'Bee', organization: '', avatarId: defaultAvatarId }).bb_avatar_id,
+    'honeycomb'
+  );
+  assert.match(
+    fs.readFileSync('public/avatars/honeycomb.svg', 'utf8'),
+    /<title>Honeycomb<\/title>/
+  );
 });
 test('profile edits accept bounded plain text and reject ownership, auth, or progress changes', () => {
   assert.deepEqual(
     validateProfile({
       name: '  Bee Learner  ',
       organization: 'Campus & Co.',
-      avatarId: 'peach-cat',
+      avatarId: 'bookworm-bee',
     }),
-    { bb_display_name: 'Bee Learner', bb_organization: 'Campus & Co.', bb_avatar_id: 'peach-cat' }
+    {
+      bb_display_name: 'Bee Learner',
+      bb_organization: 'Campus & Co.',
+      bb_avatar_id: 'bookworm-bee',
+    }
   );
   for (const input of [
     null,
@@ -32,14 +46,14 @@ test('profile edits accept bounded plain text and reject ownership, auth, or pro
     ...['', 'a'.repeat(61), '<img src=x>', 'Hello\nWorld'].map((name) => ({
       name,
       organization: '',
-      avatarId: 'peach-cat',
+      avatarId: 'bookworm-bee',
     })),
-    { name: 'Bee', organization: 'a'.repeat(121), avatarId: 'peach-cat' },
+    { name: 'Bee', organization: 'a'.repeat(121), avatarId: 'bookworm-bee' },
     { name: 'Bee', organization: 'Campus', avatarId: 'https://evil.test/avatar.svg' },
     ...['userId', 'role', 'password', 'email', 'bb_completed_labs'].map((key) => ({
       name: 'Bee',
       organization: '',
-      avatarId: 'peach-cat',
+      avatarId: 'bookworm-bee',
       [key]: 'other',
     })),
   ])
@@ -52,7 +66,7 @@ test('session profile exposes only display data and allowlisted avatars', () => 
     user_metadata: {
       full_name: 'Bee',
       bb_organization: 'Campus',
-      bb_avatar_id: 'mint-frog',
+      bb_avatar_id: 'detective-bee',
       bb_completed_labs: ['idor'],
       secret: 'hidden',
     },
@@ -62,6 +76,6 @@ test('session profile exposes only display data and allowlisted avatars', () => 
     email: 'one@example.com',
     name: 'Bee',
     organization: 'Campus',
-    avatarId: 'mint-frog',
+    avatarId: 'detective-bee',
   });
 });
