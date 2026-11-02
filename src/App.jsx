@@ -46,6 +46,7 @@ function DocumentFrame({ page, children }) {
               />
             ))}
           {page.css && <style>{page.css}</style>}
+          <link rel="stylesheet" href={assetUrl('styles/readability.css')} />
         </>,
         document.head
       )}
