@@ -128,6 +128,7 @@ export function Mascot({ className = '', compact = false, ...props }) {
         <g className="bb-buddy-eyes">
           {[87, 133].map((x) => (
             <g key={x} transform={`translate(${x} 110)`}>
+              <g className={x === 133 ? 'bb-eye-open-right' : undefined}>
               <ellipse rx="9.5" ry="11" fill="#fff1d6" />
               <ellipse cx={x === 87 ? 1 : -1} cy="1" rx="6.5" ry="8" fill="#523627" />
               <ellipse cx={x === 87 ? 1 : -1} cy="5.4" rx="3.8" ry="2.2" fill="#aa7046" />
@@ -139,6 +140,10 @@ export function Mascot({ className = '', compact = false, ...props }) {
                 fill="#fffdf8"
               />
               <circle cx="3" cy="2.6" r="1.5" fill="#fffdf8" />
+              </g>
+              {x === 133 && (
+                <path className="bb-eye-wink" d="M-7 2q7-8 14 0" fill="none" stroke="#fff1d6" strokeWidth="3.8" strokeLinecap="round" />
+              )}
             </g>
           ))}
         </g>

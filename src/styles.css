@@ -304,12 +304,29 @@
   transform-origin: center;
   animation: bb-eye-twinkle 4.8s ease-in-out infinite;
 }
+.bb-eye-open-right {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bb-eye-wink-open 10.4s ease-in-out infinite;
+}
+.bb-eye-wink {
+  opacity: 0;
+  animation: bb-eye-wink-smile 10.4s ease-in-out infinite;
+}
+@keyframes bb-eye-wink-open {
+  0%, 44%, 53%, 100% { opacity: 1; transform: scaleY(1); }
+  47%, 50% { opacity: 0; transform: scaleY(.08); }
+}
+@keyframes bb-eye-wink-smile {
+  0%, 46%, 52%, 100% { opacity: 0; }
+  48%, 50% { opacity: 1; }
+}
 @keyframes bb-eye-twinkle {
   0%, 65%, 100% { opacity: .85; transform: scale(1); }
   78% { opacity: 1; transform: scale(1.15); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bb-buddy-eyes, .bb-eye-sparkle { animation: none; }
+  .bb-buddy-eyes, .bb-eye-sparkle, .bb-eye-open-right, .bb-eye-wink { animation: none; }
 }
 .bb-status-dot {
   display: inline-block;
