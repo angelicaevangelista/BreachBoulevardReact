@@ -298,6 +298,7 @@ export default function AppShell({
         ['grid', 'Dashboard', '/dashboard', 'dashboard'],
         ['flask', 'Practice labs', '/practice', 'labs'],
         ['heart', 'Community', '/community', 'community'],
+        ['search', 'Story missions', '/missions', 'missions'],
         ['book', 'Courses', '/courses', 'courses'],
         ['help', 'Help & FAQ', '/faq', 'help'],
       ];

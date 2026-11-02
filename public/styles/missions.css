@@ -1,0 +1,2145 @@
+/* The Boulevard case desk: a fictional field kit. */
+.mission-workspace,
+.bb-mission-teaser {
+  --ms-bg: #132230;
+  --ms-panel: #1b2d39;
+  --ms-line: #3d4d55;
+  --ms-ink: #eee6d9;
+  --ms-muted: #a4b4bd;
+  --ms-paper: #eee5ce;
+  --ms-accent: #f3b878;
+  min-width: 0;
+}
+[data-theme='light'] :is(.mission-workspace, .bb-mission-teaser) {
+  --ms-bg: #faf5eb;
+  --ms-panel: #fffcf5;
+  --ms-line: #d9cbb5;
+  --ms-ink: #37352f;
+  --ms-muted: #756d61;
+  --ms-paper: #f2e7ce;
+  --ms-accent: #9d5728;
+}
+.mission-page-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 26px;
+}
+.mission-page-heading h1 {
+  font-size: 31px;
+  line-height: 1.2;
+  font-weight: 750;
+  letter-spacing: -1.1px;
+  margin: 11px 0;
+  color: var(--ms-ink);
+}
+.mission-page-heading p {
+  color: var(--ms-muted);
+  font-size: 12px;
+  line-height: 1.7;
+  max-width: 550px;
+}
+.mission-saved-tag {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  color: var(--ms-muted);
+  border: 1px solid var(--ms-line);
+  padding: 9px 12px;
+  border-radius: 20px;
+  font-size: 9px;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.mission-case-selector {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin: 10px 0 24px;
+  padding-top: 12px;
+}
+.mission-folder {
+  position: relative;
+  border: 1px solid var(--ms-line);
+  border-radius: 0 15px 15px 15px;
+  padding: 19px 19px 15px;
+  background: var(--ms-panel);
+  color: var(--ms-ink);
+  min-width: 0;
+  transition:
+    transform 0.18s,
+    border-color 0.18s;
+}
+.mission-folder:before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: -1px;
+  width: 86px;
+  height: 10px;
+  border: 1px solid var(--ms-line);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--ms-panel);
+}
+.mission-folder.is-active {
+  border-color: #c39056;
+  background: linear-gradient(130deg, #bc884815, transparent), var(--ms-panel);
+}
+.mission-folder.is-active:before {
+  border-color: #c39056;
+}
+.mission-folder.is-sage.is-active {
+  border-color: #7a9d85;
+}
+.mission-folder.is-plum.is-active {
+  border-color: #ab91b7;
+}
+.mission-folder:hover {
+  transform: translateY(-3px);
+}
+.mission-folder > span {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  color: var(--ms-accent);
+}
+.mission-folder > span > i {
+  font-style: normal;
+  font-size: 8px;
+  color: var(--ms-muted);
+  letter-spacing: 0;
+  text-align: right;
+}
+.mission-folder h2 {
+  font-size: 17px;
+  letter-spacing: -0.5px;
+  font-weight: 700;
+  margin: 17px 0 6px;
+}
+.mission-folder p {
+  font-size: 10px;
+  color: var(--ms-muted);
+  min-height: 30px;
+}
+.mission-folder > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--ms-line);
+  font-size: 9px;
+  color: var(--ms-accent);
+}
+.mission-dispatch-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 18px;
+  border: 1px solid var(--ms-line);
+  border-radius: 12px;
+  margin-bottom: 21px;
+  background: var(--ms-panel);
+  color: var(--ms-muted);
+  font-size: 10px;
+  line-height: 1.7;
+}
+.mission-dispatch-strip > svg {
+  flex-shrink: 0;
+  color: var(--ms-accent);
+}
+.mission-dispatch-strip p {
+  flex: 1;
+}
+.mission-dispatch-strip strong {
+  color: var(--ms-ink);
+}
+.mission-dispatch-strip > span {
+  font-size: 9px;
+  white-space: nowrap;
+  color: var(--ms-accent);
+}
+.mission-chapter-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--ms-line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  background: var(--ms-panel);
+}
+.mission-chapter-strip > a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 16px 18px;
+  color: var(--ms-muted);
+  min-width: 0;
+  border-right: 1px solid var(--ms-line);
+}
+.mission-chapter-strip > a:last-child {
+  border-right: 0;
+}
+.mission-chapter-strip > a > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  height: 29px;
+  border: 1px solid var(--ms-line);
+  border-radius: 50%;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.mission-chapter-strip small {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1px;
+  margin-bottom: 3px;
+}
+.mission-chapter-strip strong {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.mission-chapter-strip > a > svg {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.mission-chapter-strip .is-current {
+  background: #d9aa5c12;
+  color: var(--ms-ink);
+}
+.mission-chapter-strip .is-current > span {
+  border-color: #bf965e;
+  color: var(--ms-accent);
+}
+.mission-chapter-strip .is-filed > span {
+  color: #93bc9a;
+  border-color: #7d9a7e;
+}
+.mission-chapter-strip .is-locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mission-desk-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 25px;
+  align-items: start;
+}
+.mission-board-area {
+  min-width: 0;
+}
+.mission-brief {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 19px;
+}
+.mission-brief .bb-eyebrow {
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.mission-brief h2 {
+  font-size: 25px;
+  line-height: 1.3;
+  letter-spacing: -0.6px;
+  font-weight: 700;
+  margin: 9px 0;
+  color: var(--ms-ink);
+}
+.mission-brief p {
+  color: var(--ms-muted);
+  font-size: 11px;
+  line-height: 1.8;
+  max-width: 500px;
+}
+.mission-case-status {
+  padding: 6px 9px;
+  border: 1px solid var(--ms-line);
+  border-radius: 15px;
+  color: var(--ms-accent);
+  font-size: 8px;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+.mission-case-status.is-filed {
+  color: #8aad8d;
+  border-color: #709078;
+}
+.mission-board-tabs {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  border-bottom: 1px solid var(--ms-line);
+  margin-bottom: 18px;
+}
+.mission-board-tabs > button {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  padding: 0 0 11px;
+  color: var(--ms-muted);
+  font-size: 10px;
+  cursor: pointer;
+}
+.mission-board-tabs > button[aria-pressed='true'] {
+  border-color: #daa362;
+  color: var(--ms-accent);
+}
+.mission-evidence-board {
+  position: relative;
+  border: 1px solid var(--ms-line);
+  padding: 17px;
+  border-radius: 17px;
+  background:
+    radial-gradient(circle, #82919b30 1px, transparent 1px) 0 0/15px 15px,
+    var(--ms-bg);
+  margin-bottom: 20px;
+}
+.mission-board-counter {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: var(--ms-muted);
+}
+.mission-board-counter > small {
+  font-size: 9px;
+  letter-spacing: 0;
+}
+.mission-evidence-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  position: relative;
+  margin: 28px 0 19px;
+}
+.mission-clue-strings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.mission-clue-strings path {
+  fill: none;
+  stroke: #b4715c;
+  stroke-width: 2;
+  opacity: 0.5;
+  stroke-dasharray: 4 4;
+}
+.mission-clue-strings.is-connected path {
+  stroke: #b99355;
+  opacity: 0.8;
+  stroke-dasharray: 0;
+}
+.mission-evidence-card {
+  z-index: 1;
+  position: relative;
+  padding: 17px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #d9c9a7;
+  background: var(--ms-paper);
+  color: #474238;
+  text-align: left;
+  min-width: 0;
+  min-height: 153px;
+  border-radius: 3px;
+  transform: rotate(var(--tilt));
+  box-shadow: 0 5px 10px #0002;
+  transition: transform 0.18s;
+}
+.mission-evidence-card:hover {
+  transform: rotate(0) translateY(-3px);
+}
+.mission-evidence-card > small {
+  font-size: 7px;
+  letter-spacing: 0.7px;
+  color: #8a7352;
+  line-height: 1.4;
+  min-height: 19px;
+}
+.mission-evidence-card > svg {
+  margin: 5px 0 10px;
+  color: #94724b;
+}
+.mission-evidence-card > strong {
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.mission-evidence-card > span:last-child {
+  font-size: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  color: #86704d;
+  line-height: 1.5;
+}
+.mission-evidence-pin {
+  position: absolute;
+  top: -6px;
+  left: 45%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #a3b5aa;
+  background: #618273;
+  box-shadow: 1px 3px 2px #0003;
+}
+.mission-evidence-card.is-selected {
+  outline: 2px solid #d69a55;
+  outline-offset: 3px;
+}
+.mission-evidence-card.is-pinned .mission-evidence-pin {
+  background: #df9b55;
+  border-color: #ffce8b;
+}
+.mission-evidence-card.is-locked {
+  background: var(--ms-panel);
+  color: var(--ms-muted);
+  border: 1px dashed var(--ms-line);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.mission-evidence-card.is-locked > svg,
+.mission-evidence-card.is-locked > small,
+.mission-evidence-card.is-locked > span:last-child {
+  color: var(--ms-muted);
+}
+.mission-board-caption {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 9px;
+  color: var(--ms-muted);
+  line-height: 1.6;
+}
+.is-file-list .mission-evidence-cards {
+  grid-template-columns: 1fr;
+  margin-top: 18px;
+  gap: 9px;
+}
+.is-file-list .mission-evidence-card {
+  transform: none;
+  min-height: 90px;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 4px 9px;
+  padding: 12px;
+}
+.is-file-list .mission-evidence-card > svg {
+  grid-row: 1/4;
+  align-self: center;
+  margin: 0;
+}
+.is-file-list .mission-evidence-pin {
+  display: none;
+}
+.is-file-list .mission-evidence-card > small,
+.is-file-list .mission-evidence-card > strong,
+.is-file-list .mission-evidence-card > span:last-child {
+  grid-column: 2;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+.mission-reader-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 17px;
+  align-items: start;
+}
+.mission-reader {
+  padding: 19px;
+  border: 1px solid var(--ms-line);
+  border-radius: 15px;
+  background: var(--ms-panel);
+  min-width: 0;
+  color: var(--ms-ink);
+}
+.mission-reader > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+}
+.mission-reader > header > span {
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: var(--ms-accent);
+  max-width: 75%;
+  line-height: 1.6;
+}
+.mission-reader > header > small {
+  font-size: 7px;
+  color: var(--ms-muted);
+}
+.mission-reader > h3 {
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 11px 0 15px;
+  font-weight: 650;
+  letter-spacing: -0.3px;
+}
+.mission-reader > small {
+  display: block;
+  font-size: 9px;
+  color: var(--ms-muted);
+  line-height: 1.7;
+  margin-top: 10px;
+}
+.mission-reader-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+}
+.mission-reader-tools > button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--ms-line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ms-muted);
+  padding: 7px;
+  font-size: 8px;
+}
+.mission-pin-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #c39254;
+  border-radius: 9px;
+  background: #c38a3710;
+  color: var(--ms-accent);
+  font-size: 10px;
+  padding: 10px;
+  margin-top: 16px;
+}
+.mission-pin-button.is-pinned {
+  background: #7194771c;
+  border-color: #79967c;
+  color: #8cae8d;
+}
+.mission-pin-button:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+.mission-photo {
+  min-height: 205px;
+  position: relative;
+  overflow: hidden;
+  padding: 26px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  white-space: pre-line;
+  background: linear-gradient(150deg, #32465a, #1b283a 60%, #847251);
+  color: #ffedc8;
+  border: 5px solid #eadfc5;
+  border-bottom-width: 24px;
+  border-radius: 2px;
+}
+.mission-photo > strong {
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 600;
+  transition: font-size 0.2s;
+}
+.mission-photo.is-zoomed > strong {
+  font-size: 17px;
+}
+.mission-photo-moon {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  background: #f6df9e;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  box-shadow: 0 0 35px #f2d89544;
+}
+.mission-photo-buildings {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  opacity: 0.25;
+  transform: rotate(-5deg);
+}
+.mission-photo-buildings > i {
+  width: 30%;
+  height: 75%;
+  background: #9cc4bf;
+  border-radius: 50% 50% 0 0;
+}
+.mission-photo-buildings > i:nth-child(2) {
+  height: 45%;
+  background: #d6ae84;
+}
+.mission-photo-buildings > i:nth-child(3) {
+  height: 60%;
+  background: #b7a5c9;
+}
+.mission-photo.is-back {
+  background: repeating-linear-gradient(0deg, #e9dec2, #e9dec2 25px, #ddd0b1 26px);
+  color: #64533d;
+  justify-content: flex-start;
+  gap: 20px;
+}
+.mission-photo.is-back > small {
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+.mission-photo.is-back > p {
+  font:
+    12px/1.9 ui-monospace,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.mission-photo-stamp {
+  font-size: 7px;
+  border: 1px solid #9c8060;
+  border-radius: 3px;
+  align-self: flex-start;
+  padding: 5px;
+  transform: rotate(-7deg);
+  margin-top: auto;
+}
+.mission-photo.is-tickets {
+  background: linear-gradient(140deg, #465444, #2c3c39);
+}
+.mission-photo.is-postcard {
+  background: linear-gradient(140deg, #775c57, #3e4555);
+}
+.mission-photo.is-signal {
+  background: linear-gradient(140deg, #514263, #263b4e);
+}
+.mission-log,
+.mission-receipt {
+  padding: 15px;
+  background: #0d1a25;
+  color: #b8cec9;
+  font:
+    10px/1.9 ui-monospace,
+    monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid #354b54;
+  border-radius: 8px;
+  min-height: 160px;
+}
+.mission-receipt {
+  border: 0;
+  border-top: 1px dashed #bba98a;
+  border-bottom: 1px dashed #bba98a;
+  background: #f4ecd8;
+  color: #655842;
+  border-radius: 0;
+  letter-spacing: 0.5px;
+}
+.mission-email {
+  background: #f3ead5;
+  color: #5c5142;
+  border: 1px solid #d7c6a7;
+  border-radius: 7px;
+  padding: 14px;
+}
+.mission-email dl > div {
+  display: flex;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #d6c7b340;
+  font-size: 8px;
+  overflow-wrap: anywhere;
+}
+.mission-email dt {
+  width: 35px;
+  flex-shrink: 0;
+  color: #a08966;
+}
+.mission-email dd {
+  min-width: 0;
+}
+.mission-email > p {
+  font-size: 11px;
+  line-height: 1.9;
+  margin: 14px 0 3px;
+}
+.mission-voice {
+  color: var(--ms-muted);
+  font-size: 10px;
+}
+.mission-wave {
+  height: 60px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--ms-bg);
+}
+.mission-wave i {
+  display: block;
+  width: 4px;
+  background: #c5ab7b;
+  border-radius: 3px;
+}
+.mission-wave.is-playing i {
+  animation: mission-wave 0.7s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.1s);
+}
+.mission-voice > button {
+  display: block;
+  margin: 12px 0;
+  border: 1px solid var(--ms-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--ms-accent);
+  background: transparent;
+  font-size: 9px;
+}
+.mission-voice p {
+  font-size: 11px;
+  line-height: 1.8;
+  min-height: 35px;
+}
+.mission-voice details {
+  margin: 10px 0;
+  border-top: 1px solid var(--ms-line);
+  padding-top: 10px;
+}
+.mission-voice summary {
+  font-size: 10px;
+  color: var(--ms-accent);
+  cursor: pointer;
+}
+.mission-voice > small {
+  font-size: 8px;
+  line-height: 1.7;
+}
+.mission-voice-caret {
+  color: var(--ms-accent);
+}
+.mission-lab-ticket {
+  position: relative;
+  border: 1px dashed #a68a61;
+  border-radius: 15px;
+  padding: 20px;
+  background: var(--ms-panel);
+  color: var(--ms-ink);
+}
+.mission-desk-label {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  color: var(--ms-accent);
+  line-height: 1.6;
+}
+.mission-ticket-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--ms-line);
+  border-radius: 12px;
+  background: #d9a75a13;
+  color: var(--ms-accent);
+  margin: 19px 0 16px;
+}
+.mission-lab-ticket > small {
+  display: block;
+  color: var(--ms-muted);
+  font-size: 9px;
+}
+.mission-lab-ticket h3 {
+  font-size: 19px;
+  letter-spacing: -0.5px;
+  line-height: 1.4;
+  font-weight: 650;
+  margin: 8px 0 11px;
+}
+.mission-lab-ticket > p {
+  font-size: 11px;
+  color: var(--ms-muted);
+  line-height: 1.8;
+}
+.mission-lab-ticket .bb-button {
+  font-size: 10px !important;
+  margin: 19px 0 15px;
+  width: 100%;
+  padding: 10px;
+  min-height: 40px;
+}
+.mission-lab-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 9px;
+  color: var(--ms-muted);
+  line-height: 1.7;
+}
+.mission-lab-check svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.mission-lab-check.is-done {
+  color: #7da787;
+}
+.mission-lab-ticket > p.mission-ticket-note {
+  font-size: 9px;
+  line-height: 1.7;
+  margin-top: 13px;
+}
+.mission-deduction {
+  margin-top: 20px;
+  border: 1px solid var(--ms-line);
+  border-radius: 15px;
+  padding: 22px;
+  background: var(--ms-panel);
+  color: var(--ms-ink);
+}
+.mission-deduction h3 {
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 1.4;
+  margin: 9px 0;
+}
+.mission-deduction p {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--ms-muted);
+}
+.mission-deduction fieldset {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin-top: 17px;
+}
+.mission-deduction fieldset:disabled {
+  opacity: 0.5;
+}
+.mission-deduction label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 12px;
+  border: 1px solid var(--ms-line);
+  border-radius: 9px;
+  margin: 8px 0;
+  font-size: 11px;
+  line-height: 1.7;
+  cursor: pointer;
+}
+.mission-deduction input {
+  accent-color: #d89652;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.mission-deduction .bb-button {
+  font-size: 11px !important;
+  margin-top: 13px;
+  min-height: 39px;
+}
+.mission-deduction .mission-feedback {
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: #80a37d12;
+  border-left: 2px solid #839c78;
+  color: #8cb396;
+  font-size: 11px;
+}
+.mission-deduction .mission-feedback.is-wrong {
+  background: #c4954612;
+  border-color: #ba965d;
+  color: var(--ms-accent);
+}
+.mission-deduction.is-filed {
+  border-color: #6b8b73;
+}
+.mission-phone-wrap {
+  position: sticky;
+  top: 20px;
+  min-width: 0;
+}
+.mission-phone-caption {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ms-accent);
+  font-size: 8px;
+  letter-spacing: 0.8px;
+  padding: 0 4px;
+  margin-bottom: 12px;
+}
+.mission-phone-caption > small {
+  font-size: 8px;
+  letter-spacing: 0;
+  color: var(--ms-muted);
+}
+.mission-phone {
+  padding: 9px;
+  border-radius: 37px;
+  background: linear-gradient(135deg, #566064, #1b252c 35%, #283539);
+  box-shadow:
+    0 17px 35px #0003,
+    inset 0 0 0 1px #718080;
+  position: relative;
+}
+.mission-phone:before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 98px;
+  height: 36px;
+  width: 3px;
+  border-radius: 3px;
+  background: #627274;
+}
+.mission-phone:after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 113px;
+  height: 62px;
+  width: 3px;
+  border-radius: 3px;
+  background: #627274;
+}
+.mission-phone-screen {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #80908b;
+  border-radius: 29px;
+  background: #edf0e5;
+  overflow: hidden;
+  color: #354841;
+  height: 620px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.mission-phone-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px 8px;
+  height: 40px;
+  font-size: 9px;
+  position: relative;
+  flex-shrink: 0;
+  color: #354841;
+}
+.mission-phone-island {
+  position: absolute;
+  top: 7px;
+  left: calc(50% - 34px);
+  width: 68px;
+  height: 19px;
+  background: #1c272c;
+  border-radius: 14px;
+}
+.mission-phone-status > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+}
+.mission-phone-status i {
+  width: 16px;
+  height: 8px;
+  border: 1px solid #64796d;
+  border-radius: 3px;
+  box-shadow: inset 11px 0 #76967b;
+}
+.mission-phone-topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 9px 12px 12px;
+  border-bottom: 1px solid #cdd5c9;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.mission-phone-topbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  color: #5c7262;
+  width: 27px;
+  height: 24px;
+}
+.mission-phone-dot {
+  width: 6px;
+  height: 6px;
+  background: #89a181;
+  border-radius: 50%;
+  margin-right: 9px;
+}
+.mission-phone-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.mission-phone-homebar {
+  width: 75px;
+  min-height: 4px;
+  border: 0;
+  border-radius: 5px;
+  background: #53685c;
+  display: block;
+  margin: 13px auto 9px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 2px;
+}
+.mission-phone-footnote {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: var(--ms-muted);
+  line-height: 1.7;
+  text-align: center;
+  margin-top: 13px;
+}
+.mission-phone-home {
+  padding: 23px 20px 15px;
+  background: radial-gradient(circle at 80% 5%, #e6ce9440, transparent 70%);
+}
+.mission-phone-home > span {
+  font-size: 7px;
+  letter-spacing: 1.6px;
+  color: #829277;
+}
+.mission-phone-home h3 {
+  font-size: 30px;
+  letter-spacing: -1px;
+  font-weight: 650;
+  line-height: 1.14;
+  margin: 12px 0 24px;
+  color: #3b5545;
+}
+.mission-phone-notification {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 13px 11px;
+  border: 1px solid #d0dac7;
+  border-radius: 14px;
+  background: #fbfcf2c9;
+  box-shadow: 0 7px 14px #6f7e5408;
+}
+.mission-phone-notification > svg {
+  color: #8e9e6e;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.mission-phone-notification strong {
+  font-size: 9px;
+  line-height: 1.5;
+}
+.mission-phone-notification p {
+  font-size: 9px;
+  line-height: 1.7;
+  margin-top: 4px;
+  color: #75816d;
+}
+.mission-phone-apps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 16px;
+  margin: 26px 14px 24px;
+}
+.mission-phone-apps > button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 0;
+  color: #5a6e5d;
+  font-size: 9px;
+}
+.mission-phone-apps > button > span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #a9b99d;
+  color: #f7faf0;
+  box-shadow: 0 3px 0 #879a7b26;
+}
+.mission-phone-apps > button:nth-child(2) > span {
+  background: #ccb68e;
+}
+.mission-phone-apps > button:nth-child(3) > span {
+  background: #a8b6bb;
+}
+.mission-phone-apps > button:nth-child(4) > span {
+  background: #b4a6bd;
+}
+.mission-phone-apps i {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #c68a6a;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #edf0e5;
+  border-radius: 50%;
+}
+.mission-phone-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 11px 8px;
+  background: #5b7561;
+  color: #fbfcf4 !important;
+  border: 1px solid #506a54;
+  border-radius: 11px;
+  font-size: 10px;
+  font-weight: 600;
+  min-height: 38px;
+}
+.mission-phone-open:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.mission-phone-home > small {
+  display: block;
+  text-align: center;
+  font-size: 7px;
+  line-height: 1.7;
+  color: #91a085;
+  margin-top: 15px;
+}
+.mission-messages {
+  padding: 16px 12px;
+}
+.mission-messages > header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #d1d7ca;
+  padding-bottom: 14px;
+  margin-bottom: 13px;
+}
+.mission-contact-avatar {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fcf5df;
+  background: #b3b794;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mission-messages header strong {
+  font-size: 10px;
+  line-height: 1.6;
+  display: block;
+}
+.mission-messages header small {
+  font-size: 7px;
+  color: #94a08a;
+}
+.mission-message-date {
+  display: block;
+  text-align: center;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #939d89;
+  margin: 14px 0;
+}
+.mission-message {
+  padding: 11px 12px;
+  border-radius: 13px;
+  font-size: 10px;
+  line-height: 1.8;
+  margin: 10px 0;
+  max-width: 94%;
+  overflow-wrap: anywhere;
+}
+.mission-message.incoming {
+  background: #fffdf3;
+  border: 1px solid #dce0d1;
+  border-bottom-left-radius: 3px;
+  color: #52604e;
+}
+.mission-message.outgoing {
+  background: #b3c2a5;
+  margin-left: auto;
+  border-bottom-right-radius: 3px;
+  color: #344c37;
+}
+.mission-reply-choices {
+  border-top: 1px solid #d2daca;
+  padding-top: 15px;
+  margin-top: 17px;
+}
+.mission-reply-choices > small {
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #869278;
+}
+.mission-reply-choices > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+  width: 100%;
+  padding: 10px 8px;
+  border: 1px solid #bac8ad;
+  border-radius: 8px;
+  background: #f2f6e9;
+  color: #647655;
+  font-size: 9px;
+  text-align: left;
+  margin-top: 8px;
+}
+.mission-reply-choices > button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.mission-phone-files,
+.mission-phone-notes,
+.mission-phone-dispatch {
+  padding: 19px 15px;
+  color: #4b5d49;
+}
+.mission-device-label {
+  font-size: 7px;
+  letter-spacing: 1.2px;
+  color: #849477;
+  display: block;
+}
+.mission-phone-files > p {
+  font-size: 10px;
+  line-height: 1.8;
+  margin: 12px 0 19px;
+  color: #7b8971;
+}
+.mission-phone-files > button:not(.mission-phone-back) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid #d3d9c8;
+  border-radius: 11px;
+  width: 100%;
+  padding: 13px 10px;
+  margin: 9px 0;
+  background: #fbfcf4;
+  color: #6e805f;
+  text-align: left;
+}
+.mission-phone-files > button > span {
+  flex: 1;
+}
+.mission-phone-files > button strong {
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.mission-phone-files > button small {
+  display: block;
+  font-size: 8px;
+  line-height: 1.7;
+  color: #8b967c;
+  margin-top: 3px;
+}
+.mission-phone-files > button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mission-phone-back {
+  border: 0;
+  background: transparent;
+  color: #75876a;
+  font-size: 9px;
+  padding: 0 0 15px;
+}
+.mission-reader.is-compact {
+  --ms-ink: #465641;
+  --ms-muted: #7d8c70;
+  --ms-line: #d3d9c7;
+  --ms-panel: #f6f8ed;
+  --ms-bg: #e8eddc;
+  --ms-accent: #7d8153;
+  padding: 12px;
+  border-radius: 10px;
+}
+.mission-reader.is-compact h3 {
+  font-size: 15px;
+}
+.mission-reader.is-compact .mission-photo {
+  min-height: 200px;
+}
+.mission-reader.is-compact .mission-photo > strong {
+  font-size: 12px;
+}
+.mission-reader.is-compact .mission-photo.is-back > p {
+  font-size: 11px;
+}
+.mission-reader.is-compact .mission-reader-tools > button {
+  font-size: 8px;
+}
+.mission-reader.is-compact .mission-pin-button {
+  font-size: 9px;
+}
+.mission-phone-notes h3,
+.mission-phone-dispatch h3 {
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.6px;
+  font-weight: 650;
+  margin: 15px 0 18px;
+}
+.mission-phone-notes textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  min-height: 210px;
+  max-height: 300px;
+  border: 1px solid #d0d8bf;
+  border-radius: 7px;
+  padding: 13px 11px;
+  background: repeating-linear-gradient(#fafbf1, #fafbf1 24px, #e3e8d9 25px);
+  color: #55664e;
+  font:
+    11px/25px ui-monospace,
+    monospace;
+  outline-offset: 3px;
+}
+.mission-phone-notes > small {
+  display: block;
+  font-size: 8px;
+  color: #8a987c;
+  margin: 8px 0 17px;
+}
+.mission-dispatch-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border: 1px solid #c7d2b7;
+  border-radius: 16px;
+  background: #dce4cf;
+  color: #8a9c73;
+  margin-top: 20px;
+}
+.mission-phone-dispatch > p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #718164;
+}
+.mission-phone-dispatch ol {
+  padding-left: 17px;
+  margin: 19px 0 24px;
+  color: #748368;
+  font-size: 10px;
+  line-height: 1.8;
+  list-style: decimal;
+}
+.mission-phone-dispatch li + li {
+  margin-top: 10px;
+}
+.mission-phone-dispatch > small {
+  display: block;
+  font-size: 8px;
+  line-height: 1.7;
+  text-align: center;
+  margin-top: 15px;
+  color: #87977a;
+}
+.mission-timeline {
+  border: 1px solid var(--ms-line);
+  border-radius: 15px;
+  padding: 22px;
+  background: var(--ms-panel);
+  margin-bottom: 20px;
+}
+.mission-timeline > div {
+  display: flex;
+  gap: 14px;
+  position: relative;
+  padding: 20px 0;
+}
+.mission-timeline > div + div {
+  border-top: 1px dashed var(--ms-line);
+}
+.mission-timeline > div > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 29px;
+  height: 29px;
+  border: 1px solid var(--ms-line);
+  border-radius: 50%;
+  color: var(--ms-muted);
+  font-size: 10px;
+}
+.mission-timeline .is-filed > span {
+  color: #96b591;
+  border-color: #7a9775;
+}
+.mission-timeline small {
+  font-size: 8px;
+  color: var(--ms-accent);
+}
+.mission-timeline h3 {
+  font-size: 15px;
+  color: var(--ms-ink);
+  font-weight: 650;
+  margin: 5px 0;
+}
+.mission-timeline p {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--ms-muted);
+}
+.mission-timeline strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 8px;
+  color: var(--ms-accent);
+  font-weight: 500;
+}
+.mission-case-closed {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 25px;
+  border: 1px solid #809a72;
+  border-radius: 17px;
+  background: linear-gradient(125deg, #a4a57318, #6b8c6810), var(--ms-panel);
+  margin-bottom: 26px;
+  color: var(--ms-ink);
+}
+.mission-closed-seal {
+  width: 57px;
+  height: 57px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #819b73;
+  border-radius: 50%;
+  color: #91b189;
+}
+.mission-case-closed > div {
+  flex: 1;
+}
+.mission-case-closed h2 {
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.5px;
+  margin: 8px 0;
+}
+.mission-case-closed p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--ms-muted);
+  max-width: 620px;
+}
+.mission-filed-stamp {
+  display: block;
+  padding: 13px 12px;
+  border: 2px solid #a5a17c;
+  border-radius: 6px;
+  transform: rotate(-9deg);
+  font-size: 21px;
+  line-height: 1.15;
+  color: #aaa581;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+}
+.mission-filed-stamp small {
+  font-size: 6px;
+  letter-spacing: 0.8px;
+}
+.mission-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: #ad715b13;
+  border: 1px solid #a2715a;
+  border-radius: 11px;
+  color: var(--ms-accent);
+  font-size: 11px;
+  margin: 18px 0;
+}
+.mission-error p {
+  flex: 1;
+}
+.mission-error button {
+  border: 0;
+  background: transparent;
+  color: var(--ms-ink);
+  font-size: 10px;
+  text-decoration: underline;
+}
+.mission-loading {
+  border: 1px dashed var(--ms-line);
+  border-radius: 16px;
+  padding: 55px 25px;
+  text-align: center;
+  color: var(--ms-muted);
+}
+.mission-loading > svg {
+  margin: auto;
+  color: var(--ms-accent);
+}
+.mission-loading h2 {
+  font-size: 23px;
+  line-height: 1.4;
+  margin: 16px 0 9px;
+  color: var(--ms-ink);
+}
+.mission-loading p {
+  font-size: 12px;
+}
+.mission-safety-note {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  font-size: 9px;
+  line-height: 1.8;
+  color: var(--ms-muted);
+  margin-top: 27px;
+  max-width: 850px;
+}
+.mission-safety-note > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.mission-workspace button:focus-visible,
+.mission-workspace a:focus-visible {
+  outline: 2px solid #dba25f;
+  outline-offset: 4px;
+}
+.mission-lab-context {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 17px;
+  border: 1px solid #aa855b;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  background: #b1823c12;
+  color: #d9b68a;
+}
+.mission-lab-context > div {
+  flex: 1;
+}
+.mission-lab-context span {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+.mission-lab-context strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.mission-lab-context > a {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 10px;
+  color: #d9b68a;
+}
+[data-theme='light'] .mission-lab-context,
+[data-theme='light'] .mission-lab-context > a {
+  color: #8c653d;
+}
+.bb-mission-teaser {
+  position: relative;
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr) auto;
+  gap: 25px;
+  align-items: center;
+  border: 1px solid var(--ms-line);
+  border-radius: 18px;
+  background: linear-gradient(110deg, #b8975c15, transparent 70%), var(--ms-panel);
+  padding: 26px;
+  margin: 0 0 25px;
+  color: var(--ms-ink);
+}
+.bb-mission-teaser h2 {
+  font-size: 24px;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.7px;
+  margin: 8px 0 10px;
+}
+.bb-mission-teaser p {
+  font-size: 11px;
+  line-height: 1.8;
+  max-width: 580px;
+  color: var(--ms-muted);
+}
+.bb-mission-teaser small {
+  display: block;
+  color: var(--ms-accent);
+  font-size: 9px;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+.bb-mission-teaser .bb-button {
+  font-size: 11px !important;
+  min-height: 40px;
+}
+.mission-teaser-art {
+  position: relative;
+  transform: rotate(-6deg);
+  border: 1px solid #c1ad83;
+  border-radius: 4px 9px 9px 9px;
+  background: #e7d9b8;
+  color: #776344;
+  padding: 13px 11px;
+  box-shadow: 3px 5px 0 #b69b6a19;
+}
+.mission-teaser-art:before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -1px;
+  width: 43px;
+  height: 9px;
+  border: 1px solid #c1ad83;
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: #e7d9b8;
+}
+.mission-teaser-art > span {
+  font-size: 6px;
+  letter-spacing: 1px;
+}
+.mission-teaser-art strong {
+  display: block;
+  font-size: 31px;
+  line-height: 1.4;
+  color: #9c7543;
+}
+.mission-teaser-art i {
+  position: absolute;
+  top: 35px;
+  right: 14px;
+  font-style: normal;
+  font-size: 18px;
+}
+.mission-teaser-art > div {
+  font-size: 6px;
+  border-top: 1px dashed #c3ad84;
+  padding-top: 5px;
+}
+@keyframes mission-wave {
+  from {
+    transform: scaleY(0.45);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@media (max-width: 1300px) {
+  .mission-desk-grid {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 18px;
+  }
+  .mission-reader-grid {
+    grid-template-columns: 1fr;
+  }
+  .mission-lab-ticket {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 5px 12px;
+  }
+  .mission-lab-ticket > .mission-desk-label {
+    grid-column: 1/-1;
+  }
+  .mission-ticket-icon {
+    grid-row: 2/5;
+    margin: 10px 0;
+  }
+  .mission-lab-ticket > small,
+  .mission-lab-ticket > h3,
+  .mission-lab-ticket > p {
+    grid-column: 2;
+  }
+  .mission-lab-ticket h3 {
+    font-size: 17px;
+    margin: 4px 0;
+  }
+  .mission-lab-ticket .bb-button {
+    grid-column: 1/-1;
+    margin: 13px 0 7px;
+    justify-self: start;
+    width: auto;
+  }
+  .mission-lab-check,
+  .mission-lab-ticket > p.mission-ticket-note {
+    grid-column: 1/-1;
+  }
+  .mission-phone-screen {
+    height: 600px;
+  }
+  .mission-case-status {
+    display: none;
+  }
+  .mission-chapter-strip > a {
+    padding: 13px 12px;
+    gap: 8px;
+  }
+  .mission-evidence-cards {
+    gap: 11px;
+  }
+  .mission-evidence-card {
+    padding: 15px 9px 11px;
+  }
+  .bb-mission-teaser {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 20px;
+  }
+  .bb-mission-teaser > .bb-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .mission-teaser-art {
+    grid-row: 1/3;
+  }
+  .bb-mission-teaser h2 {
+    font-size: 22px;
+  }
+}
+@media (max-width: 1050px) {
+  .mission-desk-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mission-phone-wrap {
+    position: relative;
+    top: 0;
+    order: -1;
+    max-width: 330px;
+    width: 100%;
+    margin: 0 auto 15px;
+  }
+  .mission-phone-screen {
+    height: 620px;
+  }
+  .mission-reader-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .mission-lab-ticket {
+    display: block;
+  }
+  .mission-ticket-icon {
+    margin: 18px 0;
+  }
+  .mission-lab-ticket .bb-button {
+    width: 100%;
+    margin: 18px 0;
+  }
+  .mission-folder h2 {
+    font-size: 15px;
+  }
+  .mission-case-selector {
+    gap: 12px;
+  }
+  .mission-chapter-strip > a > svg {
+    display: none;
+  }
+  .mission-page-heading {
+    display: block;
+  }
+  .mission-saved-tag {
+    display: inline-flex;
+    margin-top: 15px;
+  }
+  .mission-filed-stamp {
+    font-size: 17px;
+  }
+}
+@media (max-width: 760px) {
+  .mission-page-heading {
+    margin-bottom: 22px;
+  }
+  .mission-page-heading h1 {
+    font-size: 29px;
+  }
+  .mission-page-heading p {
+    font-size: 11px;
+  }
+  .mission-page-heading .bb-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .mission-saved-tag {
+    font-size: 8px;
+    padding: 7px 10px;
+  }
+  .mission-case-selector {
+    display: flex;
+    overflow-x: auto;
+    gap: 13px;
+    padding: 10px 4px 13px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    margin-bottom: 14px;
+  }
+  .mission-folder {
+    min-width: 235px;
+    max-width: 235px;
+    scroll-snap-align: start;
+    padding: 17px 16px 13px;
+  }
+  .mission-folder h2 {
+    font-size: 18px;
+  }
+  .mission-folder p {
+    min-height: 0;
+    font-size: 10px;
+  }
+  .mission-dispatch-strip {
+    padding: 13px;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 10px;
+  }
+  .mission-dispatch-strip > span {
+    display: none;
+  }
+  .mission-dispatch-strip > svg {
+    margin-top: 4px;
+  }
+  .mission-chapter-strip > a {
+    padding: 13px 8px;
+    display: block;
+  }
+  .mission-chapter-strip > a > span {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  .mission-chapter-strip small {
+    font-size: 6px;
+    letter-spacing: 0.6px;
+  }
+  .mission-chapter-strip strong {
+    font-size: 9px;
+    line-height: 1.6;
+  }
+  .mission-chapter-strip {
+    margin-bottom: 23px;
+  }
+  .mission-phone-wrap {
+    margin-bottom: 12px;
+    max-width: 320px;
+  }
+  .mission-phone-screen {
+    height: 600px;
+  }
+  .mission-brief h2 {
+    font-size: 24px;
+  }
+  .mission-brief p {
+    font-size: 11px;
+  }
+  .mission-board-tabs {
+    gap: 16px;
+  }
+  .mission-board-tabs > button {
+    font-size: 9px;
+    gap: 5px;
+  }
+  .mission-evidence-board {
+    padding: 14px 11px;
+  }
+  .mission-board-counter {
+    font-size: 7px;
+    letter-spacing: 0.6px;
+  }
+  .mission-board-counter > small {
+    font-size: 8px;
+  }
+  .mission-evidence-cards {
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .mission-evidence-card {
+    padding: 15px 7px 11px;
+    min-height: 155px;
+  }
+  .mission-evidence-card > small {
+    font-size: 6px;
+    letter-spacing: 0.3px;
+    min-height: 20px;
+  }
+  .mission-evidence-card > strong {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .mission-evidence-card > span:last-child {
+    font-size: 7px;
+  }
+  .mission-evidence-card > svg {
+    width: 22px;
+    height: 22px;
+  }
+  .mission-board-caption {
+    font-size: 8px;
+    align-items: flex-start;
+  }
+  .mission-board-caption > svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .mission-reader-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+  }
+  .mission-reader {
+    padding: 18px;
+  }
+  .mission-photo > strong {
+    font-size: 15px;
+  }
+  .mission-photo {
+    min-height: 220px;
+  }
+  .mission-lab-ticket {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+  }
+  .mission-deduction {
+    padding: 19px;
+  }
+  .mission-deduction h3 {
+    font-size: 19px;
+  }
+  .mission-deduction label {
+    font-size: 11px;
+    padding: 10px;
+  }
+  .mission-case-closed {
+    padding: 19px;
+    gap: 13px;
+    flex-wrap: wrap;
+  }
+  .mission-closed-seal {
+    width: 40px;
+    height: 40px;
+    align-self: flex-start;
+    margin-top: 7px;
+  }
+  .mission-case-closed > div {
+    min-width: 170px;
+  }
+  .mission-case-closed h2 {
+    font-size: 20px;
+  }
+  .mission-case-closed p {
+    font-size: 10px;
+  }
+  .mission-filed-stamp {
+    font-size: 16px;
+    margin-left: auto;
+  }
+  .mission-error {
+    align-items: flex-start;
+    font-size: 10px;
+    flex-wrap: wrap;
+  }
+  .mission-error > svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .mission-error button {
+    margin-left: 26px;
+  }
+  .mission-lab-context {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 13px;
+  }
+  .mission-lab-context > div {
+    min-width: 175px;
+  }
+  .mission-lab-context > a {
+    margin-left: 28px;
+  }
+  .mission-lab-context strong {
+    font-size: 11px;
+  }
+  .bb-mission-teaser {
+    padding: 22px 18px;
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 16px;
+  }
+  .bb-mission-teaser h2 {
+    font-size: 20px;
+  }
+  .bb-mission-teaser .bb-eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.8px;
+    line-height: 1.7;
+  }
+  .bb-mission-teaser p {
+    font-size: 10px;
+  }
+  .bb-mission-teaser small {
+    font-size: 8px;
+  }
+  .bb-mission-teaser > .bb-button {
+    grid-column: 1/-1;
+    justify-self: start;
+  }
+  .mission-teaser-art {
+    grid-row: 1;
+    align-self: center;
+    padding: 11px 7px;
+  }
+  .mission-teaser-art strong {
+    font-size: 28px;
+  }
+  .mission-teaser-art i {
+    right: 6px;
+    font-size: 12px;
+    top: 31px;
+  }
+  .mission-teaser-art > span {
+    font-size: 5px;
+  }
+  .mission-teaser-art > div {
+    font-size: 5px;
+  }
+  .mission-safety-note {
+    font-size: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mission-wave.is-playing i {
+    animation: none;
+  }
+  .mission-folder,
+  .mission-evidence-card,
+  .mission-photo > strong {
+    transition: none;
+  }
+  .mission-folder:hover,
+  .mission-evidence-card:hover {
+    transform: none;
+  }
+}
+/* Keep Honey reachable without covering the field device. */
+body:has(.mission-workspace) .bb-assistant-launcher {
+  width: 59px;
+  height: 59px;
+  min-height: 59px;
+  padding: 5px;
+  border-radius: 50%;
+  justify-content: center;
+}
+body:has(.mission-workspace) .bb-assistant-launcher > span,
+body:has(.mission-workspace) .bb-assistant-launcher > svg:last-child {
+  display: none;
+}
+body:has(.mission-workspace) .bb-assistant-launcher > .bb-mascot {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+}
+.mission-phone .mission-message {
+  font-size: 11px;
+}
+.mission-phone .mission-reply-choices > button {
+  font-size: 10px;
+  min-height: 36px;
+}
+.mission-phone .mission-messages header strong {
+  font-size: 11px;
+}
+.mission-phone .mission-phone-files > button strong {
+  font-size: 11px;
+}
+.mission-phone .mission-phone-topbar button {
+  width: 32px;
+  height: 32px;
+}
+.mission-phone .mission-phone-homebar {
+  position: relative;
+  width: 100px;
+  min-height: 24px;
+  height: 24px;
+  margin: 3px auto;
+  background: transparent;
+  padding: 0;
+}
+.mission-phone-homebar:after {
+  content: '';
+  position: absolute;
+  width: 75px;
+  height: 4px;
+  border-radius: 5px;
+  top: 10px;
+  left: 12px;
+  background: #53685c;
+}
+.mission-reader-grid:focus-visible {
+  outline: 2px solid #d6ad71;
+  outline-offset: 5px;
+  border-radius: 15px;
+}
+.mission-photo.is-back.is-zoomed > p {
+  font-size: 15px;
+}
+.mission-photo.is-zoomed .mission-photo-buildings {
+  transform: rotate(-5deg) scale(1.2);
+}
+.mission-photo.is-zoomed .mission-photo-moon {
+  transform: scale(1.2);
+}
+.mission-reader.is-compact .mission-photo.is-zoomed > strong {
+  font-size: 16px;
+}
+.mission-reader.is-compact .mission-photo.is-back.is-zoomed > p {
+  font-size: 14px;
+}

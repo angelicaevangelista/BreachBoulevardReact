@@ -14,6 +14,10 @@
       "destination": "/api/index?__route=:path*"
     },
     {
+      "source": "/missions",
+      "destination": "/index.html"
+    },
+    {
       "source": "/dashboard",
       "destination": "/index.html"
     },

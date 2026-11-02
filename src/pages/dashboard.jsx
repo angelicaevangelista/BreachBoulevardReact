@@ -7,6 +7,7 @@ import { useLearner } from '../components/LearnerGate';
 import { labIcons } from './practice';
 import { rankFor } from '../data/community';
 import StreakGarden from '../components/StreakGarden';
+import MissionTeaser from '../components/MissionTeaser';
 export default function Dashboard() {
   const { progress, streak, completed, loading, error, reload } = useLabProgress();
   const learner = useLearner();
@@ -85,6 +86,7 @@ export default function Dashboard() {
           </section>
         ))}
       </div>
+      <MissionTeaser />
       <div className="bb-dashboard-grid">
         <section className="bb-panel">
           <div className="bb-panel-heading">

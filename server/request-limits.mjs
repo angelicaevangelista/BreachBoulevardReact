@@ -36,6 +36,7 @@ export function requestPolicy(route, method) {
     if (route.startsWith('/api/practice/')) return { name: 'practice', limit: 120, seconds: 60 };
     if (route.startsWith('/api/community/'))
       return { name: 'community-write', limit: 30, seconds: 60 };
+    if (route === '/api/missions') return { name: 'mission-actions', limit: 90, seconds: 60 };
     if (route === '/api/honey/chat') return { name: 'honey', limit: 20, seconds: 60 };
   }
   return null;

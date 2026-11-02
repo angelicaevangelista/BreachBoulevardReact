@@ -16,6 +16,7 @@ import { accessCodeOptions, AccessCodeInputError } from './access-code-options.m
 import { escapeHtml, simulateFileExecution, UploadStore } from './uploads.mjs';
 import { setSecurityHeaders } from './security-headers.mjs';
 import { RequestLimiter, clientFingerprint, requestPolicy } from './request-limits.mjs';
+import { createMissionService, MissionError } from './missions.mjs';
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -118,6 +119,7 @@ export function createApiHandler({
   basePath = '',
   honey,
   requestLimiter,
+  missionStore,
   communityStore,
   communityDirectory = path.join(projectRoot, '.data/community'),
 } = {}) {
@@ -125,6 +127,7 @@ export function createApiHandler({
   const getDatabase = () => database || SupabaseAccessCodes.fromEnvironment();
   const honeyService = honey || createHoneyService();
   const limiter = requestLimiter || new RequestLimiter();
+  const missions = createMissionService({ store: missionStore });
   const community = createCommunityService({
     store: communityStore || new FileCommunityStore(communityDirectory),
   });
@@ -162,8 +165,20 @@ export function createApiHandler({
         route.startsWith('/api/labs/') ||
         route === '/api/account/progress' ||
         route.startsWith('/api/community/') ||
+        route === '/api/missions' ||
         route === '/api/access-codes/validate';
       const student = learner && learnerRoute ? await learner.requireUser() : null;
+      if (route === '/api/missions') {
+        if (!requireMethod(req, res, ['GET', 'POST'])) return true;
+        const result = await missions({
+          userId: student?.id,
+          completed: completedLabs(student),
+          method: req.method,
+          input: req.method === 'POST' ? await readJson(req) : undefined,
+        });
+        json(res, 200, { success: true, ...result });
+        return true;
+      }
       if (route === '/api/labs/preview') {
         if (!requireMethod(req, res, ['GET'])) return true;
         const markup = url.searchParams.get('html') || '';
@@ -454,6 +469,7 @@ export function createApiHandler({
         error instanceof DatabaseError ||
         error instanceof AuthError ||
         error instanceof CommunityError ||
+        error instanceof MissionError ||
         error instanceof AccessCodeInputError;
       json(res, known ? error.status : 500, {
         success: false,

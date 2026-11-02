@@ -1,5 +1,16 @@
 [
   {
+    "path": "missions.html",
+    "title": "Story Missions | Breach Boulevard",
+    "body": {
+      "class": "",
+      "style": ""
+    },
+    "css": "",
+    "links": [],
+    "tailwind": true
+  },
+  {
     "path": "privacy.html",
     "title": "Privacy | Breach Boulevard",
     "body": {

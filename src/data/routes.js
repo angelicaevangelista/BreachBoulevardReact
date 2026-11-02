@@ -1,5 +1,6 @@
 export const routePaths = {
   'dashboard.html': '/dashboard',
+  'missions.html': '/missions',
   'community.html': '/community',
   'privacy.html': '/privacy',
   'reset-password.html': '/reset-password',

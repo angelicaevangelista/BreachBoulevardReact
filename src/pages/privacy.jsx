@@ -7,6 +7,7 @@ const sections = [
     [
       'Account information includes your account ID, email address, and authentication-provider information. When you use Google, Supabase Auth can receive your basic profile, including your name and profile picture.',
       'Completed practice lab IDs, practice dates, and your streak timezone are saved with your account. Practice inputs are processed to produce training responses. Some demonstrations keep their state only in your browser.',
+      'Story missions save your case notes, pinned evidence, selected conversation replies, and chapter progress with your account so you can resume the investigation.',
       'Files you choose to upload are stored with their filename, content type, and an account ID used to restrict access. Avoid submitting confidential or personal files to training labs.',
       'Requests to the website, hosting, and authentication services can include IP addresses, browser information, timestamps, and diagnostic or security logs.',
     ],

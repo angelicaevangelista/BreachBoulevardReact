@@ -237,3 +237,26 @@ and the remaining Supabase leaked-password protection setting. Apply
 It is already applied to the configured project. Shared production request
 counters are server-only and fail closed if unavailable. No new environment
 variable or external AI/security service was added.
+
+## Story missions — the Boulevard case desk
+
+`/missions` is a separate signed-in page, linked from the dashboard and workspace
+navigation. Three fictional cases connect nine existing CTFs into three-chapter
+investigations: The Midnight Premiere, The Honey Jar Heist, and The Last Signal.
+
+The field phone has working Messages, Files, Notes, and Dispatch apps. Learners
+can ask scripted witness questions, inspect supplied photos front/back, zoom,
+read email/receipt/log files, replay silent transcript captions, and pin evidence.
+A linked CTF must be completed and its flag submitted before the recovered file
+is available. Pin all three clues and submit the correct deduction to open the
+next chapter. Each lab carries a return link to its case desk. Case notes are
+saved explicitly, and an unsaved note is saved before a linked lab opens.
+
+Progress lives in private `breach_mission_progress` rows, separate from auth
+cookies and public community data. APIs use the verified learner ID, validate
+case/chapter/action IDs, and reject stale revisions to protect concurrent saves.
+Apply `supabase/migrations/20261102030112_mission_case_progress.sql` to a new
+project; it is already applied to the configured project. No new environment
+variables or permissions to the learner’s real phone are required. The supplied
+illustrations, contacts, messages, transactions and transcript replays are
+fictional; the interface does not access a camera, microphone, or contacts.

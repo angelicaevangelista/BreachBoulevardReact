@@ -5,8 +5,9 @@ import AppShell, { Icon, Mascot } from '../components/Interface';
 import useLabProgress from '../hooks/useLabProgress';
 import TargetWebsite from '../components/labs/TargetWebsite';
 import { learnerTimeZoneHeaders } from '../data/learner-timezone';
+import { findMission } from '../data/missions';
 export const labIcons = ['terminal', 'code', 'key', 'eye', 'shield', 'book'];
-function Challenge({ lab, onComplete, solved }) {
+function Challenge({ lab, onComplete, solved, caseReturn }) {
   const [values, setValues] = useState(() => ({
     ...Object.fromEntries(lab.fields.map((field) => [field.key, field.initial])),
     ...(lab.difficulty === 'Hard' ? { stage: 'discover' } : {}),
@@ -201,8 +202,12 @@ function Challenge({ lab, onComplete, solved }) {
                   )}
                   <h3>How to prevent it</h3>
                   <p>{lab.lesson}</p>
-                  <Link className="bb-button bb-button-soft" to={`/practice/${next.id}`}>
-                    Try the next lab <Icon name="arrow" size={15} />
+                  <Link
+                    className="bb-button bb-button-soft"
+                    to={caseReturn || `/practice/${next.id}`}
+                  >
+                    {caseReturn ? 'Return to my case desk' : 'Try the next lab'}{' '}
+                    <Icon name="arrow" size={15} />
                   </Link>
                 </div>
               )}
@@ -258,6 +263,14 @@ export default function Practice() {
     location = router?.location || window.location.pathname;
   const id = location.split(/[?#]/)[0].match(/\/practice\/([^/]+)\/?$/)?.[1],
     lab = findPracticeLab(id);
+  const missionParams = new URLSearchParams(location.split('?')[1] || '');
+  const mission = findMission(missionParams.get('mission'));
+  const missionChapter = mission?.chapters.find(
+    (c) => c.id === missionParams.get('chapter') && c.labId === id
+  );
+  const caseReturn = missionChapter
+    ? `/missions?case=${mission.id}&chapter=${mission.chapters.indexOf(missionChapter) + 1}`
+    : null;
   const { progress, loading, error, completed, recordCompletion, reload } = useLabProgress();
   const [query, setQuery] = useState(''),
     [difficulty, setDifficulty] = useState('all'),
@@ -289,12 +302,30 @@ export default function Practice() {
       )}
       {id ? (
         lab ? (
-          <Challenge
-            key={id}
-            lab={lab}
-            solved={Boolean(progress[id])}
-            onComplete={recordCompletion}
-          />
+          <>
+            {caseReturn && (
+              <div className="mission-lab-context">
+                <Icon name="book" size={19} />
+                <div>
+                  <span>STORY MISSION · CASE {mission.number}</span>
+                  <strong>
+                    {mission.title} / {missionChapter.title}
+                  </strong>
+                </div>
+                <Link to={caseReturn}>
+                  Return to case desk
+                  <Icon name="back" size={14} />
+                </Link>
+              </div>
+            )}
+            <Challenge
+              key={id}
+              lab={lab}
+              solved={Boolean(progress[id])}
+              onComplete={recordCompletion}
+              caseReturn={caseReturn}
+            />
+          </>
         ) : (
           <div className="bb-empty">
             <Mascot />

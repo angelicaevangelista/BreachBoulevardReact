@@ -5,6 +5,9 @@ import path from 'node:path';
 import { build } from 'esbuild';
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { practiceStreak } from '../server/streaks.mjs';
+import { missionCases, emptyMissionState } from '../src/data/missions.js';
+import { createMissionService } from '../server/missions.mjs';
+import { memoryMissionStore } from './fixtures/missions.mjs';
 
 const pages = JSON.parse(fs.readFileSync('src/pages.json', 'utf8'));
 const built = await build({
@@ -42,6 +45,7 @@ async function open(
     user = { id: 'student-1', email: 'student@example.com' },
     progress = [],
     streak = null,
+    missionApi = null,
     optionsFailure = false,
     intervals = null,
     reducedMotion = false,
@@ -97,6 +101,21 @@ async function open(
       };
     if (app && args[0] === base + '/api/account/progress')
       return { ok: true, json: async () => ({ success: true, completed: progress, streak }) };
+    if (app && args[0] === base + '/api/missions' && (!args[1]?.method || args[1].method === 'GET'))
+      return missionApi
+        ? missionApi(...args)
+        : {
+            ok: true,
+            json: async () => ({
+              success: true,
+              cases: missionCases.map((c) => ({
+                caseId: c.id,
+                revision: 0,
+                state: emptyMissionState(),
+              })),
+              completed: progress,
+            }),
+          };
     requests.push(args);
     if (!fetch) throw new Error('Unexpected network request');
     return fetch(...args);
@@ -1187,6 +1206,80 @@ test('legacy DOM XSS input is confined to an opaque sandbox rather than evaluate
     assert.equal(frame.getAttribute('sandbox'), 'allow-scripts allow-modals');
     assert.match(new URL(frame.src).searchParams.get('html'), /onerror/);
     assert.ok(s.d.querySelector('#nameInput'));
+    assert.deepEqual(s.errors, []);
+  } finally {
+    await s.close();
+  }
+});
+
+test('story desk phone replies, notebook, evidence inspection and deductions persist across navigation', async () => {
+  const store = memoryMissionStore(),
+    service = createMissionService({ store }),
+    completed = [];
+  const response = async (input) => ({
+    ok: true,
+    json: async () => ({
+      success: true,
+      ...(await service({ userId: 'student-1', completed, ...input })),
+    }),
+  });
+  const s = await open('missions.html', {
+    app: true,
+    url: 'http://localhost/missions?case=midnight-premiere',
+    progress: completed,
+    missionApi: () => response({ method: 'GET' }),
+    fetch: async (url, options) => response({ method: 'POST', input: JSON.parse(options.body) }),
+  });
+  try {
+    assert.equal(s.d.querySelectorAll('.mission-folder').length, 3);
+    assert.match(s.d.querySelector('.mission-phone').textContent, /Pocket Boulevard/);
+    await s.click('.mission-phone-open');
+    await s.click(s.d.querySelectorAll('.mission-reply-choices button')[1]);
+    await s.click(s.d.querySelectorAll('.mission-reply-choices button')[0]);
+    assert.deepEqual(
+      [...s.d.querySelectorAll('.mission-message.outgoing')].map((e) => e.textContent),
+      [missionCases[0].chapters[0].replies[1].label, missionCases[0].chapters[0].replies[0].label]
+    );
+    assert.match(s.d.querySelector('.mission-messages').textContent, /private draft/);
+    await s.click('[aria-label="Phone home"]');
+    await s.click(
+      [...s.d.querySelectorAll('.mission-phone-apps button')].find((b) => b.textContent === 'Notes')
+    );
+    await s.fill(
+      '[aria-label="Case notebook"]',
+      'Post 42 and the operations ticket are connected.'
+    );
+    await s.click('.mission-phone-notes .mission-phone-open');
+    assert.match(
+      s.d.querySelector('.mission-phone-notes small').textContent,
+      /Saved to your account/
+    );
+    await s.click('.mission-reader-grid .mission-reader-tools button');
+    assert.match(s.d.querySelector('.mission-photo').textContent, /next draft 42/);
+    await s.click('.mission-reader-grid .mission-pin-button');
+    assert.match(s.d.querySelector('.mission-board-counter').textContent, /1 \/ 3/);
+    assert.equal(s.d.querySelectorAll('.mission-evidence-card')[2].disabled, true);
+    completed.push('ctf-social-draft');
+    await s.act(() => s.w.harness.navigate('/dashboard'));
+    assert.ok(s.d.querySelector('.bb-mission-teaser'));
+    await s.click('.bb-mission-teaser>a');
+    for (const i of [1, 2]) {
+      await s.click(s.d.querySelectorAll('.mission-evidence-card')[i]);
+      await s.click('.mission-reader-grid .mission-pin-button');
+    }
+    await s.click('input[value="id-permission"]');
+    await s.submit('.mission-deduction form');
+    assert.match(
+      s.d.querySelector('.mission-deduction').textContent,
+      /chapter is in the case file/
+    );
+    await s.click('.mission-deduction>a');
+    assert.match(s.d.querySelector('.mission-brief h2').textContent, /note behind the ticket/);
+    await s.click('[aria-label="Phone home"]');
+    await s.click(
+      [...s.d.querySelectorAll('.mission-phone-apps button')].find((b) => b.textContent === 'Notes')
+    );
+    assert.match(s.d.querySelector('[aria-label="Case notebook"]').value, /operations ticket/);
     assert.deepEqual(s.errors, []);
   } finally {
     await s.close();

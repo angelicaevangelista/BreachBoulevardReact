@@ -95,3 +95,14 @@ if they are ever disclosed. No secret rotation was needed or performed here.
 References: [OWASP CSP guidance](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html),
 [Vercel request headers](https://vercel.com/docs/headers/request-headers),
 [Supabase RLS guidance](https://supabase.com/docs/guides/database/postgres/row-level-security).
+
+## Story-mission addition
+
+The case desk uses `breach_mission_progress` with RLS and no browser-role grants.
+Only the service role can call `bb_save_mission_progress`. The API supplies the
+verified account ID, validates bounded notes and catalog IDs, and checks the
+current chapter, recovered evidence and deduction prerequisites. Revision checks
+reject concurrent stale writes. Auth-user deletion cascades to case rows. This
+is private learning state, not a new authorization role or certificate boundary.
+Browser tests completed all nine chapters, restored notes and replies, rejected
+conflicting saves, and verified isolation between two disposable accounts.

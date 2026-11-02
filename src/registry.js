@@ -1,3 +1,4 @@
+import Missions from './pages/missions.jsx';
 import Page0 from './pages/about.jsx';
 import Privacy from './pages/privacy.jsx';
 import Dashboard from './pages/dashboard.jsx';
@@ -34,6 +35,7 @@ import Page29 from './pages/testupload.jsx';
 import Practice from './pages/practice.jsx';
 import ResetPassword from './pages/reset-password.jsx';
 export default {
+  'missions.html': Missions,
   'dashboard.html': Dashboard,
   'community.html': Community,
   'privacy.html': Privacy,

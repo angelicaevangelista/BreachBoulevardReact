@@ -3,6 +3,7 @@ import { Icon, Mascot } from './Interface';
 import HoneyChat from './HoneyChat';
 import { useRouter } from '../routing';
 import { accountRequest } from './LearnerGate';
+import { findMission, missionCases } from '../data/missions';
 
 export default function HoneyAssistant() {
   const [open, setOpen] = useState(false);
@@ -11,6 +12,12 @@ export default function HoneyAssistant() {
     launcher = useRef(null);
   const router = useRouter();
   const path = (router?.location || window.location.pathname).split(/[?#]/)[0];
+  const caseParams = new URLSearchParams(
+    (router?.location || window.location.search).split('?')[1] || ''
+  );
+  const story =
+    path === '/missions' ? findMission(caseParams.get('case')) || missionCases[0] : null;
+  const storyIndex = Math.max(0, Math.min(2, Number(caseParams.get('chapter') || 1) - 1));
   const labId =
     path.match(/\/practice\/([a-z-]+)\/?$/)?.[1] ||
     {
@@ -21,7 +28,8 @@ export default function HoneyAssistant() {
       '/labs/error-sql': 'sql-injection',
       '/labs/idor': 'idor',
       '/tutorial/sql-injection': 'sql-injection',
-    }[path];
+    }[path] ||
+    story?.chapters[storyIndex]?.labId;
   useEffect(() => {
     if (open) panel.current?.querySelector('input')?.focus();
   }, [open]);

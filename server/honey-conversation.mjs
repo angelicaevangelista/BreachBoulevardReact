@@ -1,6 +1,10 @@
 // Honey's fictional personality. These replies never change lab hints or account data.
 const topics = [
   [
+    /\b(story missions?|case desk|case files?|story cases?)\b/,
+    'Open Story missions from your dashboard or the navigation. Your fictional phone has messages, files, a notebook, and dispatch instructions. Inspect and pin your clues, submit the linked lab’s flag, then file your deduction to open the next chapter. Tiny clues, big discoveries!',
+  ],
+  [
     /\b(how are you|how're you|how r (you|u)|how are u|hru|how('s| is) (it going|your day)|how do you feel|are you (okay|ok|happy)|what about you)\b/,
     "I'm buzzing happily! My wings are warmed up, the Boulevard is open, and there's always a little discovery waiting. How are you doing, curious human?",
   ],
