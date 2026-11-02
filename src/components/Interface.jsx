@@ -115,8 +115,13 @@ export function Mascot({ className = '', compact = false, ...props }) {
         />
         <rect x="63" y="83" width="94" height="62" rx="25" fill="#132b3c" />
         <g className="bb-buddy-eyes">
-          <ellipse cx="87" cy="110" rx="7" ry="9" fill="#fff2db" />
-          <ellipse cx="133" cy="110" rx="7" ry="9" fill="#fff2db" />
+          <path
+            d="M80 112q7-10 14 0 M126 112q7-10 14 0"
+            fill="none"
+            stroke="#fff2db"
+            strokeWidth="4.5"
+            strokeLinecap="round"
+          />
         </g>
         <path
           d="M101 124q9 9 18 0"
